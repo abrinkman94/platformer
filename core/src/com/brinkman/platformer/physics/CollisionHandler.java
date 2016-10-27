@@ -15,25 +15,22 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
  * Created by Austin on 9/30/2016.
  */
 public class CollisionHandler {
-    private Vector2 tempVector1 = new Vector2();
-    private Vector2 tempVector2 = new Vector2();
+    private final Vector2 tempVector1 = new Vector2();
+    private final Vector2 tempVector2 = new Vector2();
 
     public void handleMapCollision(Player player, TMXMap map) {
         Rectangle entityBounds = player.getBounds();
-        Rectangle footBounds = player.getBounds();
-        footBounds.height = player.getBounds().height * .3f;
         player.setIsGrounded(false);
 
         for (Rectangle mapBounds : map.getMapCollisionRectangles()) {
 
-
-                // Simple collision check
+            // Simple collision check
             if (entityBounds.overlaps(mapBounds)) {
-                    // Get the centers of the Entity AABB and map AABB; place in tempVector1 and tempVector2 respectively
+                // Get the centers of the Entity AABB and map AABB; place in tempVector1 and tempVector2 respectively
                 entityBounds.getCenter(tempVector1);
                 mapBounds.getCenter(tempVector2);
-                    // Get the absolute value of horizontal overlap between the entity and map tile
-                    // Save signed value of distance for later
+                // Get the absolute value of horizontal overlap between the entity and map tile
+                // Save signed value of distance for later
                 float horizontalDistance = tempVector2.x - tempVector1.x;
                 float entityHalfWidth = entityBounds.width / 2;
                 float mapHalfWidth = mapBounds.width / 2;
@@ -46,7 +43,6 @@ public class CollisionHandler {
                 float mapHalfHeight = mapBounds.height / 2;
                 float verticalOverlap = (entityHalfHeight + mapHalfHeight) - Math.abs(verticalDistance);
 
-                player.setIsGrounded(false);
                 // Move the entity on the axis which has the least overlap.
                 // The direction that the entity will move is determined by the sign of the distance between the centers
                 if (horizontalOverlap < verticalOverlap) {
