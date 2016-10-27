@@ -41,15 +41,15 @@ public class Player extends Actor {
     private static final int WALK_LEFT_FRAMES = 3;
     private static final int JUMP_RIGHT_FRAMES = 4;
     private static final int JUMP_LEFT_FRAMES = 5;
-    private boolean jump;
+    private boolean left, right, jump, run;
     private boolean jumpKeyPressed;
 
     public Player(Batch batch) {
         this.batch = batch;
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
-        acceleration = new Vector2(0.75f * TO_WORLD_UNITS, 0);
-        deceleration = new Vector2(0.5f * TO_WORLD_UNITS, 0);
+        acceleration = new Vector2(0.75f, 0);
+        deceleration = new Vector2(0.5f, 0);
         controller = Controllers.getControllers().first();
         orientation = "right";
 
@@ -110,9 +110,10 @@ public class Player extends Actor {
     }
 
     private void handleMovement() {
-        boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) == -1;
-        boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) == 1;
-
+        left = Gdx.input.isKeyPressed(Input.Keys.LEFT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) == -1;
+        right = Gdx.input.isKeyPressed(Input.Keys.RIGHT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) == 1;
+        jump = Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || controller.getButton(ControllerMappings.BUTTON_A);
+        run = controller.getButton(ControllerMappings.BUTTON_LB) || controller.getButton(ControllerMappings.BUTTON_RB);
 
         float maxSpeed = moveSpeed;
         float xSpeed = velocity.x;
@@ -140,18 +141,23 @@ public class Player extends Actor {
             }
         }
 
+        if (jump && canJump) {
+            velocity.y = 12;
+            grounded = false;
+            canJump = false;
+        }
+
+        if (run) {
+            moveSpeed = 8;
+        } else {
+            moveSpeed = 5;
+        }
+
         velocity.x = xSpeed;
-        position.x += velocity.x;
+        position.x += velocity.x * Gdx.graphics.getDeltaTime();
+        position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
 
-    private boolean jump() {
-        jump = Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || controller.getButton(ControllerMappings.BUTTON_A);
-        return jump;
-    }
-
-    private boolean run() {
-        return controller.getButton(ControllerMappings.BUTTON_LB) || controller.getButton(ControllerMappings.BUTTON_RB);
-    }
 
     public void collectCoin(Array<Coin> coins) {
         Rectangle playerBounds = getBounds();
@@ -194,25 +200,11 @@ public class Player extends Actor {
                 height * TO_WORLD_UNITS);
         batch.end();
 
-        if (run()) {
-            moveSpeed = 8 * TO_WORLD_UNITS;
-        } else {
-            moveSpeed = 5 * TO_WORLD_UNITS;
-        }
-
         if (grounded) {
             velocity.y = 0;
         } else {
             velocity.y -= GRAVITY;
         }
-
-        if (jump() && canJump) {
-            velocity.y = 12;
-            grounded = false;
-            canJump = false;
-        }
-
-        getPosition().y = getPosition().y + velocity.y * dt;
 
         handleMovement();
     }
