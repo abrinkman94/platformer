@@ -2,9 +2,6 @@ package com.brinkman.platformer.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerAdapter;
-import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,7 +14,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.Coin;
 import com.brinkman.platformer.entity.Player;
 import com.brinkman.platformer.level.Level;
-import com.brinkman.platformer.terrain.TMXMap;
+import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.CameraUtil;
 
 import static com.brinkman.platformer.util.Constants.*;
@@ -68,36 +65,47 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        //Draws background
         spriteBatch.begin();
         for (int i = 0; i < (APP_WIDTH * 2 * TO_WORLD_UNITS) * 4; i+= APP_WIDTH * 2 * TO_WORLD_UNITS) {
             spriteBatch.draw(background, i, 0, (APP_WIDTH * 2) * TO_WORLD_UNITS, (APP_HEIGHT * 2) * TO_WORLD_UNITS);
         }
         spriteBatch.end();
 
+        //Renders the level and it's associated TMXMap
         level.render(camera);
 
+        //Renders coins
         for (Coin coin : coins) {
             coin.render(delta);
         }
 
+        //Renders player
         player.render(delta);
+        //Checks for coin collection
         player.collectCoin(coins);
-        
+
+        //Camera utility methods
         CameraUtil.centerCameraOnActor(player, camera);
         CameraUtil.keepCameraInMap(camera);
 
+        //Collision checks
         collisionHandler.handleMapCollision(player, level.getMap());
         collisionHandler.checkWaterCollision(player, level.getMap());
         collisionHandler.keepPlayerInMap(player);
 
+        //Debug
         if (DEBUG) {
             collisionHandler.debug(level.getMap(), player, camera);
         }
 
+        //Renders HUD
         hud.render(delta);
 
+        //Checks for exit(end of level) conditions
         checkForExit();
 
+        //Updates camera
         camera.update();
     }
 

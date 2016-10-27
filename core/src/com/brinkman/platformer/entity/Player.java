@@ -2,12 +2,14 @@ package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.mappings.Xbox;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -42,7 +44,6 @@ public class Player extends Actor {
     private static final int JUMP_RIGHT_FRAMES = 4;
     private static final int JUMP_LEFT_FRAMES = 5;
     private boolean left, right, jump, run;
-    private boolean jumpKeyPressed;
 
     public Player(Batch batch) {
         this.batch = batch;
@@ -50,7 +51,7 @@ public class Player extends Actor {
         velocity = new Vector2(0, 0);
         acceleration = new Vector2(0.75f, 0);
         deceleration = new Vector2(0.5f, 0);
-        controller = Controllers.getControllers().first();
+    //    controller = Controllers.getControllers().first();
         orientation = "right";
 
         walk_right_atlas = new TextureAtlas();
@@ -87,34 +88,36 @@ public class Player extends Actor {
         LOGGER.info("Initialized");
     }
 
+    //Animation frame checks
     private void checkAnimation() {
         if (currentAnimation == IDLE_RIGHT_FRAMES) {
             animation = new Animation(1/15f, idle_right_atlas.getRegions());
-            animation.setPlayMode(Animation.PlayMode.LOOP);
+            animation.setPlayMode(PlayMode.LOOP);
         } else if (currentAnimation == IDLE_LEFT_FRAMES) {
             animation = new Animation(1/15f, idle_left_atlas.getRegions());
-            animation.setPlayMode(Animation.PlayMode.LOOP);
+            animation.setPlayMode(PlayMode.LOOP);
         } else if (currentAnimation == WALK_RIGHT_FRAMES) {
             animation = new Animation(1/15f, walk_right_atlas.getRegions());
-            animation.setPlayMode(Animation.PlayMode.LOOP);
+            animation.setPlayMode(PlayMode.LOOP);
         } else if (currentAnimation == WALK_LEFT_FRAMES) {
             animation = new Animation(1/15f, walk_left_atlas.getRegions());
-            animation.setPlayMode(Animation.PlayMode.LOOP);
+            animation.setPlayMode(PlayMode.LOOP);
         } else if (currentAnimation == JUMP_RIGHT_FRAMES) {
             animation = new Animation(1f, jump_right_atlas.getRegions());
-            animation.setPlayMode(Animation.PlayMode.LOOP);
+            animation.setPlayMode(PlayMode.LOOP);
         } else if (currentAnimation == JUMP_LEFT_FRAMES) {
             animation = new Animation(1f, jump_left_atlas.getRegions());
-            animation.setPlayMode(Animation.PlayMode.LOOP);
+            animation.setPlayMode(PlayMode.LOOP);
         }
     }
 
     private void handleMovement() {
-        left = Gdx.input.isKeyPressed(Input.Keys.LEFT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) == -1;
-        right = Gdx.input.isKeyPressed(Input.Keys.RIGHT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) == 1;
-        jump = Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || controller.getButton(ControllerMappings.BUTTON_A);
-        run = controller.getButton(ControllerMappings.BUTTON_LB) || controller.getButton(ControllerMappings.BUTTON_RB);
+        left = Gdx.input.isKeyPressed(Keys.LEFT); // || controller.getAxis(ControllerMappings.AXIS_LEFT_X) == -1;
+        right = Gdx.input.isKeyPressed(Keys.RIGHT); // || controller.getAxis(ControllerMappings.AXIS_LEFT_X) == 1;
+        jump = Gdx.input.isKeyJustPressed(Keys.SPACE); // || controller.getButton(ControllerMappings.BUTTON_A);
+    //    run = controller.getButton(ControllerMappings.BUTTON_LB) || controller.getButton(ControllerMappings.BUTTON_RB);
 
+        //X-axis movement
         float maxSpeed = moveSpeed;
         float xSpeed = velocity.x;
 
@@ -141,18 +144,21 @@ public class Player extends Actor {
             }
         }
 
+        //Jump conditionals
         if (jump && canJump) {
             velocity.y = 12;
             grounded = false;
             canJump = false;
         }
 
+        //Run conditionals
         if (run) {
             moveSpeed = 8;
         } else {
             moveSpeed = 5;
         }
 
+        //Update position and velocity
         velocity.x = xSpeed;
         position.x += velocity.x * Gdx.graphics.getDeltaTime();
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
@@ -193,6 +199,7 @@ public class Player extends Actor {
     @Override
     public void render(float dt) {
         checkAnimation();
+        handleMovement();
 
         batch.begin();
         elapsedTime += Gdx.graphics.getDeltaTime();
@@ -200,13 +207,12 @@ public class Player extends Actor {
                 height * TO_WORLD_UNITS);
         batch.end();
 
+        //Checks if player is on the ground
         if (grounded) {
             velocity.y = 0;
         } else {
             velocity.y -= GRAVITY;
         }
-
-        handleMovement();
     }
 
     @Override

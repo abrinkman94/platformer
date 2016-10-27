@@ -1,4 +1,4 @@
-package com.brinkman.platformer.screen;
+package com.brinkman.platformer.physics;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -16,9 +16,7 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 public class CollisionHandler {
     private Vector2 tempVector1 = new Vector2();
     private Vector2 tempVector2 = new Vector2();
-
-    private boolean platform = false;
-
+    
     public void handleMapCollision(Player player, TMXMap map) {
         Rectangle entityBounds = player.getBounds();
         Rectangle footBounds = player.getBounds();
@@ -46,6 +44,7 @@ public class CollisionHandler {
                 float mapHalfHeight = mapBounds.height / 2;
                 float verticalOverlap = (entityHalfHeight + mapHalfHeight) - Math.abs(verticalDistance);
 
+                player.setIsGrounded(false);
                 // Move the entity on the axis which has the least overlap.
                 // The direction that the entity will move is determined by the sign of the distance between the centers
                 if (horizontalOverlap < verticalOverlap) {
