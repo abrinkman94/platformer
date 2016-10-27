@@ -16,7 +16,7 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 public class CollisionHandler {
     private Vector2 tempVector1 = new Vector2();
     private Vector2 tempVector2 = new Vector2();
-    
+
     public void handleMapCollision(Player player, TMXMap map) {
         Rectangle entityBounds = player.getBounds();
         Rectangle footBounds = player.getBounds();

@@ -43,7 +43,10 @@ public class Player extends Actor {
     private static final int WALK_LEFT_FRAMES = 3;
     private static final int JUMP_RIGHT_FRAMES = 4;
     private static final int JUMP_LEFT_FRAMES = 5;
-    private boolean left, right, jump, run;
+    private boolean left;
+    private boolean right;
+    private boolean jump;
+    private boolean run;
 
     public Player(Batch batch) {
         this.batch = batch;
