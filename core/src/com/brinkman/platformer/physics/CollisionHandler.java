@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.entity.Player;
 import com.brinkman.platformer.terrain.TMXMap;
+import com.brinkman.platformer.util.Constants;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -21,6 +22,7 @@ public class CollisionHandler {
         Rectangle entityBounds = player.getBounds();
         Rectangle footBounds = player.getBounds();
         footBounds.height = player.getBounds().height * .3f;
+        player.setIsGrounded(false);
 
         for (Rectangle mapBounds : map.getMapCollisionRectangles()) {
 
@@ -58,8 +60,7 @@ public class CollisionHandler {
                 } else {
                     if (verticalDistance > 0) {
                         player.getPosition().y = player.getPosition().y - verticalOverlap;
-                        player.getVelocity().y = mapBounds.y * TO_WORLD_UNITS;
-                        player.setIsGrounded(false);
+                        player.getVelocity().y = -Constants.GRAVITY;
                         player.setCanJump(false);
                     } else {
                         player.getPosition().y = player.getPosition().y + (verticalOverlap * .99f);
