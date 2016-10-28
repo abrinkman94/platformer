@@ -13,16 +13,16 @@ import static com.brinkman.platformer.util.Constants.*;
  * Created by Austin on 10/1/2016.
  */
 public class Coin extends Actor {
-    private static Logger LOGGER = new Logger("Coin", Logger.DEBUG);
+    private static final Logger LOGGER = new Logger("Coin", Logger.DEBUG);
 
-    private Batch batch;
-    private Animation animations;
+    private final Batch batch;
+    private final Animation animations;
 
-    private boolean isCollected = false;
-    private float elapsedTime = 0f;
+    private boolean isCollected;
 
     public Coin(Batch batch, float x, float y) {
         this.batch = batch;
+        elapsedTime = 0;
         position = new Vector2(x, y);
         width = 32 * TO_WORLD_UNITS;
         height = 32 * TO_WORLD_UNITS;
@@ -38,16 +38,11 @@ public class Coin extends Actor {
                 textureRegions[index++] = tmp[i][j];
             }
         }
+
         animations = new Animation(0.025f, textureRegions);
-        elapsedTime = 0f;
     }
 
-    void setIsCollected(boolean isCollected) { this.isCollected = isCollected; }
-
-    @Override
-    public void onDeath() {
-
-    }
+    public void setIsCollected(boolean isCollected) { this.isCollected = isCollected; }
 
     @Override
     public void render(float dt) {

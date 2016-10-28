@@ -23,26 +23,26 @@ import static com.brinkman.platformer.util.Constants.*;
  * Created by Austin on 9/29/2016.
  */
 public class GameScreen implements Screen {
-    private static Logger LOGGER = new Logger("GameScreen", Logger.DEBUG);
+    private static final Logger LOGGER = new Logger("GameScreen", Logger.DEBUG);
 
-    private SpriteBatch spriteBatch;
-    private OrthographicCamera camera;
-    private Texture background;
-    private Player player;
-    private Array<Coin> coins;
-    private CollisionHandler collisionHandler;
-    private HUD hud;
+    private final SpriteBatch spriteBatch;
+    private final OrthographicCamera camera;
+    private final Texture background;
+    private final Player player;
+    private final Array<Coin> coins;
+    private final CollisionHandler collisionHandler;
+    private final HUD hud;
     private Level level;
 
     public GameScreen() {
         spriteBatch = new SpriteBatch();
     //    map = new TMXMap(spriteBatch, "terrain/map.tmx");
-        camera = new OrthographicCamera((APP_WIDTH * TO_WORLD_UNITS),
-                (APP_HEIGHT * TO_WORLD_UNITS));
+        camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS,
+              APP_HEIGHT * TO_WORLD_UNITS);
         background = new Texture("background.png");
         player = new Player(spriteBatch);
         collisionHandler = new CollisionHandler();
-        coins = new Array<Coin>();
+        coins = new Array<>();
         hud = new HUD(camera, coins, player);
         level = new Level(1, spriteBatch);
 
@@ -67,7 +67,7 @@ public class GameScreen implements Screen {
 
         //Draws background
         spriteBatch.begin();
-        for (int i = 0; i < (APP_WIDTH * 2 * TO_WORLD_UNITS) * 4; i+= APP_WIDTH * 2 * TO_WORLD_UNITS) {
+        for (int i = 0; i < ((APP_WIDTH * 2) * TO_WORLD_UNITS * 4); i+= APP_WIDTH * 2 * TO_WORLD_UNITS) {
             spriteBatch.draw(background, i, 0, (APP_WIDTH * 2) * TO_WORLD_UNITS, (APP_HEIGHT * 2) * TO_WORLD_UNITS);
         }
         spriteBatch.end();
@@ -82,8 +82,6 @@ public class GameScreen implements Screen {
 
         //Renders player
         player.render(delta);
-        //Checks for coin collection
-        player.collectCoin(coins);
 
         //Camera utility methods
         CameraUtil.centerCameraOnActor(player, camera);
@@ -92,6 +90,7 @@ public class GameScreen implements Screen {
         //Collision checks
         collisionHandler.handleMapCollision(player, level.getMap());
         collisionHandler.checkWaterCollision(player, level.getMap());
+        collisionHandler.checkCoinCollision(player, coins);
         collisionHandler.keepPlayerInMap(player);
 
         //Debug
@@ -103,13 +102,13 @@ public class GameScreen implements Screen {
         hud.render(delta);
 
         //Checks for exit(end of level) conditions
-        checkForExit();
+        endLevel();
 
         //Updates camera
         camera.update();
     }
 
-    private void checkForExit() {
+    private void endLevel() {
         if (coins.size <= 0) {
             Rectangle playerBounds = player.getBounds();
 
@@ -124,15 +123,15 @@ public class GameScreen implements Screen {
                 Rectangle exitBounds = new Rectangle(x, y, width, height + 1);
 
                 if (playerBounds.overlaps(exitBounds)) {
-                    if (level.getLevelNumber() != 2) {
+                    if (level.getLevelNumber() < 2) {
                         level = new Level(2, spriteBatch);
                         player.reset();
 
-                        for (MapObject coins : level.getMap().getMapObjects("coins")) {
-                            float coinsX = coins.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                            float coinsY = coins.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+                        for (MapObject mapCoin : level.getMap().getMapObjects("coins")) {
+                            float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                            float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                            Coin coin = new Coin(spriteBatch, coinsX, coinsY + 1);
+                            Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
                             this.coins.add(coin);
                         }
                     } else {

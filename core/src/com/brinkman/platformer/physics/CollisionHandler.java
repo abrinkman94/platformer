@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.brinkman.platformer.entity.Coin;
 import com.brinkman.platformer.entity.Player;
 import com.brinkman.platformer.terrain.TMXMap;
 import com.brinkman.platformer.util.Constants;
@@ -48,18 +50,17 @@ public class CollisionHandler {
                 if (horizontalOverlap < verticalOverlap) {
                     if (horizontalDistance > 0) {
                         player.getPosition().x = player.getPosition().x - horizontalOverlap;
-                        player.setCanJump(true);
                     } else {
                         player.getPosition().x = player.getPosition().x + horizontalOverlap;
-                        player.setCanJump(true);
                     }
+                    player.setCanJump(true);
                 } else {
                     if (verticalDistance > 0) {
                         player.getPosition().y = player.getPosition().y - verticalOverlap;
                         player.getVelocity().y = -Constants.GRAVITY;
                         player.setCanJump(false);
                     } else {
-                        player.getPosition().y = player.getPosition().y + (verticalOverlap * .99f);
+                        player.getPosition().y = player.getPosition().y + verticalOverlap;
                         player.setIsGrounded(true);
                         player.setCanJump(true);
                     }
@@ -79,7 +80,21 @@ public class CollisionHandler {
             Rectangle playerFootBounds = player.getBounds();
 
             if (playerFootBounds.overlaps(objectBounds)) {
-                player.onDeath();
+                player.handleDeath();
+            }
+        }
+    }
+
+    public void checkCoinCollision(Player player, Array<Coin> coins) {
+        Rectangle playerBounds = player.getBounds();
+
+        for (Coin coin : coins) {
+            Rectangle coinBounds = new Rectangle(coin.getPosition().x, coin.getPosition().y,
+                  coin.getWidth(), coin.getHeight());
+
+            if (playerBounds.overlaps(coinBounds)) {
+                coin.setIsCollected(true);
+                coins.removeValue(coin, true);
             }
         }
     }

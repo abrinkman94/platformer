@@ -5,7 +5,6 @@ package com.brinkman.platformer.entity;
  */
 public interface Entity {
 
-    void onDeath();
     /**
      * Handles the updating and rendering of the Entity object.
      * @param dt float delta time
