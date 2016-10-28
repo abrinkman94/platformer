@@ -56,7 +56,7 @@ public class Coin extends Actor {
      * Sets the value for boolean collected.
      * @param collected boolean
      */
-    public void setIsCollected(boolean collected) { this.collected = collected; }
+    public void setCollected(boolean collected) { this.collected = collected; }
 
     @Override
     public void render(float dt) {
