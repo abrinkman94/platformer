@@ -17,34 +17,43 @@ import static com.brinkman.platformer.util.Constants.*;
  * Created by Austin on 9/29/2016.
  */
 public class TMXMap {
-    private TiledMap map;
+    private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
 
-    public static int width;
-    public static int height;
     public static float mapWidth;
     public static float mapHeight;
-    public static int tileWidth;
-    public static int tileHeight;
 
+    /**
+     * Constructs the TMXMap Object.
+     * @param batch SpriteBatch
+     * @param tmxFilePath String url
+     */
     public TMXMap(SpriteBatch batch, String tmxFilePath) {
         map = new TmxMapLoader().load(tmxFilePath);
         renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
         MapProperties mapProperties = map.getProperties();
 
-        width = mapProperties.get("width", Integer.class);
-        height = mapProperties.get("height", Integer.class);
-        tileWidth = mapProperties.get("tilewidth", Integer.class);
-        tileHeight = mapProperties.get("tileheight", Integer.class);
+        int width = mapProperties.get("width", Integer.class);
+        int height = mapProperties.get("height", Integer.class);
+        int tileWidth = mapProperties.get("tilewidth", Integer.class);
+        int tileHeight = mapProperties.get("tileheight", Integer.class);
 
         mapWidth = width * tileWidth * TO_WORLD_UNITS;
         mapHeight = height * tileHeight * TO_WORLD_UNITS;
     }
 
-      public TiledMap getMap() { return map; }
-
+    /**
+     * Uses the given String url to find and return MapObjects.
+     * @param layerName String url
+     *
+     * @return MapObjects
+     */
     public MapObjects getMapObjects(String layerName) { return map.getLayers().get(layerName).getObjects(); }
 
+    /**
+     * Returns the collision rectangles for MapObject objects in the "collision" layer.
+     * @return Array<Rectangle>
+     */
     public Array<Rectangle> getMapCollisionRectangles() {
         Array<Rectangle> rectangles = new Array<Rectangle>();
         for (MapObject object : getMapObjects("collision")) {
@@ -61,17 +70,27 @@ public class TMXMap {
         return rectangles;
     }
 
-    public OrthogonalTiledMapRenderer getRenderer() { return renderer; }
-
+    /**
+     * Renders all layers of map.
+     * @param cam OrthographicCamera
+     */
     public void render(OrthographicCamera cam) {
         renderer.setView(cam);
         renderer.render();
     }
 
+    /**
+     * Renders selected layers, in selected order, of map.
+     * @param cam OrthographicCamera
+     * @param layers int[]
+     */
     public void render(OrthographicCamera cam, int[] layers) {
         renderer.setView(cam);
         renderer.render(layers);
     }
 
+    /**
+     * Disposes of the TiledMap object.
+     */
     public void dispose() { map.dispose(); }
 }

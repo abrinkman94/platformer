@@ -1,10 +1,8 @@
 package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 
@@ -20,6 +18,12 @@ public class Saw extends Actor
 	private final Batch batch;
 
 
+	/**
+	 * Constructs the Saw object.
+	 * @param batch SpriteBatch
+	 * @param x float x position
+	 * @param y float y position
+	 */
 	public Saw(Batch batch, float x, float y) {
 		this.batch = batch;
 		position = new Vector2(x, y);
@@ -45,6 +49,7 @@ public class Saw extends Actor
 
 	@Override
 	public void dispose() {
+		texture.dispose();
 		LOGGER.info("Disposed");
 	}
 }

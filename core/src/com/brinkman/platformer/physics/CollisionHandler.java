@@ -115,6 +115,7 @@ public class CollisionHandler {
 
             if (playerBounds.overlaps(coinBounds)) {
                 coin.setIsCollected(true);
+                coin.dispose();
                 coins.removeValue(coin, true);
             }
         }

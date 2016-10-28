@@ -17,9 +17,19 @@ public class Coin extends Actor {
 
     private final Batch batch;
     private final Animation animations;
+    private final TextureRegion[][] tmp;
+    private final TextureRegion[] textureRegions;
 
-    private boolean isCollected;
+    private static final float ANIMATION_TIME = 0.025f;
 
+    private boolean collected;
+
+    /**
+     * Constructs the Coin object.
+     * @param batch SpriteBatch
+     * @param x float x position
+     * @param y float y position
+     */
     public Coin(Batch batch, float x, float y) {
         this.batch = batch;
         elapsedTime = 0;
@@ -29,9 +39,9 @@ public class Coin extends Actor {
 
         texture = new Texture("sprites/coinsheet.png");
 
-        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()/8, texture.getHeight()/8);
+        tmp = TextureRegion.split(texture, texture.getWidth()/8, texture.getHeight()/8);
 
-        TextureRegion[] textureRegions = new TextureRegion[8 * 8];
+        textureRegions = new TextureRegion[8 * 8];
         int index = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -39,14 +49,18 @@ public class Coin extends Actor {
             }
         }
 
-        animations = new Animation(0.025f, textureRegions);
+        animations = new Animation(ANIMATION_TIME, textureRegions);
     }
 
-    public void setIsCollected(boolean isCollected) { this.isCollected = isCollected; }
+    /**
+     * Sets the value for boolean collected.
+     * @param collected boolean
+     */
+    public void setIsCollected(boolean collected) { this.collected = collected; }
 
     @Override
     public void render(float dt) {
-        if (!isCollected) {
+        if (!collected) {
             elapsedTime += dt;
             TextureRegion currentFrame = animations.getKeyFrame(elapsedTime, true);
             batch.begin();
@@ -57,6 +71,16 @@ public class Coin extends Actor {
 
     @Override
     public void dispose() {
-        LOGGER.info("Disposed");
+        texture.dispose();
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                tmp[i][j].getTexture().dispose();
+            }
+        }
+
+        for (int i = 0; i < 64; i++) {
+            textureRegions[i].getTexture().dispose();
+        }
     }
 }

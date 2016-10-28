@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
@@ -15,26 +16,31 @@ import com.brinkman.platformer.util.FontUtil;
  * Created by Austin on 10/8/2016.
  */
 public class HUD {
-    private Stage stage;
-    private Table table;
-    private Label coinLabel;
-    private Label livesLabel;
-    private Label.LabelStyle labelStyle;
-    private Array<Coin> coins;
-    private Player player;
+    private final Stage stage;
+    private final Label coinLabel;
+    private final Label livesLabel;
+    private final Array<Coin> coins;
+    private final Player player;
 
-    private static Logger LOGGER = new Logger("HUD", Logger.DEBUG);
+    private static final Logger LOGGER = new Logger("HUD", Logger.DEBUG);
 
+    /**
+     * Constructs the Heads-Up Display Object.
+     * @param camera OrthographicCamera
+     * @param coins Array Coin
+     * @param player Player
+     */
     public HUD(OrthographicCamera camera, Array<Coin> coins, Player player) {
         this.player = player;
-        stage = new Stage();
-        table = new Table();
         this.coins = coins;
+        stage = new Stage();
 
-        labelStyle = new Label.LabelStyle(FontUtil.getFont("fonts/SF Atarian System Bold.ttf", Color.WHITE, 36), Color.WHITE);
+        LabelStyle labelStyle = new LabelStyle(FontUtil.getFont("fonts/SF Atarian System Bold.ttf", Color
+              .WHITE, 36), Color.WHITE);
         coinLabel = new Label("", labelStyle);
         livesLabel = new Label("", labelStyle);
 
+        Table table = new Table();
         table.setFillParent(true);
         table.top().left().add(livesLabel).width(livesLabel.getWidth()).padRight(125);
         table.add(coinLabel).width(coinLabel.getWidth());
@@ -44,6 +50,10 @@ public class HUD {
         LOGGER.info("Initialized");
     }
 
+    /**
+     * Handles the rendering of the HUD.
+     * @param delta float
+     */
     public void render(float delta) {
         if (coins.size > 0) {
             coinLabel.setText("Coins Left: " + coins.size);
@@ -57,6 +67,9 @@ public class HUD {
         stage.draw();
     }
 
+    /**
+     * Disposes of the Stage.
+     */
     public void dispose() {
         stage.dispose();
 

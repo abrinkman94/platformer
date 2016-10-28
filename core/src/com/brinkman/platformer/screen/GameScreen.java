@@ -36,9 +36,11 @@ public class GameScreen implements Screen {
     private final HUD hud;
     private Level level;
 
+    /**
+     * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
+     */
     public GameScreen() {
         spriteBatch = new SpriteBatch();
-    //    map = new TMXMap(spriteBatch, "terrain/map.tmx");
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS,
               APP_HEIGHT * TO_WORLD_UNITS);
         background = new Texture("background.png");
@@ -53,7 +55,8 @@ public class GameScreen implements Screen {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-            Coin coin = new Coin(spriteBatch, x, y + 1);
+            final float coinYOffset = 1.0f;
+            Coin coin = new Coin(spriteBatch, x, y + coinYOffset);
             coins.add(coin);
         }
 
@@ -62,7 +65,8 @@ public class GameScreen implements Screen {
                 float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Saw saw = new Saw(spriteBatch, x, y-0.5f);
+                final float sawYOffset = 0.5f;
+                Saw saw = new Saw(spriteBatch, x, y - sawYOffset);
                 saws.add(saw);
             }
         }
@@ -85,6 +89,7 @@ public class GameScreen implements Screen {
         }
         spriteBatch.end();
 
+        //Render saws
         for (Saw saw : saws) {
             saw.render(delta);
         }
@@ -108,7 +113,6 @@ public class GameScreen implements Screen {
         collisionHandler.handleMapCollision(player, level.getMap());
         collisionHandler.handleSawCollision(player, level.getMap());
         collisionHandler.handleCoinCollision(player, coins);
-     //   collisionHandler.handleExitCollision(this.level, player, coins, spriteBatch);
         collisionHandler.keepPlayerInMap(player);
 
         //Debug
@@ -120,13 +124,17 @@ public class GameScreen implements Screen {
         hud.render(delta);
 
         //Checks for exit(end of level) conditions
-        endLevel();
+        if (canEndLevel()) {
+            endLevel();
+        }
 
         //Updates camera
         camera.update();
     }
 
-    private void endLevel() {
+    private boolean canEndLevel() {
+        boolean canEnd = false;
+
         if (coins.size <= 0) {
             Rectangle playerBounds = player.getBounds();
 
@@ -138,33 +146,36 @@ public class GameScreen implements Screen {
                 float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
                 float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-                Rectangle exitBounds = new Rectangle(x, y, width, height + 1);
+                Rectangle exitBounds = new Rectangle(x, y, width, height);
 
-                if (playerBounds.overlaps(exitBounds)) {
-                    if (level.getLevelNumber() < 2) {
-                        level = new Level(2, spriteBatch);
-                        player.reset();
-
-                        for (MapObject mapCoin : level.getMap().getMapObjects("coins")) {
-                            float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                            float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                            Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
-                            coins.add(coin);
-                        }
-
-                        for (MapObject mapSaw : level.getMap().getMapObjects("saw")) {
-                            float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                            float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                            Saw saw = new Saw(spriteBatch, sawX, sawY);
-                            saws.add(saw);
-                        }
-                    } else {
-                        Gdx.app.exit();
-                    }
-                }
+                 canEnd = playerBounds.overlaps(exitBounds);
             }
+        }
+        return canEnd;
+    }
+
+    private void endLevel() {
+        if (level.getLevelNumber() < 2) {
+            level = new Level(2, spriteBatch);
+            player.reset();
+
+            for (MapObject mapCoin : level.getMap().getMapObjects("coins")) {
+                float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
+                coins.add(coin);
+            }
+
+            for (MapObject mapSaw : level.getMap().getMapObjects("saw")) {
+                float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                Saw saw = new Saw(spriteBatch, sawX, sawY);
+                saws.add(saw);
+            }
+        } else {
+            Gdx.app.exit();
         }
     }
 
@@ -195,6 +206,14 @@ public class GameScreen implements Screen {
         background.dispose();
         level.dispose();
         hud.dispose();
+
+        for (Saw saw : saws) {
+            saw.dispose();
+        }
+
+        for (Coin coin : coins) {
+            coin.dispose();
+        }
 
         LOGGER.info("Disposed");
     }
