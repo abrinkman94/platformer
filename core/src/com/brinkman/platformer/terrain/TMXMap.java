@@ -70,6 +70,21 @@ public class TMXMap {
         return rectangles;
     }
 
+    public Array<Rectangle> getSawCollisionRectangles() {
+        Array<Rectangle> rectangles = new Array<>();
+        for (MapObject object : getMapObjects("saw")) {
+            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+            float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+            float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+
+            Rectangle bounds = new Rectangle(x, y, width, height);
+
+            rectangles.add(bounds);
+        }
+        return rectangles;
+    }
+
     /**
      * Renders all layers of map.
      * @param cam OrthographicCamera

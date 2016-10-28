@@ -179,6 +179,8 @@ public class Player extends Actor {
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
 
+    public boolean isJumping() { return jump; }
+
     /**
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */

@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.brinkman.platformer.entity.Coin;
 import com.brinkman.platformer.entity.Player;
+import com.brinkman.platformer.entity.Saw;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.terrain.TMXMap;
 import com.brinkman.platformer.util.Constants;
@@ -81,22 +82,16 @@ public class CollisionHandler {
     /**
      * Handles player's collision with water.
      * @param player Player
-     * @param map TMXMap
+     * @param saws Array Saw
      */
-    public void handleSawCollision(Player player, TMXMap map) {
-        if (map.getMapObjects("saw") != null) {
-            for (MapObject object : map.getMapObjects("saw")) {
-                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-                float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-                float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+    public void handleSawCollision(Player player, Array<Saw> saws) {
+        Rectangle playerBounds = player.getBounds();
 
-                Rectangle objectBounds = new Rectangle(x, y, width, height + 1.5f);
-                Rectangle playerFootBounds = player.getBounds();
+        for (Saw saw : saws) {
+            Rectangle sawBounds = saw.getBounds();
 
-                if (playerFootBounds.overlaps(objectBounds)) {
-                    player.handleDeath();
-                }
+            if (playerBounds.overlaps(sawBounds)) {
+                player.handleDeath();
             }
         }
     }
@@ -171,7 +166,7 @@ public class CollisionHandler {
         }
     }
 
-    public void debug(TMXMap map, Player player, OrthographicCamera camera) {
+    public void debug(TMXMap map, Player player, OrthographicCamera camera, Array<Saw> saws) {
         Rectangle playerBounds = player.getBounds();
 
         for (Rectangle bounds : map.getMapCollisionRectangles()) {
@@ -180,6 +175,15 @@ public class CollisionHandler {
             renderer.begin(ShapeRenderer.ShapeType.Line);
             renderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
             renderer.rect(playerBounds.x, playerBounds.y, playerBounds.width, playerBounds.height);
+            renderer.end();
+        }
+
+        for (Saw saw : saws) {
+            Rectangle sawBounds = saw.getBounds();
+            ShapeRenderer renderer = new ShapeRenderer();
+            renderer.setProjectionMatrix(camera.combined);
+            renderer.begin(ShapeRenderer.ShapeType.Line);
+            renderer.rect(sawBounds.x, sawBounds.y, sawBounds.width, sawBounds.height);
             renderer.end();
         }
     }

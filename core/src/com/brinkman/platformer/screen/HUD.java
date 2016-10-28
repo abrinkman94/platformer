@@ -30,7 +30,7 @@ public class HUD {
      * @param coins Array Coin
      * @param player Player
      */
-    public HUD(OrthographicCamera camera, Array<Coin> coins, Player player) {
+    public HUD(Array<Coin> coins, Player player) {
         this.player = player;
         this.coins = coins;
         stage = new Stage();

@@ -36,6 +36,8 @@ public class GameScreen implements Screen {
     private final HUD hud;
     private Level level;
 
+    private int levelNumber = 1;
+
     /**
      * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
      */
@@ -48,7 +50,7 @@ public class GameScreen implements Screen {
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
         saws = new Array<>();
-        hud = new HUD(camera, coins, player);
+        hud = new HUD(coins, player);
         level = new Level(1, spriteBatch);
 
         for (MapObject object : level.getMap().getMapObjects("coins")) {
@@ -65,8 +67,7 @@ public class GameScreen implements Screen {
                 float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                final float sawYOffset = 0.5f;
-                Saw saw = new Saw(spriteBatch, x, y - sawYOffset);
+                Saw saw = new Saw(spriteBatch, x, y);
                 saws.add(saw);
             }
         }
@@ -111,13 +112,13 @@ public class GameScreen implements Screen {
 
         //Collision checks
         collisionHandler.handleMapCollision(player, level.getMap());
-        collisionHandler.handleSawCollision(player, level.getMap());
+        collisionHandler.handleSawCollision(player, saws);
         collisionHandler.handleCoinCollision(player, coins);
         collisionHandler.keepPlayerInMap(player);
 
         //Debug
         if (DEBUG) {
-            collisionHandler.debug(level.getMap(), player, camera);
+            collisionHandler.debug(level.getMap(), player, camera, saws);
         }
 
         //Renders HUD
@@ -155,10 +156,12 @@ public class GameScreen implements Screen {
     }
 
     private void endLevel() {
-        if (level.getLevelNumber() < 2) {
-            level = new Level(2, spriteBatch);
+        if (level.getLevelNumber() < 3) {
+            levelNumber++;
+            level = new Level(levelNumber, spriteBatch);
             player.reset();
 
+            coins.clear();
             for (MapObject mapCoin : level.getMap().getMapObjects("coins")) {
                 float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
@@ -167,11 +170,12 @@ public class GameScreen implements Screen {
                 coins.add(coin);
             }
 
+            saws.clear();
             for (MapObject mapSaw : level.getMap().getMapObjects("saw")) {
                 float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Saw saw = new Saw(spriteBatch, sawX, sawY - 1);
+                Saw saw = new Saw(spriteBatch, sawX, sawY);
                 saws.add(saw);
             }
         } else {

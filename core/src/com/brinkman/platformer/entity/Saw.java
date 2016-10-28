@@ -3,6 +3,7 @@ package com.brinkman.platformer.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 
@@ -20,6 +21,7 @@ public class Saw extends Actor
 	private static final float SAW_SPEED = 3.0f;
 	private static final float SAW_WIDTH = 128;
 	private static final float SAW_HEIGHT = 128;
+	private static final float SAW_Y_OFFSET = 2f;
 
 
 	/**
@@ -38,8 +40,13 @@ public class Saw extends Actor
 
 		sprite = new Sprite(texture);
 		sprite.setSize(width, height);
-		sprite.setPosition(x, y + 2.5f);
+		sprite.setPosition(x, y + SAW_Y_OFFSET);
 		sprite.setOrigin(width / 2, height / 2);
+	}
+
+	@Override
+	public Rectangle getBounds() {
+		return new Rectangle(position.x, position.y + SAW_Y_OFFSET, width, height);
 	}
 
 	@Override
