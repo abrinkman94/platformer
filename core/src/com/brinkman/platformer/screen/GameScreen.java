@@ -171,7 +171,7 @@ public class GameScreen implements Screen {
                 float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Saw saw = new Saw(spriteBatch, sawX, sawY);
+                Saw saw = new Saw(spriteBatch, sawX, sawY - 1);
                 saws.add(saw);
             }
         } else {

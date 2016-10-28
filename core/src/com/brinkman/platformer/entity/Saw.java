@@ -17,6 +17,10 @@ public class Saw extends Actor
 
 	private final Batch batch;
 
+	private static final float SAW_SPEED = 3.0f;
+	private static final float SAW_WIDTH = 128;
+	private static final float SAW_HEIGHT = 128;
+
 
 	/**
 	 * Constructs the Saw object.
@@ -27,23 +31,26 @@ public class Saw extends Actor
 	public Saw(Batch batch, float x, float y) {
 		this.batch = batch;
 		position = new Vector2(x, y);
-		width = 96 * TO_WORLD_UNITS;
-		height = 96 * TO_WORLD_UNITS;
+		width = SAW_WIDTH * TO_WORLD_UNITS;
+		height = SAW_HEIGHT * TO_WORLD_UNITS;
 
 		texture = new Texture("terrain/Object/saw.png");
-		sprite = new Sprite(texture);
 
+		sprite = new Sprite(texture);
 		sprite.setSize(width, height);
-		sprite.setPosition(x, y + 2);
+		sprite.setPosition(x, y + 2.5f);
 		sprite.setOrigin(width / 2, height / 2);
 	}
 
 	@Override
 	public void render(float dt) {
+		float rotationStep = sprite.getRotation() + SAW_SPEED;
+
 		batch.begin();
 		sprite.draw(batch);
 		batch.end();
-		sprite.setRotation(sprite.getRotation() + 1.5f);
+
+		sprite.setRotation(rotationStep);
 
 	}
 

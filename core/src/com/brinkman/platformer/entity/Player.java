@@ -41,6 +41,7 @@ public class Player extends Actor {
     private boolean right;
     private boolean jump;
     private boolean run;
+    private boolean runningRight = true;
 
     /**
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
@@ -141,22 +142,22 @@ public class Player extends Actor {
 
         if (left &&(xSpeed > -maxSpeed)) {
             xSpeed = xSpeed - ACCELERATION;
-            orientation = "left";
-            currentAnimation = WALK_LEFT_FRAMES;
+            runningRight = false;
+            currentAnimation = jump ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
         } else if (right &&(xSpeed < maxSpeed)) {
             xSpeed = xSpeed + ACCELERATION;
-            orientation = "right";
-            currentAnimation = WALK_RIGHT_FRAMES;
+            runningRight = true;
+            currentAnimation = jump ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
         } else {
             if(xSpeed > DECELERATION) {
                 xSpeed -= DECELERATION;
             } else if(xSpeed < -DECELERATION) {
                 xSpeed += DECELERATION;
             } else {
-                if ("right".equalsIgnoreCase(orientation)) {
-                    currentAnimation = IDLE_RIGHT_FRAMES;
-                } else if ("left".equalsIgnoreCase(orientation)) {
-                    currentAnimation = IDLE_LEFT_FRAMES;
+                if (runningRight) {
+                    currentAnimation = jump ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+                } else {
+                    currentAnimation = jump ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
                 }
                 xSpeed = 0;
             }
