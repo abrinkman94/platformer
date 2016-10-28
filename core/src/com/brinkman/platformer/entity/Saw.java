@@ -50,6 +50,6 @@ public class Saw extends Actor
 	@Override
 	public void dispose() {
 		texture.dispose();
-		LOGGER.info("Disposed");
+	//	LOGGER.info("Disposed");
 	}
 }

@@ -9,11 +9,20 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 /**
  * Created by Austin on 8/23/2016.
  */
-public class FontUtil
+public final class FontUtil
 {
+    private FontUtil() {}
 
     private static FreeTypeFontGenerator generator;
 
+    /**
+     * Builds and returns BitMapFont, based on parameters.
+     * @param fontLocation String url
+     * @param color Color
+     * @param size int
+     *
+     * @return BitMapFont
+     */
     public static BitmapFont getFont(String fontLocation, Color color, int size) {
         generator = new FreeTypeFontGenerator(Gdx.files.internal(fontLocation));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();

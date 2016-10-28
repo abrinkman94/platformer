@@ -21,7 +21,6 @@ public final class CameraUtil
     /**
      * Keeps camera within bounds of map.
      * @param camera OrthographicCamera class.
-     * @return returns true.
      */
     public static void keepCameraInMap(OrthographicCamera camera) {
         int mapLeft = 0;
@@ -57,6 +56,11 @@ public final class CameraUtil
         }
     }
 
+    /**
+     * Utility method, centers the OrthographicCamera on the Actor.
+     * @param actor Actor
+     * @param cam OrthographicCamera
+     */
     public static void centerCameraOnActor(Actor actor, OrthographicCamera cam) {
         cam.position.set(actor.getPosition().x + ((actor.getWidth() * 0.5f) * TO_WORLD_UNITS),
               cam.position.y, 0);

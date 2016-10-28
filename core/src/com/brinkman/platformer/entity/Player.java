@@ -225,8 +225,11 @@ public class Player extends Actor {
     @Override
     public void dispose() {
         idleRightAtlas.dispose();
+        idleLeftAtlas.dispose();
         walkRightAtlas.dispose();
+        walkLeftAtlas.dispose();
         jumpRightAtlas.dispose();
+        jumpLeftAtlas.dispose();
 
         LOGGER.info("Disposed");
     }

@@ -5,7 +5,10 @@ import com.badlogic.gdx.controllers.PovDirection;
 /**
  * Created by Austin on 10/26/2016.
  */
-public class ControllerMappings {
+public final class ControllerMappings {
+
+    private ControllerMappings() {}
+
     public static final int BUTTON_X = 2;
     public static final int BUTTON_Y = 3;
     public static final int BUTTON_A = 0;
