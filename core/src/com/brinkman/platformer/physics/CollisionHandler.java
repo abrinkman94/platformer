@@ -24,6 +24,11 @@ public class CollisionHandler {
     private final Vector2 tempVector1 = new Vector2();
     private final Vector2 tempVector2 = new Vector2();
 
+    /**
+     * Handles the player's collision with "ground". 
+     * @param player Player
+     * @param map TMXMap
+     */
     public void handleMapCollision(Player player, TMXMap map) {
         Rectangle entityBounds = player.getBounds();
         player.setIsGrounded(false);
@@ -78,22 +83,29 @@ public class CollisionHandler {
      * @param player Player
      * @param map TMXMap
      */
-    public void handleWaterCollision(Player player, TMXMap map) {
-        for (MapObject object : map.getMapObjects("water")) {
-            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-            float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-            float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+    public void handleSawCollision(Player player, TMXMap map) {
+        if (map.getMapObjects("saw") != null) {
+            for (MapObject object : map.getMapObjects("saw")) {
+                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+                float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+                float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-            Rectangle objectBounds = new Rectangle(x, y, width, height);
-            Rectangle playerFootBounds = player.getBounds();
+                Rectangle objectBounds = new Rectangle(x, y, width, height + 1.5f);
+                Rectangle playerFootBounds = player.getBounds();
 
-            if (playerFootBounds.overlaps(objectBounds)) {
-                player.handleDeath();
+                if (playerFootBounds.overlaps(objectBounds)) {
+                    player.handleDeath();
+                }
             }
         }
     }
 
+    /**
+     * Handles the player's collision with coin objects.
+     * @param player Player
+     * @param coins Array<Coin>
+     */
     public void handleCoinCollision(Player player, Array<Coin> coins) {
         Rectangle playerBounds = player.getBounds();
 
@@ -120,7 +132,7 @@ public class CollisionHandler {
                 float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
                 float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-                Rectangle exitBounds = new Rectangle(x, y, width, height + 1);
+                Rectangle exitBounds = new Rectangle(x, y, width, height);
 
                 if (playerBounds.overlaps(exitBounds)) {
                     if (level.getLevelNumber() < 2) {
@@ -142,6 +154,10 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Keeps the player within the bounds of the map.
+     * @param player Player
+     */
     public void keepPlayerInMap(Player player) {
         float mapLeft = 0;
         float mapRight = TMXMap.mapWidth;

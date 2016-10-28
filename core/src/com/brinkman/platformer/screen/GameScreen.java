@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.Coin;
 import com.brinkman.platformer.entity.Player;
+import com.brinkman.platformer.entity.Saw;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.CameraUtil;
@@ -30,6 +31,7 @@ public class GameScreen implements Screen {
     private final Texture background;
     private final Player player;
     private final Array<Coin> coins;
+    private final Array<Saw> saws;
     private final CollisionHandler collisionHandler;
     private final HUD hud;
     private Level level;
@@ -43,6 +45,7 @@ public class GameScreen implements Screen {
         player = new Player(spriteBatch);
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
+        saws = new Array<>();
         hud = new HUD(camera, coins, player);
         level = new Level(1, spriteBatch);
 
@@ -52,6 +55,16 @@ public class GameScreen implements Screen {
 
             Coin coin = new Coin(spriteBatch, x, y + 1);
             coins.add(coin);
+        }
+
+        if (level.getMap().getMapObjects("saw") != null) {
+            for (MapObject sawObject : level.getMap().getMapObjects("saw")) {
+                float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                Saw saw = new Saw(spriteBatch, x, y-0.5f);
+                saws.add(saw);
+            }
         }
 
         LOGGER.info("Initialized");
@@ -72,6 +85,10 @@ public class GameScreen implements Screen {
         }
         spriteBatch.end();
 
+        for (Saw saw : saws) {
+            saw.render(delta);
+        }
+
         //Renders the level and it's associated TMXMap
         level.render(camera);
 
@@ -89,9 +106,9 @@ public class GameScreen implements Screen {
 
         //Collision checks
         collisionHandler.handleMapCollision(player, level.getMap());
-        collisionHandler.handleWaterCollision(player, level.getMap());
+        collisionHandler.handleSawCollision(player, level.getMap());
         collisionHandler.handleCoinCollision(player, coins);
-    //    collisionHandler.handleExitCollision(level, player, coins, spriteBatch);
+     //   collisionHandler.handleExitCollision(this.level, player, coins, spriteBatch);
         collisionHandler.keepPlayerInMap(player);
 
         //Debug
@@ -134,6 +151,14 @@ public class GameScreen implements Screen {
 
                             Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
                             coins.add(coin);
+                        }
+
+                        for (MapObject mapSaw : level.getMap().getMapObjects("saw")) {
+                            float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                            float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                            Saw saw = new Saw(spriteBatch, sawX, sawY);
+                            saws.add(saw);
                         }
                     } else {
                         Gdx.app.exit();
