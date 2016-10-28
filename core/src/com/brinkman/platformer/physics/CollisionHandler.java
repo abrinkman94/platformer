@@ -25,7 +25,7 @@ public class CollisionHandler {
     private final Vector2 tempVector2 = new Vector2();
 
     /**
-     * Handles the player's collision with "ground". 
+     * Handles the player's collision with "ground".
      * @param player Player
      * @param map TMXMap
      */
