@@ -1,13 +1,17 @@
 package com.brinkman.platformer.physics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.brinkman.platformer.entity.Coin;
 import com.brinkman.platformer.entity.Player;
+import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.terrain.TMXMap;
 import com.brinkman.platformer.util.Constants;
 
@@ -69,7 +73,12 @@ public class CollisionHandler {
         }
     }
 
-    public void checkWaterCollision(Player player, TMXMap map) {
+    /**
+     * Handles player's collision with water.
+     * @param player Player
+     * @param map TMXMap
+     */
+    public void handleWaterCollision(Player player, TMXMap map) {
         for (MapObject object : map.getMapObjects("water")) {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
@@ -85,7 +94,7 @@ public class CollisionHandler {
         }
     }
 
-    public void checkCoinCollision(Player player, Array<Coin> coins) {
+    public void handleCoinCollision(Player player, Array<Coin> coins) {
         Rectangle playerBounds = player.getBounds();
 
         for (Coin coin : coins) {
@@ -95,6 +104,40 @@ public class CollisionHandler {
             if (playerBounds.overlaps(coinBounds)) {
                 coin.setIsCollected(true);
                 coins.removeValue(coin, true);
+            }
+        }
+    }
+
+    public void handleExitCollision(Level level, Player player, Array<Coin> coins, SpriteBatch spriteBatch) {
+        if (coins.size <= 0) {
+            Rectangle playerBounds = player.getBounds();
+
+            MapObjects mapObjects = level.getMap().getMapObjects("exit");
+
+            for (MapObject object : mapObjects) {
+                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+                float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+                float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+
+                Rectangle exitBounds = new Rectangle(x, y, width, height + 1);
+
+                if (playerBounds.overlaps(exitBounds)) {
+                    if (level.getLevelNumber() < 2) {
+                        level = new Level(2, spriteBatch);
+                        player.reset();
+
+                        for (MapObject mapCoin : level.getMap().getMapObjects("coins")) {
+                            float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                            float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                            Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
+                            coins.add(coin);
+                        }
+                    } else {
+                        Gdx.app.exit();
+                    }
+                }
             }
         }
     }

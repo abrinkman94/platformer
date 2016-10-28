@@ -89,8 +89,9 @@ public class GameScreen implements Screen {
 
         //Collision checks
         collisionHandler.handleMapCollision(player, level.getMap());
-        collisionHandler.checkWaterCollision(player, level.getMap());
-        collisionHandler.checkCoinCollision(player, coins);
+        collisionHandler.handleWaterCollision(player, level.getMap());
+        collisionHandler.handleCoinCollision(player, coins);
+    //    collisionHandler.handleExitCollision(level, player, coins, spriteBatch);
         collisionHandler.keepPlayerInMap(player);
 
         //Debug
@@ -132,7 +133,7 @@ public class GameScreen implements Screen {
                             float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
                             Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
-                            this.coins.add(coin);
+                            coins.add(coin);
                         }
                     } else {
                         Gdx.app.exit();

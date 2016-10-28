@@ -43,7 +43,7 @@ public class Player extends Actor {
     private boolean run;
 
     /**
-     * The Player object. Initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
+     * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
      * @param batch SpriteBatch
      */
     public Player(Batch batch) {
