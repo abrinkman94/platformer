@@ -33,6 +33,8 @@ public class CollisionHandler {
     public void handleMapCollision(Player player, TMXMap map) {
         Rectangle entityBounds = player.getBounds();
         player.setIsGrounded(false);
+        player.setTouchingLeftWall(false);
+        player.setTouchingRightWall(false);
 
         for (Rectangle mapBounds : map.getMapCollisionRectangles()) {
 
@@ -59,8 +61,10 @@ public class CollisionHandler {
                 // The direction that the entity will move is determined by the sign of the distance between the centers
                 if (horizontalOverlap < verticalOverlap) {
                     if (horizontalDistance > 0) {
+                        player.setTouchingRightWall(true);
                         player.getPosition().x = player.getPosition().x - horizontalOverlap;
                     } else {
+                        player.setTouchingLeftWall(true);
                         player.getPosition().x = player.getPosition().x + horizontalOverlap;
                     }
                     player.setCanJump(true);

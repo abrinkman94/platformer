@@ -34,6 +34,7 @@ public class Player extends Actor {
     private static final int JUMP_RIGHT_FRAMES = 4;
     private static final int JUMP_LEFT_FRAMES = 5;
     private static final int JUMP_VEL = 12;
+    private static final int WALL_BOUNCE = 12;
     private static final float ACCELERATION = 0.5f;
     private static final float DECELERATION = 0.3f;
 
@@ -42,6 +43,8 @@ public class Player extends Actor {
     private boolean jump;
     private boolean run;
     private boolean runningRight = true;
+    private boolean touchingRightWall = false;
+    private boolean touchingLeftWall = false;
 
     /**
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
@@ -170,6 +173,13 @@ public class Player extends Actor {
             canJump = false;
         }
 
+        //Wall bounce
+        if (touchingRightWall && jump) {
+            xSpeed = xSpeed - WALL_BOUNCE;
+        } else if (touchingLeftWall && jump) {
+            xSpeed = xSpeed + WALL_BOUNCE;
+        }
+
         //Run conditionals
         moveSpeed = run ? 8 : 5;
 
@@ -180,6 +190,10 @@ public class Player extends Actor {
     }
 
     public boolean isJumping() { return jump; }
+
+    public void setTouchingRightWall(boolean touching) { touchingRightWall = touching; }
+
+    public void setTouchingLeftWall(boolean touching) { touchingLeftWall = touching; }
 
     /**
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
