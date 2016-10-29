@@ -16,8 +16,8 @@ public abstract class Actor implements Entity {
     protected Vector2 position;
     protected Vector2 originPosition = new Vector2(2, 2);
     protected Vector2 velocity;
-    protected float width = 32;
-    protected float height = 64;
+    protected float width;
+    protected float height;
     protected float moveSpeed = 5;
     protected float elapsedTime;
     protected int lives = 3;

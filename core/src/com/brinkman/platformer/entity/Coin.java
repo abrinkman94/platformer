@@ -34,8 +34,8 @@ public class Coin extends Actor {
         this.batch = batch;
         elapsedTime = 0;
         position = new Vector2(x, y);
-        width = 32 * TO_WORLD_UNITS;
-        height = 32 * TO_WORLD_UNITS;
+        width = 64 * TO_WORLD_UNITS;
+        height = 64 * TO_WORLD_UNITS;
 
         texture = new Texture("sprites/coinsheet.png");
 

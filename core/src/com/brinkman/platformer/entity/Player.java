@@ -52,6 +52,8 @@ public class Player extends Actor {
      */
     public Player(Batch batch) {
         this.batch = batch;
+        width = 32;
+        height = 64;
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
@@ -188,8 +190,6 @@ public class Player extends Actor {
         position.x += velocity.x * Gdx.graphics.getDeltaTime();
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
-
-    public boolean isJumping() { return jump; }
 
     public void setTouchingRightWall(boolean touching) { touchingRightWall = touching; }
 
