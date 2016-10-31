@@ -9,9 +9,7 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.brinkman.platformer.entity.Coin;
-import com.brinkman.platformer.entity.Player;
-import com.brinkman.platformer.entity.Saw;
+import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.terrain.TMXMap;
 import com.brinkman.platformer.util.Constants;
@@ -120,6 +118,21 @@ public class CollisionHandler {
         }
     }
 
+    public void handleEnemyCollision(Player player, Enemy enemy, TMXMap map) {
+        Rectangle playerBounds = player.getBounds();
+        Rectangle enemyBounds = enemy.getBounds();
+
+        if (playerBounds.overlaps(enemyBounds)) {
+            player.handleDeath();
+        }
+
+        for (Rectangle mapBounds : map.getMapCollisionRectangles()) {
+            if (enemyBounds.overlaps(mapBounds)) {
+                enemy.getVelocity().x = -enemy.getVelocity().x;
+            }
+        }
+    }
+
     public void handleExitCollision(Level level, Player player, Array<Coin> coins, SpriteBatch spriteBatch) {
         if (coins.size <= 0) {
             Rectangle playerBounds = player.getBounds();
@@ -156,17 +169,23 @@ public class CollisionHandler {
 
     /**
      * Keeps the player within the bounds of the map.
-     * @param player Player
+     * @param actor Player
      */
-    public void keepPlayerInMap(Player player) {
+    public void keepActorInMap(Actor actor) {
         float mapLeft = 0;
         float mapRight = TMXMap.mapWidth;
 
-        if (player.getPosition().x <= mapLeft) {
-            player.getPosition().x = mapLeft;
+        if (actor.getPosition().x <= mapLeft) {
+            actor.getPosition().x = mapLeft;
+            if (actor instanceof Enemy) {
+                actor.getVelocity().x = -actor.getVelocity().x;
+            }
         }
-        if (player.getPosition().x >= mapRight - player.getWidth() * TO_WORLD_UNITS) {
-            player.getPosition().x = mapRight - player.getWidth() * TO_WORLD_UNITS;
+        if (actor.getPosition().x >= mapRight - actor.getWidth() * TO_WORLD_UNITS) {
+            actor.getPosition().x = mapRight - actor.getWidth() * TO_WORLD_UNITS;
+            if (actor instanceof Enemy) {
+                actor.getVelocity().x = -actor.getVelocity().x;
+            }
         }
     }
 

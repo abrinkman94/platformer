@@ -23,7 +23,7 @@ public final class FontUtil
      *
      * @return BitMapFont
      */
-    public static BitmapFont getFont(String fontLocation, Color color, int size) {
+    public static BitmapFont getBitmapFont(String fontLocation, Color color, int size) {
         generator = new FreeTypeFontGenerator(Gdx.files.internal(fontLocation));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = size;

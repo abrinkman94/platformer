@@ -18,7 +18,7 @@ public class StartScreen implements Screen {
 
     public StartScreen() {
         stage = new Stage();
-        labelStyle = new Label.LabelStyle(FontUtil.getFont("fonts/SF Atarian System Bold.ttf", Color.WHITE, 72), Color.WHITE);
+        labelStyle = new Label.LabelStyle(FontUtil.getBitmapFont("fonts/SF Atarian System Bold.ttf", Color.WHITE, 72), Color.WHITE);
         startLabel = new Label("Start", labelStyle);
 
         Table table = new Table();

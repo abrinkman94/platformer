@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.Coin;
+import com.brinkman.platformer.entity.Enemy;
 import com.brinkman.platformer.entity.Player;
 import com.brinkman.platformer.entity.Saw;
 import com.brinkman.platformer.level.Level;
@@ -31,6 +31,7 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final Texture background;
     private final Player player;
+    private final Enemy enemy;
     private final Array<Coin> coins;
     private final Array<Saw> saws;
     private final CollisionHandler collisionHandler;
@@ -48,6 +49,7 @@ public class GameScreen implements Screen {
               APP_HEIGHT * TO_WORLD_UNITS);
         background = new Texture("background.png");
         player = new Player(spriteBatch);
+        enemy = new Enemy(spriteBatch);
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
         saws = new Array<>();
@@ -107,6 +109,8 @@ public class GameScreen implements Screen {
         //Renders player
         player.render(delta);
 
+        enemy.render(delta);
+
         //Camera utility methods
         CameraUtil.centerCameraOnActor(player, camera);
         CameraUtil.keepCameraInMap(camera);
@@ -115,7 +119,9 @@ public class GameScreen implements Screen {
         collisionHandler.handleMapCollision(player, level.getMap());
         collisionHandler.handleSawCollision(player, saws);
         collisionHandler.handleCoinCollision(player, coins);
-        collisionHandler.keepPlayerInMap(player);
+        collisionHandler.handleEnemyCollision(player, enemy, level.getMap());
+        collisionHandler.keepActorInMap(player);
+        collisionHandler.keepActorInMap(enemy);
 
         //Debug
         if (DEBUG) {

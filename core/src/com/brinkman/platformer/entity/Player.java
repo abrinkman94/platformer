@@ -27,6 +27,8 @@ public class Player extends Actor {
     private final Batch batch;
     private Animation animation;
 
+    private static final int PLAYER_WIDTH = 32;
+    private static final int PLAYER_HEIGHT = 64;
     private static final int IDLE_RIGHT_FRAMES = 0;
     private static final int IDLE_LEFT_FRAMES = 1;
     private static final int WALK_RIGHT_FRAMES = 2;
@@ -43,8 +45,8 @@ public class Player extends Actor {
     private boolean jump;
     private boolean run;
     private boolean runningRight = true;
-    private boolean touchingRightWall = false;
-    private boolean touchingLeftWall = false;
+    private boolean touchingRightWall;
+    private boolean touchingLeftWall;
 
     /**
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
@@ -52,8 +54,8 @@ public class Player extends Actor {
      */
     public Player(Batch batch) {
         this.batch = batch;
-        width = 32;
-        height = 64;
+        width = PLAYER_WIDTH;
+        height = PLAYER_HEIGHT;
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";

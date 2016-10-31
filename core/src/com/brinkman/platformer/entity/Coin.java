@@ -21,6 +21,7 @@ public class Coin extends Actor {
     private final TextureRegion[] textureRegions;
 
     private static final float ANIMATION_TIME = 0.025f;
+    private static final int COIN_SIZE = 64;
 
     private boolean collected;
 
@@ -34,8 +35,8 @@ public class Coin extends Actor {
         this.batch = batch;
         elapsedTime = 0;
         position = new Vector2(x, y);
-        width = 64 * TO_WORLD_UNITS;
-        height = 64 * TO_WORLD_UNITS;
+        width = COIN_SIZE * TO_WORLD_UNITS;
+        height = COIN_SIZE  * TO_WORLD_UNITS;
 
         texture = new Texture("sprites/coinsheet.png");
 

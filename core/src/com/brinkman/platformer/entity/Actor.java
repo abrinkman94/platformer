@@ -11,19 +11,61 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
  */
 public abstract class Actor implements Entity {
 
+    /**
+     * The Actor's Sprite.
+     */
     protected Sprite sprite;
+    /**
+     * The Actor's Texture.
+     */
     protected Texture texture;
+    /**
+     * The Actor's Vector2 position.
+     */
     protected Vector2 position;
-    protected Vector2 originPosition = new Vector2(2, 2);
+    /**
+     * The Actor's Vector2 originPosition.
+     */
+    protected final Vector2 originPosition = new Vector2(2, 2);
+    /**
+     * The Actor's Vector2 velocity.
+     */
     protected Vector2 velocity;
+    /**
+     * The Actor's float width.
+     */
     protected float width;
+    /**
+     * The Actor's float height.
+     */
     protected float height;
+    /**
+     * The Actor's float moveSpeed.
+     */
     protected float moveSpeed = 5;
+    /**
+     * The Actor's float elapsedTime, used for animations.
+     */
     protected float elapsedTime;
+    /**
+     * The Actor's int lives.
+     */
     protected int lives = 3;
+    /**
+     * The Actor's int currentAnimation, used for animations.
+     */
     protected int currentAnimation;
+    /**
+     * The Actor's boolean grounded field.
+     */
     protected boolean grounded;
+    /**
+     * The Actor's boolean canJump field.
+     */
     protected boolean canJump;
+    /**
+     * The Actor's String orientation.
+     */
     protected String orientation;
 
     /**

@@ -1,7 +1,6 @@
 package com.brinkman.platformer.screen;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -26,7 +25,6 @@ public class HUD {
 
     /**
      * Constructs the Heads-Up Display Object.
-     * @param camera OrthographicCamera
      * @param coins Array Coin
      * @param player Player
      */
@@ -35,7 +33,7 @@ public class HUD {
         this.coins = coins;
         stage = new Stage();
 
-        LabelStyle labelStyle = new LabelStyle(FontUtil.getFont("fonts/SF Atarian System Bold.ttf", Color
+        LabelStyle labelStyle = new LabelStyle(FontUtil.getBitmapFont("fonts/SF Atarian System Bold.ttf", Color
               .WHITE, 36), Color.WHITE);
         coinLabel = new Label("", labelStyle);
         livesLabel = new Label("", labelStyle);
