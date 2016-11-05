@@ -50,7 +50,12 @@ public class Saw extends Actor
 	}
 
 	@Override
-	public void render(float dt) {
+	public void handleDeath() {
+
+	}
+
+	@Override
+	public void render(float dt, Batch batch) {
 		float rotationStep = sprite.getRotation() + SAW_SPEED;
 
 		batch.begin();

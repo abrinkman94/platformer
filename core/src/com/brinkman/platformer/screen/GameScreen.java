@@ -9,12 +9,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.entity.Coin;
-import com.brinkman.platformer.entity.Enemy;
-import com.brinkman.platformer.entity.Player;
-import com.brinkman.platformer.entity.Saw;
+import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.CameraUtil;
@@ -37,6 +36,7 @@ public class GameScreen implements Screen {
     private final CollisionHandler collisionHandler;
     private final HUD hud;
     private Level level;
+    private GameWorld gameWorld;
 
     private int levelNumber = 1;
 
@@ -55,23 +55,29 @@ public class GameScreen implements Screen {
         saws = new Array<>();
         hud = new HUD(coins, player);
         level = new Level(1, spriteBatch);
+        gameWorld = new GameWorld(level);
 
-        for (MapObject object : level.getMap().getMapObjects("coins")) {
+        gameWorld.addEntity(player);
+        gameWorld.addEntity(enemy);
+
+        for (MapObject object : gameWorld.getLevel().getMap().getMapObjects("coins")) {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
             final float coinYOffset = 1.0f;
             Coin coin = new Coin(spriteBatch, x, y + coinYOffset);
             coins.add(coin);
+            gameWorld.addEntity(coin);
         }
 
-        if (level.getMap().getMapObjects("saw") != null) {
-            for (MapObject sawObject : level.getMap().getMapObjects("saw")) {
+        if (gameWorld.getLevel().getMap().getMapObjects("saw") != null) {
+            for (MapObject sawObject : gameWorld.getLevel().getMap().getMapObjects("saw")) {
                 float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
                 Saw saw = new Saw(spriteBatch, x, y);
                 saws.add(saw);
+                gameWorld.addEntity(saw);
             }
         }
 
@@ -93,33 +99,17 @@ public class GameScreen implements Screen {
         }
         spriteBatch.end();
 
-        //Render saws
-        for (Saw saw : saws) {
-            saw.render(delta);
-        }
-
-        //Renders the level and it's associated TMXMap
-        level.render(camera);
-
-        //Renders coins
-        for (Coin coin : coins) {
-            coin.render(delta);
-        }
-
-        //Renders player
-        player.render(delta);
-
-        enemy.render(delta);
+        gameWorld.render(camera, delta, spriteBatch);
 
         //Camera utility methods
         CameraUtil.centerCameraOnActor(player, camera);
         CameraUtil.keepCameraInMap(camera);
 
         //Collision checks
-        collisionHandler.handleMapCollision(player, level.getMap());
-        collisionHandler.handleSawCollision(player, saws);
-        collisionHandler.handleCoinCollision(player, coins);
-        collisionHandler.handleEnemyCollision(player, enemy, level.getMap());
+        collisionHandler.handleMapCollision(gameWorld);
+        collisionHandler.handleSawCollision(saws, gameWorld);
+        collisionHandler.handleCoinCollision(coins, gameWorld);
+        collisionHandler.handleEnemyCollision(level, gameWorld);
         collisionHandler.keepActorInMap(player);
         collisionHandler.keepActorInMap(enemy);
 
@@ -144,9 +134,9 @@ public class GameScreen implements Screen {
         boolean canEnd = false;
 
         if (coins.size <= 0) {
-            Rectangle playerBounds = player.getBounds();
+            Rectangle playerBounds = gameWorld.getEntity("player").getBounds();
 
-            MapObjects mapObjects = level.getMap().getMapObjects("exit");
+            MapObjects mapObjects = gameWorld.getLevel().getMap().getMapObjects("exit");
 
             for (MapObject object : mapObjects) {
                 float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
@@ -165,25 +155,27 @@ public class GameScreen implements Screen {
     private void endLevel() {
         if (level.getLevelNumber() < 3) {
             levelNumber++;
-            level = new Level(levelNumber, spriteBatch);
+            gameWorld.setLevel(new Level(levelNumber, spriteBatch));
             player.reset();
 
             coins.clear();
-            for (MapObject mapCoin : level.getMap().getMapObjects("coins")) {
+            for (MapObject mapCoin : gameWorld.getLevel().getMap().getMapObjects("coins")) {
                 float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
                 Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
                 coins.add(coin);
+                gameWorld.addEntity(coin);
             }
 
             saws.clear();
-            for (MapObject mapSaw : level.getMap().getMapObjects("saw")) {
+            for (MapObject mapSaw : gameWorld.getLevel().getMap().getMapObjects("saw")) {
                 float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
                 Saw saw = new Saw(spriteBatch, sawX, sawY);
                 saws.add(saw);
+                gameWorld.addEntity(saw);
             }
         } else {
             Gdx.app.exit();

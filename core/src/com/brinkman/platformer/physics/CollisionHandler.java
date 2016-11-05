@@ -9,10 +9,14 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.terrain.TMXMap;
 import com.brinkman.platformer.util.Constants;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -25,16 +29,14 @@ public class CollisionHandler {
 
     /**
      * Handles the player's collision with "ground".
-     * @param player Player
-     * @param map TMXMap
      */
-    public void handleMapCollision(Player player, TMXMap map) {
-        Rectangle entityBounds = player.getBounds();
-        player.setIsGrounded(false);
-        player.setTouchingLeftWall(false);
-        player.setTouchingRightWall(false);
+    public void handleMapCollision(GameWorld world) {
+        Rectangle entityBounds = world.getEntity("player").getBounds();
+        ((Player)world.getEntity("player")).setIsGrounded(false);
+        ((Player)world.getEntity("player")).setTouchingLeftWall(false);
+        ((Player)world.getEntity("player")).setTouchingRightWall(false);
 
-        for (Rectangle mapBounds : map.getMapCollisionRectangles()) {
+        for (Rectangle mapBounds : world.getLevel().getMap().getMapCollisionRectangles()) {
 
             // Simple collision check
             if (entityBounds.overlaps(mapBounds)) {
@@ -59,22 +61,26 @@ public class CollisionHandler {
                 // The direction that the entity will move is determined by the sign of the distance between the centers
                 if (horizontalOverlap < verticalOverlap) {
                     if (horizontalDistance > 0) {
-                        player.setTouchingRightWall(true);
-                        player.getPosition().x = player.getPosition().x - horizontalOverlap;
+                        ((Player)world.getEntity("player")).setTouchingRightWall(true);
+                        ((Player)world.getEntity("player")).getPosition().x =
+                                ((Player)world.getEntity("player")).getPosition().x - horizontalOverlap;
                     } else {
-                        player.setTouchingLeftWall(true);
-                        player.getPosition().x = player.getPosition().x + horizontalOverlap;
+                        ((Player)world.getEntity("player")).setTouchingLeftWall(true);
+                        ((Player)world.getEntity("player")).getPosition().x =
+                                ((Player)world.getEntity("player")).getPosition().x + horizontalOverlap;
                     }
-                    player.setCanJump(true);
+                    ((Player)world.getEntity("player")).setCanJump(true);
                 } else {
                     if (verticalDistance > 0) {
-                        player.getPosition().y = player.getPosition().y - verticalOverlap;
-                        player.getVelocity().y = -Constants.GRAVITY;
-                        player.setCanJump(false);
+                        ((Player)world.getEntity("player")).getPosition().y =
+                                ((Player)world.getEntity("player")).getPosition().y - verticalOverlap;
+                        ((Player)world.getEntity("player")).getVelocity().y = -Constants.GRAVITY;
+                        ((Player)world.getEntity("player")).setCanJump(false);
                     } else {
-                        player.getPosition().y = player.getPosition().y + verticalOverlap;
-                        player.setIsGrounded(true);
-                        player.setCanJump(true);
+                        ((Player)world.getEntity("player")).getPosition().y =
+                                ((Player)world.getEntity("player")).getPosition().y + verticalOverlap;
+                        ((Player)world.getEntity("player")).setIsGrounded(true);
+                        ((Player)world.getEntity("player")).setCanJump(true);
                     }
                 }
             }
@@ -83,52 +89,50 @@ public class CollisionHandler {
 
     /**
      * Handles player's collision with water.
-     * @param player Player
      * @param saws Array Saw
      */
-    public void handleSawCollision(Player player, Array<Saw> saws) {
-        Rectangle playerBounds = player.getBounds();
+    public void handleSawCollision(Array<Saw> saws, GameWorld world) {
+        Rectangle playerBounds = world.getEntity("player").getBounds();
 
         for (Saw saw : saws) {
             Rectangle sawBounds = saw.getBounds();
 
             if (playerBounds.overlaps(sawBounds)) {
-                player.handleDeath();
+                world.getEntity("player").handleDeath();
             }
         }
     }
 
     /**
      * Handles the player's collision with coin objects.
-     * @param player Player
-     * @param coins Array<Coin>
      */
-    public void handleCoinCollision(Player player, Array<Coin> coins) {
-        Rectangle playerBounds = player.getBounds();
+    public void handleCoinCollision(Array<Coin> coins, GameWorld world) {
+        Rectangle playerBounds = world.getEntity("player").getBounds();
 
         for (Coin coin : coins) {
             Rectangle coinBounds = new Rectangle(coin.getPosition().x, coin.getPosition().y,
-                  coin.getWidth(), coin.getHeight());
+                    coin.getWidth(), coin.getHeight());
 
             if (playerBounds.overlaps(coinBounds)) {
                 coin.setCollected(true);
-                coin.dispose();
                 coins.removeValue(coin, true);
+                world.removeEntity(coin);
+                coin.dispose();
             }
         }
     }
 
-    public void handleEnemyCollision(Player player, Enemy enemy, TMXMap map) {
-        Rectangle playerBounds = player.getBounds();
-        Rectangle enemyBounds = enemy.getBounds();
+    public void handleEnemyCollision(Level level, GameWorld world) {
+        Rectangle playerBounds = world.getEntity("player").getBounds();
+        Rectangle enemyBounds = world.getEntity("enemy").getBounds();
 
         if (playerBounds.overlaps(enemyBounds)) {
-            player.handleDeath();
+            world.getEntity("player").handleDeath();
         }
 
-        for (Rectangle mapBounds : map.getMapCollisionRectangles()) {
+        for (Rectangle mapBounds : level.getMap().getMapCollisionRectangles()) {
             if (enemyBounds.overlaps(mapBounds)) {
-                enemy.getVelocity().x = -enemy.getVelocity().x;
+                ((Actor)world.getEntity("enemy")).getVelocity().x = -((Actor)world.getEntity("enemy")).getVelocity().x;
             }
         }
     }

@@ -209,6 +209,7 @@ public class Player extends Actor {
     /**
      * Handles the decrementing, and logic, of player's lives.
      */
+    @Override
     public void handleDeath() {
         if (lives > 0) {
             position.set(originPosition);
@@ -220,7 +221,7 @@ public class Player extends Actor {
     }
 
     @Override
-    public void render(float dt) {
+    public void render(float dt, Batch batch) {
         handleAnimation();
         handleMovement();
 

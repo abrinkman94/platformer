@@ -60,14 +60,17 @@ public class Coin extends Actor {
     public void setCollected(boolean collected) { this.collected = collected; }
 
     @Override
-    public void render(float dt) {
-        if (!collected) {
-            elapsedTime += dt;
-            TextureRegion currentFrame = animations.getKeyFrame(elapsedTime, true);
-            batch.begin();
-            batch.draw(currentFrame, position.x, position.y, 1, 1);
-            batch.end();
-        }
+    public void handleDeath() {
+
+    }
+
+    @Override
+    public void render(float dt, Batch batch) {
+        elapsedTime += dt;
+        TextureRegion currentFrame = animations.getKeyFrame(elapsedTime, true);
+        batch.begin();
+        batch.draw(currentFrame, position.x, position.y, 1, 1);
+        batch.end();
     }
 
     @Override

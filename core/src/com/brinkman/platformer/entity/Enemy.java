@@ -1,6 +1,7 @@
 package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -30,7 +31,12 @@ public class Enemy extends Actor
 	}
 
 	@Override
-	public void render(float dt) {
+	public void handleDeath() {
+
+	}
+
+	@Override
+	public void render(float dt, Batch batch) {
 		if (!isDead) {
 			batch.begin();
 			sprite.draw(batch);
