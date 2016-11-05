@@ -7,8 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Actor;
 import com.brinkman.platformer.entity.Coin;
 import com.brinkman.platformer.entity.Player;
+import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.util.FontUtil;
 
 /**
@@ -19,19 +22,19 @@ public class HUD {
     private final Label coinLabel;
     private final Label livesLabel;
     private final Array<Coin> coins;
-    private final Player player;
+    private final GameWorld world;
 
     private static final Logger LOGGER = new Logger("HUD", Logger.DEBUG);
 
     /**
      * Constructs the Heads-Up Display Object.
      * @param coins Array Coin
-     * @param player Player
+     * @param world GameWorld
      */
-    public HUD(Array<Coin> coins, Player player) {
-        this.player = player;
+    public HUD(Array<Coin> coins, GameWorld world) {
         this.coins = coins;
         stage = new Stage();
+        this.world = world;
 
         LabelStyle labelStyle = new LabelStyle(FontUtil.getBitmapFont("fonts/SF Atarian System Bold.ttf", Color
               .WHITE, 36), Color.WHITE);
@@ -59,7 +62,7 @@ public class HUD {
             coinLabel.setText("Turn In!");
         }
 
-        livesLabel.setText("Lives: " + player.getLives());
+        livesLabel.setText("Lives: " + ((Actor)world.getEntity("player")).getLives());
 
         stage.act(delta);
         stage.draw();

@@ -38,8 +38,6 @@ public class GameScreen implements Screen {
     private Level level;
     private GameWorld gameWorld;
 
-    private int levelNumber = 1;
-
     /**
      * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
      */
@@ -47,18 +45,17 @@ public class GameScreen implements Screen {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS,
               APP_HEIGHT * TO_WORLD_UNITS);
-        background = new Texture("background.png");
+        level = new Level(1, spriteBatch);
+        gameWorld = new GameWorld(level);
         player = new Player(spriteBatch);
+        gameWorld.addEntity(player);
         enemy = new Enemy(spriteBatch);
+        gameWorld.addEntity(enemy);
+        background = new Texture("background.png");
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
         saws = new Array<>();
-        hud = new HUD(coins, player);
-        level = new Level(1, spriteBatch);
-        gameWorld = new GameWorld(level);
-
-        gameWorld.addEntity(player);
-        gameWorld.addEntity(enemy);
+        hud = new HUD(coins, gameWorld);
 
         for (MapObject object : gameWorld.getLevel().getMap().getMapObjects("coins")) {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
@@ -109,7 +106,8 @@ public class GameScreen implements Screen {
         collisionHandler.handleMapCollision(gameWorld);
         collisionHandler.handleSawCollision(saws, gameWorld);
         collisionHandler.handleCoinCollision(coins, gameWorld);
-        collisionHandler.handleEnemyCollision(level, gameWorld);
+        collisionHandler.handleEnemyCollision(gameWorld);
+        collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
         collisionHandler.keepActorInMap(player);
         collisionHandler.keepActorInMap(enemy);
 
@@ -121,65 +119,8 @@ public class GameScreen implements Screen {
         //Renders HUD
         hud.render(delta);
 
-        //Checks for exit(end of level) conditions
-        if (canEndLevel()) {
-            endLevel();
-        }
-
         //Updates camera
         camera.update();
-    }
-
-    private boolean canEndLevel() {
-        boolean canEnd = false;
-
-        if (coins.size <= 0) {
-            Rectangle playerBounds = gameWorld.getEntity("player").getBounds();
-
-            MapObjects mapObjects = gameWorld.getLevel().getMap().getMapObjects("exit");
-
-            for (MapObject object : mapObjects) {
-                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-                float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-                float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
-
-                Rectangle exitBounds = new Rectangle(x, y, width, height);
-
-                 canEnd = playerBounds.overlaps(exitBounds);
-            }
-        }
-        return canEnd;
-    }
-
-    private void endLevel() {
-        if (level.getLevelNumber() < 3) {
-            levelNumber++;
-            gameWorld.setLevel(new Level(levelNumber, spriteBatch));
-            player.reset();
-
-            coins.clear();
-            for (MapObject mapCoin : gameWorld.getLevel().getMap().getMapObjects("coins")) {
-                float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
-                coins.add(coin);
-                gameWorld.addEntity(coin);
-            }
-
-            saws.clear();
-            for (MapObject mapSaw : gameWorld.getLevel().getMap().getMapObjects("saw")) {
-                float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                Saw saw = new Saw(spriteBatch, sawX, sawY);
-                saws.add(saw);
-                gameWorld.addEntity(saw);
-            }
-        } else {
-            Gdx.app.exit();
-        }
     }
 
     @Override

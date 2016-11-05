@@ -16,8 +16,11 @@ import com.brinkman.platformer.terrain.TMXMap;
 import com.brinkman.platformer.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 
+import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
 /**
@@ -122,26 +125,27 @@ public class CollisionHandler {
         }
     }
 
-    public void handleEnemyCollision(Level level, GameWorld world) {
+    public void handleEnemyCollision(GameWorld world) {
         Rectangle playerBounds = world.getEntity("player").getBounds();
         Rectangle enemyBounds = world.getEntity("enemy").getBounds();
 
         if (playerBounds.overlaps(enemyBounds)) {
             world.getEntity("player").handleDeath();
+            ((Actor)world.getEntity("enemy")).getVelocity().x = -((Actor)world.getEntity("enemy")).getVelocity().x;
         }
 
-        for (Rectangle mapBounds : level.getMap().getMapCollisionRectangles()) {
+        for (Rectangle mapBounds : world.getLevel().getMap().getMapCollisionRectangles()) {
             if (enemyBounds.overlaps(mapBounds)) {
                 ((Actor)world.getEntity("enemy")).getVelocity().x = -((Actor)world.getEntity("enemy")).getVelocity().x;
             }
         }
     }
 
-    public void handleExitCollision(Level level, Player player, Array<Coin> coins, SpriteBatch spriteBatch) {
+    public void handleExitCollision(GameWorld world, Array<Coin> coins, Array<Saw> saws, SpriteBatch spriteBatch) {
         if (coins.size <= 0) {
-            Rectangle playerBounds = player.getBounds();
+            Rectangle playerBounds = world.getEntity("player").getBounds();
 
-            MapObjects mapObjects = level.getMap().getMapObjects("exit");
+            MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");
 
             for (MapObject object : mapObjects) {
                 float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
@@ -151,17 +155,43 @@ public class CollisionHandler {
 
                 Rectangle exitBounds = new Rectangle(x, y, width, height);
 
+                int levelNumber = world.getLevel().getLevelNumber();
                 if (playerBounds.overlaps(exitBounds)) {
-                    if (level.getLevelNumber() < 2) {
-                        level = new Level(2, spriteBatch);
-                        player.reset();
+                    if (world.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
+                        levelNumber++;
+                        world.setLevel(new Level(levelNumber, spriteBatch));
+                        ((Player)world.getEntity("player")).reset();
 
-                        for (MapObject mapCoin : level.getMap().getMapObjects("coins")) {
+                        //Clear Array<Saw> saws and Array<Coin> coins
+                        saws.clear();
+                        coins.clear();
+
+                        //Remove saws and coins from GameWorld
+                        for (Iterator<Map.Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext();) {
+                            Map.Entry<Entity, String> entry = it.next();
+                            if (entry.getValue().equalsIgnoreCase("saw") || entry.getValue().equalsIgnoreCase("coin")) {
+                                it.remove();
+                            }
+                        }
+
+                        //Look for and add new coins to Array<Coin> coins and GameWorld
+                        for (MapObject mapCoin : world.getLevel().getMap().getMapObjects("coins")) {
                             float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                             float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
                             Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
                             coins.add(coin);
+                            world.addEntity(coin);
+                        }
+
+                        //Look for and add new saws to Array<Saw> saws and GameWorld
+                        for (MapObject mapSaw : world.getLevel().getMap().getMapObjects("saw")) {
+                            float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                            float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                            Saw saw = new Saw(spriteBatch, sawX, sawY);
+                            saws.add(saw);
+                            world.addEntity(saw);
                         }
                     } else {
                         Gdx.app.exit();

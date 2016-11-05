@@ -9,9 +9,17 @@ import com.badlogic.gdx.math.Rectangle;
 public interface Entity {
 
 
+    /**
+     * Returns the Rectangle bounds of entity.
+     * @return Rectangle
+     */
     Rectangle getBounds();
 
+    /**
+     * Handles the logic for 'death'.
+     */
     void handleDeath();
+
     /**
      * Handles the updating and rendering of the Entity object.
      * @param dt float delta time

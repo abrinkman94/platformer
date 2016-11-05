@@ -33,6 +33,11 @@ public final class Constants {
     public static final float MAX_GRAVITY = -15.0f;
 
     /**
+     * int total number of levels.
+     */
+    public static final int NUM_OF_LEVELS = 3;
+
+    /**
      * boolean debug.
      */
     public static final boolean DEBUG = false;
