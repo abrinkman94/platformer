@@ -21,7 +21,7 @@ public class GameWorld {
 
     public GameWorld(Level level) {
         this.level = level;
-        entities = new HashMap<>();
+        entities = new HashMap<>(128);
     }
 
     public Level getLevel() { return level; }
@@ -30,7 +30,7 @@ public class GameWorld {
 
     public Map<Entity, String> getEntities() { return entities; }
 
-    public Entity getEntity(String value) {
+    public Entity getEntityByValue(String value) {
         for (Map.Entry<Entity, String> entry : entities.entrySet()) {
             if (Objects.equals(value, entry.getValue())) {
                 return entry.getKey();
@@ -49,10 +49,12 @@ public class GameWorld {
             entities.put(entity, "saw");
         } else if (entity instanceof Coin) {
             entities.put(entity, "coin");
-        } else {
+        } else if (entity instanceof Item) {
+            entities.put(entity, "item");
+        }
+        else {
             LOGGER.info("Entity type error");
         }
-
     }
 
     public void removeEntity(Entity entity) {

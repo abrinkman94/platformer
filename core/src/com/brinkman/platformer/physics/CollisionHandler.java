@@ -9,16 +9,15 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.terrain.TMXMap;
 import com.brinkman.platformer.util.Constants;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
@@ -30,14 +29,15 @@ public class CollisionHandler {
     private final Vector2 tempVector1 = new Vector2();
     private final Vector2 tempVector2 = new Vector2();
 
+    private static final Logger LOGGER = new Logger(CollisionHandler.class.getName());
     /**
      * Handles the player's collision with "ground".
      */
     public void handleMapCollision(GameWorld world) {
-        Rectangle entityBounds = world.getEntity("player").getBounds();
-        ((Player)world.getEntity("player")).setIsGrounded(false);
-        ((Player)world.getEntity("player")).setTouchingLeftWall(false);
-        ((Player)world.getEntity("player")).setTouchingRightWall(false);
+        Rectangle entityBounds = world.getEntityByValue("player").getBounds();
+        ((Player)world.getEntityByValue("player")).setIsGrounded(false);
+        ((Player)world.getEntityByValue("player")).setTouchingLeftWall(false);
+        ((Player)world.getEntityByValue("player")).setTouchingRightWall(false);
 
         for (Rectangle mapBounds : world.getLevel().getMap().getMapCollisionRectangles()) {
 
@@ -64,26 +64,26 @@ public class CollisionHandler {
                 // The direction that the entity will move is determined by the sign of the distance between the centers
                 if (horizontalOverlap < verticalOverlap) {
                     if (horizontalDistance > 0) {
-                        ((Player)world.getEntity("player")).setTouchingRightWall(true);
-                        ((Player)world.getEntity("player")).getPosition().x =
-                                ((Player)world.getEntity("player")).getPosition().x - horizontalOverlap;
+                        ((Player)world.getEntityByValue("player")).setTouchingRightWall(true);
+                        ((Player)world.getEntityByValue("player")).getPosition().x =
+                                ((Player)world.getEntityByValue("player")).getPosition().x - horizontalOverlap;
                     } else {
-                        ((Player)world.getEntity("player")).setTouchingLeftWall(true);
-                        ((Player)world.getEntity("player")).getPosition().x =
-                                ((Player)world.getEntity("player")).getPosition().x + horizontalOverlap;
+                        ((Player)world.getEntityByValue("player")).setTouchingLeftWall(true);
+                        ((Player)world.getEntityByValue("player")).getPosition().x =
+                                ((Player)world.getEntityByValue("player")).getPosition().x + horizontalOverlap;
                     }
-                    ((Player)world.getEntity("player")).setCanJump(true);
+                    ((Player)world.getEntityByValue("player")).setCanJump(true);
                 } else {
                     if (verticalDistance > 0) {
-                        ((Player)world.getEntity("player")).getPosition().y =
-                                ((Player)world.getEntity("player")).getPosition().y - verticalOverlap;
-                        ((Player)world.getEntity("player")).getVelocity().y = -Constants.GRAVITY;
-                        ((Player)world.getEntity("player")).setCanJump(false);
+                        ((Player)world.getEntityByValue("player")).getPosition().y =
+                                ((Player)world.getEntityByValue("player")).getPosition().y - verticalOverlap;
+                        ((Player)world.getEntityByValue("player")).getVelocity().y = -Constants.GRAVITY;
+                        ((Player)world.getEntityByValue("player")).setCanJump(false);
                     } else {
-                        ((Player)world.getEntity("player")).getPosition().y =
-                                ((Player)world.getEntity("player")).getPosition().y + verticalOverlap;
-                        ((Player)world.getEntity("player")).setIsGrounded(true);
-                        ((Player)world.getEntity("player")).setCanJump(true);
+                        ((Player)world.getEntityByValue("player")).getPosition().y =
+                                ((Player)world.getEntityByValue("player")).getPosition().y + verticalOverlap;
+                        ((Player)world.getEntityByValue("player")).setIsGrounded(true);
+                        ((Player)world.getEntityByValue("player")).setCanJump(true);
                     }
                 }
             }
@@ -95,13 +95,13 @@ public class CollisionHandler {
      * @param saws Array Saw
      */
     public void handleSawCollision(Array<Saw> saws, GameWorld world) {
-        Rectangle playerBounds = world.getEntity("player").getBounds();
+        Rectangle playerBounds = world.getEntityByValue("player").getBounds();
 
         for (Saw saw : saws) {
             Rectangle sawBounds = saw.getBounds();
 
             if (playerBounds.overlaps(sawBounds)) {
-                world.getEntity("player").handleDeath();
+                world.getEntityByValue("player").handleDeath();
             }
         }
     }
@@ -110,7 +110,7 @@ public class CollisionHandler {
      * Handles the player's collision with coin objects.
      */
     public void handleCoinCollision(Array<Coin> coins, GameWorld world) {
-        Rectangle playerBounds = world.getEntity("player").getBounds();
+        Rectangle playerBounds = world.getEntityByValue("player").getBounds();
 
         for (Coin coin : coins) {
             Rectangle coinBounds = new Rectangle(coin.getPosition().x, coin.getPosition().y,
@@ -125,25 +125,45 @@ public class CollisionHandler {
         }
     }
 
+    public void handleItemCollision(GameWorld world) {
+        Rectangle playerBounds = world.getEntityByValue("player").getBounds();
+
+        for (Iterator<Map.Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext();) {
+            Map.Entry<Entity, String> entry = it.next();
+
+            if (entry.getValue().equalsIgnoreCase("item")) {
+                Rectangle itemBounds = entry.getKey().getBounds();
+
+                if (playerBounds.overlaps(itemBounds)) {
+                    it.remove();
+
+                    if (((Item)entry.getKey()).getItemType() == ItemType.LIFE) {
+                        ((Actor)world.getEntityByValue("player")).setLives(((Actor)world.getEntityByValue("player")).getLives() + 1);
+                    }
+                }
+            }
+        }
+    }
+
     public void handleEnemyCollision(GameWorld world) {
-        Rectangle playerBounds = world.getEntity("player").getBounds();
-        Rectangle enemyBounds = world.getEntity("enemy").getBounds();
+        Rectangle playerBounds = world.getEntityByValue("player").getBounds();
+        Rectangle enemyBounds = world.getEntityByValue("enemy").getBounds();
 
         if (playerBounds.overlaps(enemyBounds)) {
-            world.getEntity("player").handleDeath();
-            ((Actor)world.getEntity("enemy")).getVelocity().x = -((Actor)world.getEntity("enemy")).getVelocity().x;
+            world.getEntityByValue("player").handleDeath();
+            ((Actor)world.getEntityByValue("enemy")).getVelocity().x = -((Actor)world.getEntityByValue("enemy")).getVelocity().x;
         }
 
         for (Rectangle mapBounds : world.getLevel().getMap().getMapCollisionRectangles()) {
             if (enemyBounds.overlaps(mapBounds)) {
-                ((Actor)world.getEntity("enemy")).getVelocity().x = -((Actor)world.getEntity("enemy")).getVelocity().x;
+                ((Actor)world.getEntityByValue("enemy")).getVelocity().x = -((Actor)world.getEntityByValue("enemy")).getVelocity().x;
             }
         }
     }
 
     public void handleExitCollision(GameWorld world, Array<Coin> coins, Array<Saw> saws, SpriteBatch spriteBatch) {
         if (coins.size <= 0) {
-            Rectangle playerBounds = world.getEntity("player").getBounds();
+            Rectangle playerBounds = world.getEntityByValue("player").getBounds();
 
             MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");
 
@@ -160,7 +180,7 @@ public class CollisionHandler {
                     if (world.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
                         levelNumber++;
                         world.setLevel(new Level(levelNumber, spriteBatch));
-                        ((Player)world.getEntity("player")).reset();
+                        ((Player)world.getEntityByValue("player")).reset();
 
                         //Clear Array<Saw> saws and Array<Coin> coins
                         saws.clear();
@@ -169,7 +189,8 @@ public class CollisionHandler {
                         //Remove saws and coins from GameWorld
                         for (Iterator<Map.Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext();) {
                             Map.Entry<Entity, String> entry = it.next();
-                            if (entry.getValue().equalsIgnoreCase("saw") || entry.getValue().equalsIgnoreCase("coin")) {
+                            if (entry.getValue().equalsIgnoreCase("saw") || entry.getValue().equalsIgnoreCase("coin")
+                                    || entry.getValue().equalsIgnoreCase("item")) {
                                 it.remove();
                             }
                         }
@@ -193,7 +214,16 @@ public class CollisionHandler {
                             saws.add(saw);
                             world.addEntity(saw);
                         }
+
+                        for (MapObject mapItem : world.getLevel().getMap().getMapObjects("life item")) {
+                            float mapItemX = mapItem.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                            float mapItemY = mapItem.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                            Item item = new Item("terrain/Object/life.png", ItemType.LIFE, mapItemX, mapItemY + 1);
+                            world.addEntity(item);
+                        }
                     } else {
+                        LOGGER.info("No more levels");
                         Gdx.app.exit();
                     }
                 }

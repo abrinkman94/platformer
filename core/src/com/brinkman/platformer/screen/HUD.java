@@ -10,8 +10,6 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Actor;
 import com.brinkman.platformer.entity.Coin;
-import com.brinkman.platformer.entity.Player;
-import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.util.FontUtil;
 
 /**
@@ -62,7 +60,7 @@ public class HUD {
             coinLabel.setText("Turn In!");
         }
 
-        livesLabel.setText("Lives: " + ((Actor)world.getEntity("player")).getLives());
+        livesLabel.setText("Lives: " + ((Actor)world.getEntityByValue("player")).getLives());
 
         stage.act(delta);
         stage.draw();

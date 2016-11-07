@@ -18,7 +18,7 @@ public class Saw extends Actor
 
 	private final Batch batch;
 
-	private static final float SAW_SPEED = 3.0f;
+	private static final float SAW_SPEED = 100.0f;
 	private static final float SAW_WIDTH = 128;
 	private static final float SAW_HEIGHT = 128;
 	private static final int SAW_Y_OFFSET = 2;
@@ -41,7 +41,7 @@ public class Saw extends Actor
 		sprite = new Sprite(texture);
 		sprite.setSize(width, height);
 		sprite.setPosition(x, y + SAW_Y_OFFSET);
-		sprite.setOrigin(width * 0.5f, height * 0.5f);
+		sprite.setOriginCenter();
 	}
 
 	@Override

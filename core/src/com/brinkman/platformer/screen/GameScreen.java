@@ -7,9 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
@@ -78,6 +75,17 @@ public class GameScreen implements Screen {
             }
         }
 
+        if (gameWorld.getLevel().getMap().getMapObjects("life item") != null) {
+            for (MapObject itemObject : gameWorld.getLevel().getMap().getMapObjects("life item")) {
+                float x = itemObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = itemObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                Item item = new Item("terrain/Object/life.png", ItemType.LIFE, x, y + 1);
+                System.out.println(item.getPosition());
+                gameWorld.addEntity(item);
+            }
+        }
+
         LOGGER.info("Initialized");
     }
 
@@ -96,6 +104,7 @@ public class GameScreen implements Screen {
         }
         spriteBatch.end();
 
+        //Renders GameWorld (Entities, Level)
         gameWorld.render(camera, delta, spriteBatch);
 
         //Camera utility methods
@@ -106,6 +115,7 @@ public class GameScreen implements Screen {
         collisionHandler.handleMapCollision(gameWorld);
         collisionHandler.handleSawCollision(saws, gameWorld);
         collisionHandler.handleCoinCollision(coins, gameWorld);
+        collisionHandler.handleItemCollision(gameWorld);
         collisionHandler.handleEnemyCollision(gameWorld);
         collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
         collisionHandler.keepActorInMap(player);
