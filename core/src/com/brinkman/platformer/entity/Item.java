@@ -12,7 +12,7 @@ import com.brinkman.platformer.util.Constants;
  */
 
 public class Item extends Actor {
-    private static final Logger LOGGER = new Logger(Item.class.getName());
+    private static final Logger LOGGER = new Logger(Item.class.getName(), Logger.DEBUG);
 
     private ItemType itemType;
 
@@ -49,3 +49,4 @@ public class Item extends Actor {
         LOGGER.info("Disposed");
     }
 }
+

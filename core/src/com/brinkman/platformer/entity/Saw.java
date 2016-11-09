@@ -14,7 +14,7 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
  */
 public class Saw extends Actor
 {
-	private static final Logger LOGGER = new Logger("Saw", Logger.DEBUG);
+	private static final Logger LOGGER = new Logger(Saw.class.getName(), Logger.DEBUG);
 
 	private final Batch batch;
 

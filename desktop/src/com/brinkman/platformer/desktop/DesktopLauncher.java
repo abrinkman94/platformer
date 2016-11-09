@@ -7,7 +7,7 @@ import com.brinkman.platformer.Platformer;
 import static com.brinkman.platformer.util.Constants.*;
 
 public class DesktopLauncher {
-	private static Logger LOGGER = new Logger("DesktopLauncher", Logger.DEBUG);
+	private static Logger LOGGER = new Logger(DesktopLauncher.class.getName(), Logger.DEBUG);
 
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

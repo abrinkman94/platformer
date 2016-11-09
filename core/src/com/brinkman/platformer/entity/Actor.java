@@ -42,7 +42,7 @@ public abstract class Actor implements Entity {
     /**
      * The Actor's float moveSpeed.
      */
-    protected float moveSpeed = 5;
+    protected float moveSpeed = 7;
     /**
      * The Actor's float elapsedTime, used for animations.
      */

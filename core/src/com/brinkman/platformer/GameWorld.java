@@ -2,6 +2,9 @@ package com.brinkman.platformer;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.level.Level;
@@ -10,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
+
 /**
  * Created by Austin on 11/5/2016.
  */
@@ -17,7 +22,7 @@ public class GameWorld {
     private Level level;
     private Map<Entity, String> entities;
 
-    private static Logger LOGGER = new Logger("GameWorld");
+    private static Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
 
     public GameWorld(Level level) {
         this.level = level;
@@ -59,6 +64,39 @@ public class GameWorld {
 
     public void removeEntity(Entity entity) {
         entities.remove(entity);
+    }
+
+    public void initializeMapObjects(SpriteBatch batch, Array<Coin> coins, Array<Saw> saws) {
+        for (MapObject object : level.getMap().getMapObjects("coins")) {
+            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+            final float coinYOffset = 1.0f;
+            Coin coin = new Coin(batch, x, y + coinYOffset);
+            coins.add(coin);
+            addEntity(coin);
+        }
+
+        if (level.getMap().getMapObjects("saw") != null) {
+            for (MapObject sawObject : level.getMap().getMapObjects("saw")) {
+                float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                Saw saw = new Saw(batch, x, y);
+                saws.add(saw);
+                addEntity(saw);
+            }
+        }
+
+        if (level.getMap().getMapObjects("life item") != null) {
+            for (MapObject itemObject : level.getMap().getMapObjects("life item")) {
+                float x = itemObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = itemObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                Item item = new Item("terrain/Object/life.png", ItemType.LIFE, x, y + 1);
+                addEntity(item);
+            }
+        }
     }
 
     public void render(OrthographicCamera camera, float delta, Batch batch) {

@@ -22,7 +22,7 @@ public class HUD {
     private final Array<Coin> coins;
     private final GameWorld world;
 
-    private static final Logger LOGGER = new Logger("HUD", Logger.DEBUG);
+    private static final Logger LOGGER = new Logger(HUD.class.getName(), Logger.DEBUG);
 
     /**
      * Constructs the Heads-Up Display Object.

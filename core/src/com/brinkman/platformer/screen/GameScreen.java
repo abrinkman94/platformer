@@ -21,13 +21,12 @@ import static com.brinkman.platformer.util.Constants.*;
  * Created by Austin on 9/29/2016.
  */
 public class GameScreen implements Screen {
-    private static final Logger LOGGER = new Logger("GameScreen", Logger.DEBUG);
+    private static final Logger LOGGER = new Logger(GameScreen.class.getName(), Logger.DEBUG);
 
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
     private final Texture background;
     private final Player player;
-    private final Enemy enemy;
     private final Array<Coin> coins;
     private final Array<Saw> saws;
     private final CollisionHandler collisionHandler;
@@ -45,46 +44,14 @@ public class GameScreen implements Screen {
         level = new Level(1, spriteBatch);
         gameWorld = new GameWorld(level);
         player = new Player(spriteBatch);
-        gameWorld.addEntity(player);
-        enemy = new Enemy(spriteBatch);
-        gameWorld.addEntity(enemy);
         background = new Texture("background.png");
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
         saws = new Array<>();
         hud = new HUD(coins, gameWorld);
 
-        for (MapObject object : gameWorld.getLevel().getMap().getMapObjects("coins")) {
-            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-            final float coinYOffset = 1.0f;
-            Coin coin = new Coin(spriteBatch, x, y + coinYOffset);
-            coins.add(coin);
-            gameWorld.addEntity(coin);
-        }
-
-        if (gameWorld.getLevel().getMap().getMapObjects("saw") != null) {
-            for (MapObject sawObject : gameWorld.getLevel().getMap().getMapObjects("saw")) {
-                float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                Saw saw = new Saw(spriteBatch, x, y);
-                saws.add(saw);
-                gameWorld.addEntity(saw);
-            }
-        }
-
-        if (gameWorld.getLevel().getMap().getMapObjects("life item") != null) {
-            for (MapObject itemObject : gameWorld.getLevel().getMap().getMapObjects("life item")) {
-                float x = itemObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = itemObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                Item item = new Item("terrain/Object/life.png", ItemType.LIFE, x, y + 1);
-                System.out.println(item.getPosition());
-                gameWorld.addEntity(item);
-            }
-        }
+        gameWorld.addEntity(player);
+        gameWorld.initializeMapObjects(spriteBatch, coins, saws);
 
         LOGGER.info("Initialized");
     }
@@ -116,10 +83,9 @@ public class GameScreen implements Screen {
         collisionHandler.handleSawCollision(saws, gameWorld);
         collisionHandler.handleCoinCollision(coins, gameWorld);
         collisionHandler.handleItemCollision(gameWorld);
-        collisionHandler.handleEnemyCollision(gameWorld);
+//        collisionHandler.handleEnemyCollision(gameWorld);
         collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
         collisionHandler.keepActorInMap(player);
-        collisionHandler.keepActorInMap(enemy);
 
         //Debug
         if (DEBUG) {

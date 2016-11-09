@@ -16,7 +16,7 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
  * Created by Austin on 9/29/2016.
  */
 public class Player extends Actor {
-    private static final Logger LOGGER = new Logger("Player", Logger.DEBUG);
+    private static final Logger LOGGER = new Logger(Player.class.getName(), Logger.DEBUG);
 
     private final TextureAtlas walkRightAtlas;
     private final TextureAtlas walkLeftAtlas;
@@ -185,7 +185,7 @@ public class Player extends Actor {
         }
 
         //Run conditionals
-        moveSpeed = run ? 8 : 5;
+        moveSpeed = run ? 10 : 7;
 
         //Update position and velocity
         velocity.x = xSpeed;

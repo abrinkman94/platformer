@@ -29,7 +29,7 @@ public class CollisionHandler {
     private final Vector2 tempVector1 = new Vector2();
     private final Vector2 tempVector2 = new Vector2();
 
-    private static final Logger LOGGER = new Logger(CollisionHandler.class.getName());
+    private static final Logger LOGGER = new Logger(CollisionHandler.class.getName(), Logger.DEBUG);
     /**
      * Handles the player's collision with "ground".
      */
@@ -195,33 +195,7 @@ public class CollisionHandler {
                             }
                         }
 
-                        //Look for and add new coins to Array<Coin> coins and GameWorld
-                        for (MapObject mapCoin : world.getLevel().getMap().getMapObjects("coins")) {
-                            float coinX = mapCoin.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                            float coinY = mapCoin.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                            Coin coin = new Coin(spriteBatch, coinX, coinY + 1);
-                            coins.add(coin);
-                            world.addEntity(coin);
-                        }
-
-                        //Look for and add new saws to Array<Saw> saws and GameWorld
-                        for (MapObject mapSaw : world.getLevel().getMap().getMapObjects("saw")) {
-                            float sawX = mapSaw.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                            float sawY = mapSaw.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                            Saw saw = new Saw(spriteBatch, sawX, sawY);
-                            saws.add(saw);
-                            world.addEntity(saw);
-                        }
-
-                        for (MapObject mapItem : world.getLevel().getMap().getMapObjects("life item")) {
-                            float mapItemX = mapItem.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                            float mapItemY = mapItem.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                            Item item = new Item("terrain/Object/life.png", ItemType.LIFE, mapItemX, mapItemY + 1);
-                            world.addEntity(item);
-                        }
+                        world.initializeMapObjects(spriteBatch, coins, saws);
                     } else {
                         LOGGER.info("No more levels");
                         Gdx.app.exit();
