@@ -12,7 +12,7 @@ public class Level {
 
     private final TMXMap map;
 
-    private final int levelNumber;
+    private int levelNumber;
 
     /**
      * Constructs the Level Object.  The Level object holds the TMXMap data.
@@ -22,6 +22,10 @@ public class Level {
     public Level(int levelNumber, SpriteBatch batch) {
         this.levelNumber = levelNumber;
         map = new TMXMap(batch, "terrain/level" + levelNumber + ".tmx");
+    }
+
+    public Level(String levelPath, SpriteBatch batch) {
+        map = new TMXMap(batch, levelPath);
     }
 
     /**

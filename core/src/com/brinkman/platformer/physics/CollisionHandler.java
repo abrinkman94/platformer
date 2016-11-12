@@ -125,6 +125,10 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Handle's the player's collision with items.
+     * @param world GameWorld
+     */
     public void handleItemCollision(GameWorld world) {
         Rectangle playerBounds = world.getEntityByValue("player").getBounds();
 
@@ -145,6 +149,10 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Handle's the player's collision with enemies.
+     * @param world GameWorld
+     */
     public void handleEnemyCollision(GameWorld world) {
         Rectangle playerBounds = world.getEntityByValue("player").getBounds();
         Rectangle enemyBounds = world.getEntityByValue("enemy").getBounds();
@@ -161,6 +169,13 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Handle's the player's collision with the exit object, as well as the logic behind level changes.
+     * @param world GameWorld
+     * @param coins Array<Coin>
+     * @param saws Array<Saw>
+     * @param spriteBatch SpriteBatch
+     */
     public void handleExitCollision(GameWorld world, Array<Coin> coins, Array<Saw> saws, SpriteBatch spriteBatch) {
         if (coins.size <= 0) {
             Rectangle playerBounds = world.getEntityByValue("player").getBounds();

@@ -41,10 +41,10 @@ public class GameScreen implements Screen {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS,
               APP_HEIGHT * TO_WORLD_UNITS);
-        level = new Level(1, spriteBatch);
+        level = new Level("terrain/testLevel.tmx", spriteBatch);
         gameWorld = new GameWorld(level);
         player = new Player(spriteBatch);
-        background = new Texture("background.png");
+        background = new Texture("terrain/Sky/Sky 1 v2(1920x1080).jpg");
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
         saws = new Array<>();
@@ -83,7 +83,6 @@ public class GameScreen implements Screen {
         collisionHandler.handleSawCollision(saws, gameWorld);
         collisionHandler.handleCoinCollision(coins, gameWorld);
         collisionHandler.handleItemCollision(gameWorld);
-//        collisionHandler.handleEnemyCollision(gameWorld);
         collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
         collisionHandler.keepActorInMap(player);
 
@@ -121,19 +120,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        player.dispose();
         spriteBatch.dispose();
         background.dispose();
-        level.dispose();
         hud.dispose();
-
-        for (Saw saw : saws) {
-            saw.dispose();
-        }
-
-        for (Coin coin : coins) {
-            coin.dispose();
-        }
+        gameWorld.dispose();
 
         LOGGER.info("Disposed");
     }

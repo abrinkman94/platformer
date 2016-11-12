@@ -27,6 +27,8 @@ public class GameWorld {
     public GameWorld(Level level) {
         this.level = level;
         entities = new HashMap<>(128);
+
+        LOGGER.info("Initialized");
     }
 
     public Level getLevel() { return level; }
@@ -105,5 +107,12 @@ public class GameWorld {
         for (Entity entity : entities.keySet()) {
             entity.render(delta, batch);
         }
+    }
+
+    public void dispose() {
+        level.dispose();
+        entities.keySet().forEach(Entity::dispose);
+
+        LOGGER.info("Disposed");
     }
 }
