@@ -137,6 +137,7 @@ public class Player extends Actor {
         run = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
     }
 
+    //TODO Figure out a way to simplify.
     /**
      * Handles the player's movement logic.
      */
@@ -157,9 +158,17 @@ public class Player extends Actor {
             currentAnimation = jump ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
         } else {
             if(xSpeed > DECELERATION) {
-                xSpeed -= DECELERATION;
+                if (grounded) {
+                    xSpeed -= DECELERATION;
+                } else {
+                    xSpeed -= (DECELERATION / 3);
+                }
             } else if(xSpeed < -DECELERATION) {
-                xSpeed += DECELERATION;
+                if (grounded) {
+                    xSpeed += DECELERATION;
+                } else {
+                    xSpeed += (DECELERATION / 3);
+                }
             } else {
                 if (runningRight) {
                     currentAnimation = jump ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
