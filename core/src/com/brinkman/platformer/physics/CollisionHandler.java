@@ -39,6 +39,7 @@ public class CollisionHandler {
     public void handleMapCollision(GameWorld world) {
         Rectangle entityBounds = world.getEntityByValue("player").getBounds();
         ((Player)world.getEntityByValue("player")).setIsGrounded(false);
+     //   ((Player)world.getEntityByValue("player")).setCanJump(false);
         ((Player)world.getEntityByValue("player")).setTouchingLeftWall(false);
         ((Player)world.getEntityByValue("player")).setTouchingRightWall(false);
 

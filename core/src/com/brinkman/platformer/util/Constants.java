@@ -1,5 +1,7 @@
 package com.brinkman.platformer.util;
 
+import com.badlogic.gdx.controllers.Controllers;
+
 /**
  * Created by Austin on 9/29/2016.
  */
@@ -36,6 +38,11 @@ public final class Constants {
      * int total number of levels.
      */
     public static final int NUM_OF_LEVELS = 4;
+
+    /**
+     * boolean value representing whether or not a controller is plugged in.
+     */
+    public static final boolean CONTROLLER_PRESENT = Controllers.getControllers().size > 0;
 
     /**
      * boolean debug.

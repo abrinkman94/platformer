@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.util.Constants;
 import com.brinkman.platformer.util.ControllerMappings;
 
+import static com.brinkman.platformer.util.Constants.CONTROLLER_PRESENT;
 import static com.brinkman.platformer.util.Constants.GRAVITY;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -62,7 +63,9 @@ public class Player extends Actor {
         velocity = new Vector2(0, 0);
         orientation = "right";
 
-        controller = Controllers.getControllers().first();
+        if (CONTROLLER_PRESENT) {
+            controller = Controllers.getControllers().first();
+        }
 
         walkRightAtlas = new TextureAtlas();
         walkRightAtlas.addRegion("frame1", new TextureRegion(new Texture("sprites/running/frame-1-right.png")));
@@ -135,10 +138,14 @@ public class Player extends Actor {
      * Sets boolean values for input.
      */
     private void setKeyFlags() {
-        left = Gdx.input.isKeyPressed(Keys.LEFT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) < 0;
-        right = Gdx.input.isKeyPressed(Keys.RIGHT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) > 0.25f;
-        jump = Gdx.input.isKeyJustPressed(Keys.SPACE) || controller.getButton(ControllerMappings.BUTTON_A);
-        run = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || controller.getButton(ControllerMappings.BUTTON_RB);
+        left = CONTROLLER_PRESENT ? controller.getAxis(ControllerMappings.AXIS_LEFT_X) < -0.15f
+                : Gdx.input.isKeyPressed(Keys.LEFT);
+        right = CONTROLLER_PRESENT ? controller.getAxis(ControllerMappings.AXIS_LEFT_X) > 0.25f
+                : Gdx.input.isKeyPressed(Keys.RIGHT);
+        jump = CONTROLLER_PRESENT ? controller.getButton(ControllerMappings.BUTTON_A)
+                : Gdx.input.isKeyJustPressed(Keys.SPACE);
+        run = CONTROLLER_PRESENT ? controller.getButton(ControllerMappings.BUTTON_RB)
+                : Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
     }
 
     //TODO Figure out a way to simplify.

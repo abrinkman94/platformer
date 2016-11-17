@@ -74,6 +74,7 @@ public class GameScreen implements Screen {
 
         //Camera utility methods
         CameraUtil.centerCameraOnActor(player, camera);
+        CameraUtil.handleZoom(gameWorld, camera);
         CameraUtil.keepCameraInMap(camera);
 
         //Collision checks
@@ -82,7 +83,6 @@ public class GameScreen implements Screen {
         collisionHandler.handleCoinCollision(coins, gameWorld);
         collisionHandler.handleItemCollision(gameWorld);
         collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
-        collisionHandler.handleZoomCollision(gameWorld, camera);
         collisionHandler.keepActorInMap(player);
 
         //Debug
