@@ -46,7 +46,7 @@ public final class CameraUtil
         }
 
         if(mapHeight < camera.viewportHeight) {
-            camera.position.y = mapTop / 2 + 2;
+            camera.position.y = mapTop / 2;
         }
         else if(cameraBottom <= mapBottom) {
             camera.position.y = mapBottom + cameraHalfHeight;
@@ -63,6 +63,6 @@ public final class CameraUtil
      */
     public static void centerCameraOnActor(Actor actor, OrthographicCamera cam) {
         cam.position.set(actor.getPosition().x + ((actor.getWidth() * 0.5f) * TO_WORLD_UNITS),
-              cam.position.y, 0);
+              actor.getPosition().y + ((actor.getHeight() / 2) * TO_WORLD_UNITS), 0);
     }
 }

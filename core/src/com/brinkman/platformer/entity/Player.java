@@ -2,12 +2,14 @@ package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.controllers.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.util.Constants;
+import com.brinkman.platformer.util.ControllerMappings;
 
 import static com.brinkman.platformer.util.Constants.GRAVITY;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
@@ -26,6 +28,7 @@ public class Player extends Actor {
     private final TextureAtlas jumpLeftAtlas;
     private final Batch batch;
     private Animation animation;
+    private Controller controller;
 
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
@@ -44,7 +47,6 @@ public class Player extends Actor {
     private boolean right;
     private boolean jump;
     private boolean run;
-    private boolean runningRight = true;
     private boolean touchingRightWall;
     private boolean touchingLeftWall;
 
@@ -59,6 +61,8 @@ public class Player extends Actor {
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
+
+        controller = Controllers.getControllers().first();
 
         walkRightAtlas = new TextureAtlas();
         walkRightAtlas.addRegion("frame1", new TextureRegion(new Texture("sprites/running/frame-1-right.png")));
@@ -131,10 +135,10 @@ public class Player extends Actor {
      * Sets boolean values for input.
      */
     private void setKeyFlags() {
-        left = Gdx.input.isKeyPressed(Keys.LEFT);
-        right = Gdx.input.isKeyPressed(Keys.RIGHT);
-        jump = Gdx.input.isKeyJustPressed(Keys.SPACE);
-        run = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
+        left = Gdx.input.isKeyPressed(Keys.LEFT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) < 0;
+        right = Gdx.input.isKeyPressed(Keys.RIGHT) || controller.getAxis(ControllerMappings.AXIS_LEFT_X) > 0.25f;
+        jump = Gdx.input.isKeyJustPressed(Keys.SPACE) || controller.getButton(ControllerMappings.BUTTON_A);
+        run = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || controller.getButton(ControllerMappings.BUTTON_RB);
     }
 
     //TODO Figure out a way to simplify.
@@ -147,14 +151,16 @@ public class Player extends Actor {
         //X-axis movement
         float maxSpeed = moveSpeed;
         float xSpeed = velocity.x;
+        boolean runningLeft = xSpeed > -maxSpeed;
+        boolean runningRight = xSpeed < maxSpeed;
 
-        if (left &&(xSpeed > -maxSpeed)) {
+        if (left && runningLeft) {
             xSpeed = xSpeed - ACCELERATION;
-            runningRight = false;
+            orientation = "left";
             currentAnimation = jump ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
-        } else if (right &&(xSpeed < maxSpeed)) {
+        } else if (right && runningRight) {
             xSpeed = xSpeed + ACCELERATION;
-            runningRight = true;
+            orientation = "right";
             currentAnimation = jump ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
         } else {
             if(xSpeed > DECELERATION) {
@@ -170,7 +176,7 @@ public class Player extends Actor {
                     xSpeed += (DECELERATION / 3);
                 }
             } else {
-                if (runningRight) {
+                if ("right".equalsIgnoreCase(orientation)) {
                     currentAnimation = jump ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
                 } else {
                     currentAnimation = jump ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
@@ -194,7 +200,7 @@ public class Player extends Actor {
         }
 
         //Run conditionals
-        moveSpeed = run ? 10 : 7;
+        moveSpeed = run ? 10 : 6;
 
         //Update position and velocity
         velocity.x = xSpeed;

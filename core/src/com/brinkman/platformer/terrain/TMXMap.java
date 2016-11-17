@@ -70,6 +70,15 @@ public class TMXMap {
         return rectangles;
     }
 
+    public Rectangle getMapObjectBounds(MapObject object) {
+        float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+        float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+        float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+        float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+
+        return new Rectangle(x, y, width, height);
+    }
+
     public Array<Rectangle> getSawCollisionRectangles() {
         Array<Rectangle> rectangles = new Array<>();
         for (MapObject object : getMapObjects("saw")) {

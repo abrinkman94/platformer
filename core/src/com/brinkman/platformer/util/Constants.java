@@ -35,7 +35,7 @@ public final class Constants {
     /**
      * int total number of levels.
      */
-    public static final int NUM_OF_LEVELS = 3;
+    public static final int NUM_OF_LEVELS = 4;
 
     /**
      * boolean debug.

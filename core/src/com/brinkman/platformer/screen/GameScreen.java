@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
@@ -31,7 +30,6 @@ public class GameScreen implements Screen {
     private final Array<Saw> saws;
     private final CollisionHandler collisionHandler;
     private final HUD hud;
-    private Level level;
     private GameWorld gameWorld;
 
     /**
@@ -41,8 +39,7 @@ public class GameScreen implements Screen {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS,
               APP_HEIGHT * TO_WORLD_UNITS);
-        level = new Level("terrain/testLevel.tmx", spriteBatch);
-        gameWorld = new GameWorld(level);
+        gameWorld = new GameWorld(new Level(1, spriteBatch));
         player = new Player(spriteBatch);
         background = new Texture("terrain/Sky/Sky 1 v2(1920x1080).jpg");
         collisionHandler = new CollisionHandler();
@@ -52,6 +49,7 @@ public class GameScreen implements Screen {
 
         gameWorld.addEntity(player);
         gameWorld.initializeMapObjects(spriteBatch, coins, saws);
+
 
         LOGGER.info("Initialized");
     }
@@ -84,11 +82,12 @@ public class GameScreen implements Screen {
         collisionHandler.handleCoinCollision(coins, gameWorld);
         collisionHandler.handleItemCollision(gameWorld);
         collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
+        collisionHandler.handleZoomCollision(gameWorld, camera);
         collisionHandler.keepActorInMap(player);
 
         //Debug
         if (DEBUG) {
-            collisionHandler.debug(level.getMap(), player, camera, saws);
+            collisionHandler.debug(gameWorld.getLevel().getMap(), player, camera, saws);
         }
 
         //Renders HUD

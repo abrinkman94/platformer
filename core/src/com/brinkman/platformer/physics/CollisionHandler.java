@@ -29,6 +29,9 @@ public class CollisionHandler {
     private final Vector2 tempVector1 = new Vector2();
     private final Vector2 tempVector2 = new Vector2();
 
+    private boolean zoomOut = false;
+    private boolean zoomIn = false;
+
     private static final Logger LOGGER = new Logger(CollisionHandler.class.getName(), Logger.DEBUG);
     /**
      * Handles the player's collision with "ground".
@@ -218,6 +221,44 @@ public class CollisionHandler {
                 }
             }
         }
+    }
+
+    public void handleZoomCollision(GameWorld world, OrthographicCamera camera) {
+        Player player = ((Player)world.getEntityByValue("player"));
+
+        Rectangle playerBounds = player.getBounds();
+
+        MapObject zoomOutObject = world.getLevel().getMap().getMapObjects("zoom out").get(0);
+        MapObject zoomInObject = world.getLevel().getMap().getMapObjects("zoom in").get(0);
+
+        Rectangle zoomOutBounds = world.getLevel().getMap().getMapObjectBounds(zoomOutObject);
+        Rectangle zoomInBounds = world.getLevel().getMap().getMapObjectBounds(zoomInObject);
+
+        float zoomStep = 0;
+
+        if (playerBounds.overlaps(zoomOutBounds)) {
+            zoomOut = true;
+            zoomIn = false;
+        } else if (playerBounds.overlaps(zoomInBounds) && camera.zoom > 1) {
+            zoomIn = true;
+            zoomOut = false;
+        }
+
+        if (zoomOut) {
+            if (camera.zoom <= 1.3f) {
+                zoomStep = 0.01f;
+            } else {
+                zoomStep = 0;
+            }
+        } else if (zoomIn && camera.zoom > 1) {
+            if (camera.zoom > 1) {
+                zoomStep = -0.01f;
+            } else {
+                zoomStep = 0;
+            }
+        }
+
+        camera.zoom += zoomStep;
     }
 
     /**
