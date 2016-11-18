@@ -35,8 +35,7 @@ public class GameScreen implements Screen {
      */
     public GameScreen() {
         spriteBatch = new SpriteBatch();
-        camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS,
-              APP_HEIGHT * TO_WORLD_UNITS);
+        camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
         gameWorld = new GameWorld(new Level(1, spriteBatch));
         player = new Player(spriteBatch);
         collisionHandler = new CollisionHandler();
@@ -46,7 +45,6 @@ public class GameScreen implements Screen {
 
         gameWorld.addEntity(player);
         gameWorld.initializeMapObjects(spriteBatch, coins, saws);
-
 
         LOGGER.info("Initialized");
     }

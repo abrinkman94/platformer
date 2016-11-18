@@ -19,6 +19,7 @@ public class HUD {
     private final Stage stage;
     private final Label coinLabel;
     private final Label livesLabel;
+    private final Label levelLabel;
     private final Array<Coin> coins;
     private final GameWorld world;
 
@@ -38,9 +39,11 @@ public class HUD {
               .WHITE, 36), Color.WHITE);
         coinLabel = new Label("", labelStyle);
         livesLabel = new Label("", labelStyle);
+        levelLabel = new Label("", labelStyle);
 
         Table table = new Table();
         table.setFillParent(true);
+        table.add(levelLabel).width(levelLabel.getWidth()).padRight(125);
         table.top().left().add(livesLabel).width(livesLabel.getWidth()).padRight(125);
         table.add(coinLabel).width(coinLabel.getWidth());
 
@@ -61,6 +64,7 @@ public class HUD {
         }
 
         livesLabel.setText("Lives: " + ((Actor)world.getEntityByValue("player")).getLives());
+        levelLabel.setText("Level: " + world.getLevel().getLevelNumber());
 
         stage.act(delta);
         stage.draw();

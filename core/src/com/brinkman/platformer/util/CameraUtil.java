@@ -88,6 +88,6 @@ public final class CameraUtil
      */
     public static void lerpCameraToActor(Actor actor, OrthographicCamera cam) {
         cam.position.lerp(new Vector3(actor.getPosition().x + ((actor.getWidth() * 0.5f) * TO_WORLD_UNITS),
-                actor.getPosition().y + ((actor.getHeight() * 0.5f) * TO_WORLD_UNITS), 0), 0.05f);
+                actor.getPosition().y + ((actor.getHeight() * 0.5f) * TO_WORLD_UNITS), 0), 0.06f);
     }
 }
