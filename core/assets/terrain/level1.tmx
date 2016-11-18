@@ -30,6 +30,9 @@
  <tileset firstgid="127" name="big saw" tilewidth="128" tileheight="128" tilecount="1" columns="1">
   <image source="Object/big saw.png" width="128" height="128"/>
  </tileset>
+ <imagelayer name="Background Image" offsetx="0" offsety="-320">
+  <image source="Sky/Sky 1 v2.jpg" width="6051" height="2371"/>
+ </imagelayer>
  <layer name="Tile Layer 1" width="64" height="48">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

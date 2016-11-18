@@ -14,6 +14,7 @@ public class DesktopLauncher {
 		config.width = APP_WIDTH;
 		config.height = APP_HEIGHT;
 		config.title = APP_TITLE;
+		config.foregroundFPS = 60;
 	//	config.vSyncEnabled = V_SYNC;
 		new LwjglApplication(new Platformer(), config);
 

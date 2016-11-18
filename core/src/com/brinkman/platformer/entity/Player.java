@@ -144,7 +144,8 @@ public class Player extends Actor {
                 : Gdx.input.isKeyPressed(Keys.RIGHT);
         jump = CONTROLLER_PRESENT ? controller.getButton(ControllerMappings.BUTTON_A)
                 : Gdx.input.isKeyJustPressed(Keys.SPACE);
-        run = CONTROLLER_PRESENT ? controller.getButton(ControllerMappings.BUTTON_RB)
+        run = CONTROLLER_PRESENT ? controller.getAxis(ControllerMappings.AXIS_LEFT_TRIGGER) > 0.2f ||
+                controller.getAxis(ControllerMappings.AXIS_RIGHT_TRIGGER) < -0.2f
                 : Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
     }
 

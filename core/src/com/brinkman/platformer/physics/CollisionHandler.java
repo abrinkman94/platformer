@@ -37,11 +37,12 @@ public class CollisionHandler {
      * Handles the player's collision with "ground".
      */
     public void handleMapCollision(GameWorld world) {
+        Player player = (Player) world.getEntityByValue("player");
         Rectangle entityBounds = world.getEntityByValue("player").getBounds();
-        ((Player)world.getEntityByValue("player")).setIsGrounded(false);
+        player.setIsGrounded(false);
      //   ((Player)world.getEntityByValue("player")).setCanJump(false);
-        ((Player)world.getEntityByValue("player")).setTouchingLeftWall(false);
-        ((Player)world.getEntityByValue("player")).setTouchingRightWall(false);
+        player.setTouchingLeftWall(false);
+        player.setTouchingRightWall(false);
 
         for (Rectangle mapBounds : world.getLevel().getMap().getMapCollisionRectangles()) {
 
@@ -68,26 +69,22 @@ public class CollisionHandler {
                 // The direction that the entity will move is determined by the sign of the distance between the centers
                 if (horizontalOverlap < verticalOverlap) {
                     if (horizontalDistance > 0) {
-                        ((Player)world.getEntityByValue("player")).setTouchingRightWall(true);
-                        ((Player)world.getEntityByValue("player")).getPosition().x =
-                                ((Player)world.getEntityByValue("player")).getPosition().x - horizontalOverlap;
+                        player.setTouchingRightWall(true);
+                        player.getPosition().x = player.getPosition().x - horizontalOverlap;
                     } else {
-                        ((Player)world.getEntityByValue("player")).setTouchingLeftWall(true);
-                        ((Player)world.getEntityByValue("player")).getPosition().x =
-                                ((Player)world.getEntityByValue("player")).getPosition().x + horizontalOverlap;
+                        player.setTouchingLeftWall(true);
+                        player.getPosition().x = player.getPosition().x + horizontalOverlap;
                     }
-                    ((Player)world.getEntityByValue("player")).setCanJump(true);
+                    player.setCanJump(true);
                 } else {
                     if (verticalDistance > 0) {
-                        ((Player)world.getEntityByValue("player")).getPosition().y =
-                                ((Player)world.getEntityByValue("player")).getPosition().y - verticalOverlap;
-                        ((Player)world.getEntityByValue("player")).getVelocity().y = -Constants.GRAVITY;
-                        ((Player)world.getEntityByValue("player")).setCanJump(false);
+                        player.getPosition().y = player.getPosition().y - verticalOverlap;
+                        player.getVelocity().y = -Constants.GRAVITY;
+                        player.setCanJump(false);
                     } else {
-                        ((Player)world.getEntityByValue("player")).getPosition().y =
-                                ((Player)world.getEntityByValue("player")).getPosition().y + verticalOverlap;
-                        ((Player)world.getEntityByValue("player")).setIsGrounded(true);
-                        ((Player)world.getEntityByValue("player")).setCanJump(true);
+                        player.getPosition().y = player.getPosition().y + verticalOverlap;
+                        player.setIsGrounded(true);
+                        player.setCanJump(true);
                     }
                 }
             }
@@ -99,13 +96,14 @@ public class CollisionHandler {
      * @param saws Array Saw
      */
     public void handleSawCollision(Array<Saw> saws, GameWorld world) {
-        Rectangle playerBounds = world.getEntityByValue("player").getBounds();
+        Entity player = world.getEntityByValue("player");
+        Rectangle playerBounds = player.getBounds();
 
         for (Saw saw : saws) {
             Rectangle sawBounds = saw.getBounds();
 
             if (playerBounds.overlaps(sawBounds)) {
-                world.getEntityByValue("player").handleDeath();
+                player.handleDeath();
             }
         }
     }
@@ -114,7 +112,8 @@ public class CollisionHandler {
      * Handles the player's collision with coin objects.
      */
     public void handleCoinCollision(Array<Coin> coins, GameWorld world) {
-        Rectangle playerBounds = world.getEntityByValue("player").getBounds();
+        Entity player = world.getEntityByValue("player");
+        Rectangle playerBounds = player.getBounds();
 
         for (Coin coin : coins) {
             Rectangle coinBounds = new Rectangle(coin.getPosition().x, coin.getPosition().y,
@@ -134,7 +133,8 @@ public class CollisionHandler {
      * @param world GameWorld
      */
     public void handleItemCollision(GameWorld world) {
-        Rectangle playerBounds = world.getEntityByValue("player").getBounds();
+        Actor player = (Actor) world.getEntityByValue("player");
+        Rectangle playerBounds = player.getBounds();
 
         for (Iterator<Map.Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext();) {
             Map.Entry<Entity, String> entry = it.next();
@@ -146,7 +146,7 @@ public class CollisionHandler {
                     it.remove();
 
                     if (((Item)entry.getKey()).getItemType() == ItemType.LIFE) {
-                        ((Actor)world.getEntityByValue("player")).setLives(((Actor)world.getEntityByValue("player")).getLives() + 1);
+                        player.setLives(player.getLives() + 1);
                     }
                 }
             }
@@ -182,7 +182,8 @@ public class CollisionHandler {
      */
     public void handleExitCollision(GameWorld world, Array<Coin> coins, Array<Saw> saws, SpriteBatch spriteBatch) {
         if (coins.size <= 0) {
-            Rectangle playerBounds = world.getEntityByValue("player").getBounds();
+            Player player = (Player) world.getEntityByValue("player");
+            Rectangle playerBounds = player.getBounds();
 
             MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");
 
@@ -199,7 +200,7 @@ public class CollisionHandler {
                     if (world.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
                         levelNumber++;
                         world.setLevel(new Level(levelNumber, spriteBatch));
-                        ((Player)world.getEntityByValue("player")).reset();
+                        player.reset();
 
                         //Clear Array<Saw> saws and Array<Coin> coins
                         saws.clear();

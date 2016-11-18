@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
@@ -24,7 +23,6 @@ public class GameScreen implements Screen {
 
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
-    private final Texture background;
     private final Player player;
     private final Array<Coin> coins;
     private final Array<Saw> saws;
@@ -41,7 +39,6 @@ public class GameScreen implements Screen {
               APP_HEIGHT * TO_WORLD_UNITS);
         gameWorld = new GameWorld(new Level(1, spriteBatch));
         player = new Player(spriteBatch);
-        background = new Texture("terrain/Sky/Sky 1 v2(1920x1080).jpg");
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
         saws = new Array<>();
@@ -62,18 +59,14 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        //Draws background
-        spriteBatch.begin();
-        for (int i = 0; i < ((APP_WIDTH * 2) * TO_WORLD_UNITS * 4); i+= APP_WIDTH * 2 * TO_WORLD_UNITS) {
-            spriteBatch.draw(background, i, 0, (APP_WIDTH * 2) * TO_WORLD_UNITS, (APP_HEIGHT * 2) * TO_WORLD_UNITS);
-        }
-        spriteBatch.end();
+        // Update the SpriteBatch projection matrix
+        spriteBatch.setProjectionMatrix(camera.combined);
 
         //Renders GameWorld (Entities, Level)
         gameWorld.render(camera, delta, spriteBatch);
 
         //Camera utility methods
-        CameraUtil.centerCameraOnActor(player, camera);
+        CameraUtil.lerpCameraToActor(player, camera);
         CameraUtil.handleZoom(gameWorld, camera);
         CameraUtil.keepCameraInMap(camera);
 
@@ -120,7 +113,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         spriteBatch.dispose();
-        background.dispose();
         hud.dispose();
         gameWorld.dispose();
 

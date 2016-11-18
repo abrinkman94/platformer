@@ -33,6 +33,9 @@
  <tileset firstgid="128" name="life item" tilewidth="32" tileheight="32" tilecount="1" columns="1">
   <image source="Object/life.png" width="40" height="39"/>
  </tileset>
+ <imagelayer name="Background Image" offsetx="0" offsety="-320">
+  <image source="Sky/Sky 1 v2.jpg" width="6051" height="2371"/>
+ </imagelayer>
  <layer name="Tile Layer 1" width="64" height="48">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

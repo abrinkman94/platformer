@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 //import com.brinkman.platformer.entity.Actor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Actor;
 import com.brinkman.platformer.entity.Player;
@@ -50,10 +51,10 @@ public final class CameraUtil
         if(mapHeight < camera.viewportHeight) {
             camera.position.y = mapTop / 2;
         }
-        else if(cameraBottom <= mapBottom) {
+        if(cameraBottom <= mapBottom) {
             camera.position.y = mapBottom + cameraHalfHeight;
         }
-        else if(cameraTop >= mapTop) {
+        if(cameraTop >= mapTop) {
             camera.position.y = mapTop - cameraHalfHeight;
         }
     }
@@ -61,10 +62,10 @@ public final class CameraUtil
     public static void handleZoom(GameWorld world, OrthographicCamera camera) {
         float zoomStep = 0;
 
-        Player player = (Player)world.getEntityByValue("player");
+        Actor player = (Actor) world.getEntityByValue("player");
 
-        boolean reachedHeightToZoom = player.getPosition().y - (player.getBounds().height / 2) > 11;
-        boolean isAwayFromMapEdge = player.getBounds().x > 5 && (player.getBounds().x < TMXMap.mapWidth - 5);
+        boolean reachedHeightToZoom = player.getPosition().y - (player.getBounds().height * 0.5f) >= 11f;
+        boolean isAwayFromMapEdge = player.getBounds().x > 10 && (player.getBounds().x < TMXMap.mapWidth - 10);
         boolean zoomOut = reachedHeightToZoom && isAwayFromMapEdge;
 
         if (zoomOut) {
@@ -81,12 +82,12 @@ public final class CameraUtil
     }
 
     /**
-     * Utility method, centers the OrthographicCamera on the Actor.
+     * Utility method, centers the OrthographicCamera on, and follows, the Actor.
      * @param actor Actor
      * @param cam OrthographicCamera
      */
-    public static void centerCameraOnActor(Actor actor, OrthographicCamera cam) {
-        cam.position.set(actor.getPosition().x + ((actor.getWidth() * 0.5f) * TO_WORLD_UNITS),
-              actor.getPosition().y + ((actor.getHeight() / 2) * TO_WORLD_UNITS), 0);
+    public static void lerpCameraToActor(Actor actor, OrthographicCamera cam) {
+        cam.position.lerp(new Vector3(actor.getPosition().x + ((actor.getWidth() * 0.5f) * TO_WORLD_UNITS),
+                actor.getPosition().y + ((actor.getHeight() * 0.5f) * TO_WORLD_UNITS), 0), 0.05f);
     }
 }
