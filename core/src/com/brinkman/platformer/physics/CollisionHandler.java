@@ -2,6 +2,7 @@ package com.brinkman.platformer.physics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
@@ -47,7 +48,7 @@ public class CollisionHandler {
         for (Rectangle mapBounds : world.getLevel().getMap().getMapCollisionRectangles()) {
 
             // Simple collision check
-            if (entityBounds.overlaps(mapBounds)) {
+            if (Intersector.overlaps(mapBounds, entityBounds)) {
                 // Get the centers of the Entity AABB and map AABB; place in tempVector1 and tempVector2 respectively
                 entityBounds.getCenter(tempVector1);
                 mapBounds.getCenter(tempVector2);
@@ -116,19 +117,30 @@ public class CollisionHandler {
         Rectangle playerBounds = player.getBounds();
 
         for (Coin coin : coins) {
-            Rectangle coinBounds = new Rectangle(coin.getPosition().x, coin.getPosition().y,
-                    coin.getWidth(), coin.getHeight());
+            Circle coinBounds = coin.getCircleBounds();
 
             if (Intersector.overlaps(coinBounds, playerBounds)) {
-                Timer timer = new Timer();
+                coin.setIsCollected(true);
+            }
+
+            if (coin.isCollected()) {
                 coin.getAnimations().setFrameDuration(0.002f);
+
+                float width = coin.getWidth();
+                float height = coin.getHeight();
+
+                if (width > 0.1f) {
+                    coin.animateCollect(coin, width, height, -0.05f);
+                }
+
+                Timer timer = new Timer();
                 timer.scheduleTask(new Timer.Task() {
                     @Override
                     public void run() {
                         coins.removeValue(coin, true);
                         world.removeEntity(coin);
                     }
-                }, .20f);
+                }, .30f);
             }
         }
     }

@@ -100,11 +100,15 @@ public abstract class Actor implements Entity {
      */
     public float getWidth() { return width; }
 
+    public void setWidth(float width) { this.width = width; }
+
     /**
      * Returns the float height.
      * @return float
      */
     public float getHeight() { return height; }
+
+    public void setHeight(float height) { this.height = height; }
 
     /**
      * Returns the int lives.
