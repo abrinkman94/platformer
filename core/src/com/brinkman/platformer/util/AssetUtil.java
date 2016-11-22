@@ -1,15 +1,56 @@
 package com.brinkman.platformer.util;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 /**
  * @author Austin Brinkman.
  */
 public final class AssetUtil
 {
-	private static final AssetManager ASSET_MANAGER = new AssetManager();
+	public static final AssetManager ASSET_MANAGER = new AssetManager();
 
 	private AssetUtil() {}
+
+	public static void loadAllAssets() {
+		loadAsset("sprites/Idle/frame-1-left.png", Texture.class);
+		loadAsset("sprites/Idle/frame-1-right.png", Texture.class);
+		loadAsset("sprites/Idle/frame-2-left.png", Texture.class);
+		loadAsset("sprites/Idle/frame-2-right.png", Texture.class);
+		loadAsset("sprites/Jump/frame-1-left.png", Texture.class);
+		loadAsset("sprites/Jump/frame-1-right.png", Texture.class);
+		loadAsset("sprites/Jump/frame-2-left.png", Texture.class);
+		loadAsset("sprites/Jump/frame-2-right.png", Texture.class);
+		loadAsset("sprites/running/frame-1-left.png", Texture.class);
+		loadAsset("sprites/running/frame-1-right.png", Texture.class);
+		loadAsset("sprites/running/frame-2-left.png", Texture.class);
+		loadAsset("sprites/running/frame-2-right.png", Texture.class);
+		loadAsset("sprites/running/frame-3-left.png", Texture.class);
+		loadAsset("sprites/running/frame-3-right.png", Texture.class);
+		loadAsset("sprites/running/frame-4-left.png", Texture.class);
+		loadAsset("sprites/running/frame-4-right.png", Texture.class);
+		loadAsset("sprites/running/frame-5-left.png", Texture.class);
+		loadAsset("sprites/running/frame-5-right.png", Texture.class);
+		loadAsset("sprites/running/frame-6-left.png", Texture.class);
+		loadAsset("sprites/running/frame-6-right.png", Texture.class);
+		loadAsset("sprites/coinsheet.png", Texture.class);
+		loadAsset("terrain/Object/saw.png", Texture.class);
+		loadAsset("terrain/Object/life.png", Texture.class);
+		loadAsset("terrain/Object/key.png", Texture.class);
+		loadAsset("terrain/Object/HUD key.png", Texture.class);
+		ASSET_MANAGER.setLoader(TiledMap.class, new TmxMapLoader(
+				new InternalFileHandleResolver()));
+		loadAsset("terrain/level1.tmx", TiledMap.class);
+		loadAsset("terrain/level2.tmx", TiledMap.class);
+		loadAsset("terrain/level3.tmx", TiledMap.class);
+		loadAsset("terrain/level4.tmx", TiledMap.class);
+
+		finishLoading();
+	}
 
 	/**
 	 * Loads asset, at assetPath, into the AssetManager.
@@ -26,8 +67,8 @@ public final class AssetUtil
 	 *
 	 * @return assetPath class
 	 */
-	public static Class getAsset(String assetPath) {
-		return ASSET_MANAGER.get(assetPath);
+	public static Object getAsset(String assetPath, Class assetClass) {
+		return ASSET_MANAGER.get(assetPath, assetClass);
 	}
 
 	/**

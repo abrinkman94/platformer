@@ -11,7 +11,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.*;
+import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.FontUtil;
+import com.brinkman.platformer.util.TexturePaths;
 
 /**
  * Created by Austin on 10/8/2016.
@@ -37,7 +39,7 @@ public class HUD {
         stage = new Stage();
         this.world = world;
 
-        keyImage = new Image(new Texture("terrain/Object/HUD key.png"));
+        keyImage = new Image((Texture) AssetUtil.getAsset(TexturePaths.HUD_KEY_TEXTURE, Texture.class));
         keyImage.setVisible(false);
 
         LabelStyle labelStyle = new LabelStyle(FontUtil.getBitmapFont("fonts/SF Atarian System Bold.ttf", Color
@@ -76,10 +78,10 @@ public class HUD {
 
         //Update key image
         if (world.getLevel().getHasKey()) {
-            for (Item item : ((Player) world.getEntityByValue("player")).getItems()) {
-                if (item.getItemType() == ItemType.KEY && !keyImage.isVisible()) {
+            Player player = (Player) world.getEntityByValue("player");
+
+            if (player.getItems().values().contains(ItemType.KEY) && !keyImage.isVisible()) {
                     keyImage.setVisible(true);
-                }
             }
         } else {
             keyImage.setVisible(false);

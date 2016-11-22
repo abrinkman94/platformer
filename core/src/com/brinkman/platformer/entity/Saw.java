@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.util.AssetUtil;
+import com.brinkman.platformer.util.TexturePaths;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -37,7 +39,7 @@ public class Saw extends Actor
 		width = SAW_WIDTH * TO_WORLD_UNITS;
 		height = SAW_HEIGHT * TO_WORLD_UNITS;
 
-		texture = new Texture("terrain/Object/saw.png");
+		texture = (Texture) AssetUtil.getAsset(TexturePaths.SAW_TEXTURE, Texture.class);
 
 		sprite = new Sprite(texture);
 		sprite.setSize(width, height);

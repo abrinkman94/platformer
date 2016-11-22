@@ -10,7 +10,9 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.brinkman.platformer.util.AssetUtil;
 
+import static com.brinkman.platformer.util.AssetUtil.ASSET_MANAGER;
 import static com.brinkman.platformer.util.Constants.*;
 
 /**
@@ -29,7 +31,7 @@ public class TMXMap {
      * @param tmxFilePath String url
      */
     public TMXMap(SpriteBatch batch, String tmxFilePath) {
-        map = new TmxMapLoader().load(tmxFilePath);
+        map = (TiledMap) AssetUtil.getAsset(tmxFilePath, TiledMap.class);
         renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
         MapProperties mapProperties = map.getProperties();
 

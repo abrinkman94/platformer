@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
 
 /**
@@ -23,7 +24,7 @@ public class Item extends Actor {
         width = 39 * Constants.TO_WORLD_UNITS;
         position = new Vector2(x, y);
 
-        texture = new Texture(texturePath);
+        texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
 
         sprite = new Sprite(texture);
         sprite.setSize(width, height);

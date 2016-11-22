@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.util.AssetUtil;
+import com.brinkman.platformer.util.TexturePaths;
 
+import static com.brinkman.platformer.util.AssetUtil.ASSET_MANAGER;
 import static com.brinkman.platformer.util.Constants.*;
 
 /**
@@ -38,7 +41,7 @@ public class Coin extends Actor {
         width = COIN_SIZE * TO_WORLD_UNITS;
         height = COIN_SIZE  * TO_WORLD_UNITS;
 
-        texture = new Texture("sprites/coinsheet.png");
+        texture = (Texture) AssetUtil.getAsset(TexturePaths.COIN_SPRITESHEET, Texture.class);
 
         tmp = TextureRegion.split(texture, texture.getWidth()/8, texture.getHeight()/8);
 
@@ -60,9 +63,7 @@ public class Coin extends Actor {
     public void setCollected(boolean collected) { this.collected = collected; }
 
     @Override
-    public void handleDeath() {
-
-    }
+    public void handleDeath() {}
 
     @Override
     public void render(float dt, Batch batch) {

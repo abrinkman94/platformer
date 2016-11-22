@@ -13,6 +13,7 @@ import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.CollisionHandler;
+import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
 
 import static com.brinkman.platformer.util.Constants.*;
@@ -36,10 +37,12 @@ public class GameScreen implements Screen {
      * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
      */
     public GameScreen() {
+        AssetUtil.loadAllAssets();
+
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
         gameWorld = new GameWorld(new Level(1, spriteBatch));
-        player = new Player(spriteBatch);
+        player = new Player();
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
         saws = new Array<>();
@@ -85,7 +88,7 @@ public class GameScreen implements Screen {
             float width = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("width", float.class) * TO_WORLD_UNITS;
             float height = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-            boolean render = player.getItems().size < 1;
+            boolean render = !player.getItems().values().contains(ItemType.KEY);
 
             if (render) {
                 ShapeRenderer renderer = new ShapeRenderer();
@@ -131,6 +134,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        AssetUtil.dispose();
         spriteBatch.dispose();
         hud.dispose();
         gameWorld.dispose();

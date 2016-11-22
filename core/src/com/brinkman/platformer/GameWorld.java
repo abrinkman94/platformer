@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.level.Level;
+import com.brinkman.platformer.util.TexturePaths;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class GameWorld {
                 float x = itemObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = itemObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Item item = new Item("terrain/Object/life.png", ItemType.LIFE, x, y + 1);
+                Item item = new Item(TexturePaths.LIFE_ITEM_TEXTURE, ItemType.LIFE, x, y + 1);
                 addEntity(item);
             }
         }
@@ -105,7 +106,7 @@ public class GameWorld {
                 float x = keyObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = keyObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Item key = new Item("terrain/Object/key.png", ItemType.KEY, x, y + 1);
+                Item key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y + 1);
                 addEntity(key);
             }
         }

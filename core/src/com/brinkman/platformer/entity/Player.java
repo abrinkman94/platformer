@@ -9,12 +9,16 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
 import com.brinkman.platformer.util.ControllerMappings;
+
+import java.util.HashMap;
 
 import static com.brinkman.platformer.util.Constants.CONTROLLER_PRESENT;
 import static com.brinkman.platformer.util.Constants.GRAVITY;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
+import static com.brinkman.platformer.util.TexturePaths.*;
 
 /**
  * Created by Austin on 9/29/2016.
@@ -22,16 +26,15 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 public class Player extends Actor {
     private static final Logger LOGGER = new Logger(Player.class.getName(), Logger.DEBUG);
 
-    private final TextureAtlas walkRightAtlas;
-    private final TextureAtlas walkLeftAtlas;
-    private final TextureAtlas idleRightAtlas;
-    private final TextureAtlas idleLeftAtlas;
-    private final TextureAtlas jumpRightAtlas;
-    private final TextureAtlas jumpLeftAtlas;
-    private final Batch batch;
+    private TextureAtlas walkRightAtlas;
+    private TextureAtlas walkLeftAtlas;
+    private TextureAtlas idleRightAtlas;
+    private TextureAtlas idleLeftAtlas;
+    private TextureAtlas jumpRightAtlas;
+    private TextureAtlas jumpLeftAtlas;
     private Animation animation;
     private Controller controller;
-    private final Array<Item> items;
+    private final HashMap<Item, ItemType> items;
 
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
@@ -55,56 +58,83 @@ public class Player extends Actor {
 
     /**
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
-     * @param batch SpriteBatch
      */
-    public Player(Batch batch) {
-        this.batch = batch;
+    public Player() {
         width = PLAYER_WIDTH;
         height = PLAYER_HEIGHT;
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
-        items = new Array<>();
+        items = new HashMap<>();
 
         if (CONTROLLER_PRESENT) {
             controller = Controllers.getControllers().first();
         }
 
-        walkRightAtlas = new TextureAtlas();
-        walkRightAtlas.addRegion("frame1", new TextureRegion(new Texture("sprites/running/frame-1-right.png")));
-        walkRightAtlas.addRegion("frame2", new TextureRegion(new Texture("sprites/running/frame-2-right.png")));
-        walkRightAtlas.addRegion("frame3", new TextureRegion(new Texture("sprites/running/frame-3-right.png")));
-        walkRightAtlas.addRegion("frame4", new TextureRegion(new Texture("sprites/running/frame-4-right.png")));
-        walkRightAtlas.addRegion("frame5", new TextureRegion(new Texture("sprites/running/frame-5-right.png")));
-        walkRightAtlas.addRegion("frame6", new TextureRegion(new Texture("sprites/running/frame-6-right.png")));
-
-        walkLeftAtlas = new TextureAtlas();
-        walkLeftAtlas.addRegion("frame1", new TextureRegion(new Texture("sprites/running/frame-1-left.png")));
-        walkLeftAtlas.addRegion("frame2", new TextureRegion(new Texture("sprites/running/frame-2-left.png")));
-        walkLeftAtlas.addRegion("frame3", new TextureRegion(new Texture("sprites/running/frame-3-left.png")));
-        walkLeftAtlas.addRegion("frame4", new TextureRegion(new Texture("sprites/running/frame-4-left.png")));
-        walkLeftAtlas.addRegion("frame5", new TextureRegion(new Texture("sprites/running/frame-5-left.png")));
-        walkLeftAtlas.addRegion("frame6", new TextureRegion(new Texture("sprites/running/frame-6-left.png")));
-
-        idleRightAtlas = new TextureAtlas();
-        idleRightAtlas.addRegion("frame1", new TextureRegion(new Texture("sprites/idle/frame-1-right.png")));
-        idleRightAtlas.addRegion("frame2", new TextureRegion(new Texture("sprites/idle/frame-2-right.png")));
-
-        idleLeftAtlas = new TextureAtlas();
-        idleLeftAtlas.addRegion("frame1", new TextureRegion(new Texture("sprites/idle/frame-1-left.png")));
-        idleLeftAtlas.addRegion("frame2", new TextureRegion(new Texture("sprites/idle/frame-2-left.png")));
-
-
-        jumpRightAtlas = new TextureAtlas();
-        jumpRightAtlas.addRegion("frame1", new TextureRegion(new Texture("sprites/jump/frame-1-right.png")));
-
-        jumpLeftAtlas = new TextureAtlas();
-        jumpLeftAtlas.addRegion("frame1", new TextureRegion(new Texture("sprites/jump/frame-1-left.png")));
+        initializeTextureAtlas();
 
         LOGGER.info("Initialized");
     }
 
-    public Array<Item> getItems() { return items; }
+    /**
+     * Initializes TextureAtlas's using Textures from the AssetUtil.ASSET_MANAGER
+     */
+    private void initializeTextureAtlas() {
+        walkRightAtlas = new TextureAtlas();
+        walkRightAtlas.addRegion("frame1",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame2",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame3",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame4",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame5",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame6",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
+
+        walkLeftAtlas = new TextureAtlas();
+        walkLeftAtlas.addRegion("frame1",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_LEFT, Texture.class)));
+        walkLeftAtlas.addRegion("frame2",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_LEFT, Texture.class)));
+        walkLeftAtlas.addRegion("frame3",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_LEFT, Texture.class)));
+        walkLeftAtlas.addRegion("frame4",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_LEFT, Texture.class)));
+        walkLeftAtlas.addRegion("frame5",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_LEFT, Texture.class)));
+        walkLeftAtlas.addRegion("frame6",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_LEFT, Texture.class)));
+
+        idleRightAtlas = new TextureAtlas();
+        idleRightAtlas.addRegion("frame1",
+                new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_RIGHT, Texture.class)));
+        idleRightAtlas.addRegion("frame2",
+                new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_2_RIGHT, Texture.class)));
+
+        idleLeftAtlas = new TextureAtlas();
+        idleLeftAtlas.addRegion("frame1",
+                new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_LEFT, Texture.class)));
+        idleLeftAtlas.addRegion("frame2",
+                new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_LEFT, Texture.class)));
+
+        jumpRightAtlas = new TextureAtlas();
+        jumpRightAtlas.addRegion("frame1",
+                new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_RIGHT, Texture.class)));
+
+        jumpLeftAtlas = new TextureAtlas();
+        jumpLeftAtlas.addRegion("frame1",
+                new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_LEFT, Texture.class)));
+    }
+
+    /**
+     * Returns the HashMap containing items currently in the player's 'inventory'. This does not include power-ups or
+     * life items.
+     * @return HashMap Item, ItemType
+     */
+    public HashMap<Item, ItemType> getItems() { return items; }
 
     /**
      * Handles the switching of animations.

@@ -31,9 +31,6 @@ public class CollisionHandler {
     private final Vector2 tempVector1 = new Vector2();
     private final Vector2 tempVector2 = new Vector2();
 
-    private boolean zoomOut = false;
-    private boolean zoomIn = false;
-
     private static final Logger LOGGER = new Logger(CollisionHandler.class.getName(), Logger.DEBUG);
     /**
      * Handles the player's collision with "ground".
@@ -125,7 +122,6 @@ public class CollisionHandler {
                 coin.setCollected(true);
                 coins.removeValue(coin, true);
                 world.removeEntity(coin);
-                coin.dispose();
             }
         }
     }
@@ -150,7 +146,7 @@ public class CollisionHandler {
                     if (((Item)entry.getKey()).getItemType() == ItemType.LIFE) {
                         player.setLives(player.getLives() + 1);
                     } else if (((Item) entry.getKey()).getItemType() == ItemType.KEY) {
-                        player.getItems().add((Item) entry.getKey());
+                        player.getItems().put((Item) entry.getKey(), ItemType.KEY);
                     }
                 }
             }
@@ -187,84 +183,49 @@ public class CollisionHandler {
     public void handleExitCollision(GameWorld world, Array<Coin> coins, Array<Saw> saws, SpriteBatch spriteBatch) {
         if (coins.size <= 0) {
             Player player = (Player) world.getEntityByValue("player");
-            Rectangle playerBounds = player.getBounds();
 
-            MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");
-            
-            for (MapObject object : mapObjects) {
-                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-                float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-                float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+            if (!world.getLevel().getHasKey() || player.getItems().values().contains(ItemType.KEY)) {
+                Rectangle playerBounds = player.getBounds();
 
-                Rectangle exitBounds = new Rectangle(x, y, width, height);
+                MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");
 
-                int levelNumber = world.getLevel().getLevelNumber();
-                if (Intersector.overlaps(exitBounds, playerBounds)) {
-                    if (world.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
-                        levelNumber++;
-                        world.setLevel(new Level(levelNumber, spriteBatch));
-                        player.reset();
+                for (MapObject object : mapObjects) {
+                    float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                    float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+                    float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+                    float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-                        //Clear Array<Saw> saws and Array<Coin> coins
-                        saws.clear();
-                        coins.clear();
+                    Rectangle exitBounds = new Rectangle(x, y, width, height);
 
-                        //Remove saws and coins from GameWorld
-                        for (Iterator<Map.Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext();) {
-                            Map.Entry<Entity, String> entry = it.next();
-                            if (entry.getValue().equalsIgnoreCase("saw") || entry.getValue().equalsIgnoreCase("coin")
-                                    || entry.getValue().equalsIgnoreCase("item")) {
-                                it.remove();
+                    int levelNumber = world.getLevel().getLevelNumber();
+                    if (Intersector.overlaps(exitBounds, playerBounds)) {
+                        if (world.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
+                            levelNumber++;
+                            world.setLevel(new Level(levelNumber, spriteBatch));
+                            player.reset();
+
+                            //Clear Array<Saw> saws and Array<Coin> coins
+                            saws.clear();
+                            coins.clear();
+
+                            //Remove saws and coins from GameWorld
+                            for (Iterator<Map.Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext(); ) {
+                                Map.Entry<Entity, String> entry = it.next();
+                                if (entry.getValue().equalsIgnoreCase("saw") || entry.getValue().equalsIgnoreCase("coin")
+                                        || entry.getValue().equalsIgnoreCase("item")) {
+                                    it.remove();
+                                }
                             }
-                        }
 
-                        world.initializeMapObjects(spriteBatch, coins, saws);
-                    } else {
-                        LOGGER.info("No more levels");
-                        Gdx.app.exit();
+                            world.initializeMapObjects(spriteBatch, coins, saws);
+                        } else {
+                            LOGGER.info("No more levels");
+                            Gdx.app.exit();
+                        }
                     }
                 }
             }
         }
-    }
-
-    public void handleZoomCollision(GameWorld world, OrthographicCamera camera) {
-        Player player = ((Player)world.getEntityByValue("player"));
-
-        Rectangle playerBounds = player.getBounds();
-
-        MapObject zoomOutObject = world.getLevel().getMap().getMapObjects("zoom out").get(0);
-        MapObject zoomInObject = world.getLevel().getMap().getMapObjects("zoom in").get(0);
-
-        Rectangle zoomOutBounds = world.getLevel().getMap().getMapObjectBounds(zoomOutObject);
-        Rectangle zoomInBounds = world.getLevel().getMap().getMapObjectBounds(zoomInObject);
-
-        float zoomStep = 0;
-
-        if (playerBounds.overlaps(zoomOutBounds)) {
-            zoomOut = true;
-            zoomIn = false;
-        } else if (playerBounds.overlaps(zoomInBounds) && camera.zoom > 1) {
-            zoomIn = true;
-            zoomOut = false;
-        }
-
-        if (zoomOut) {
-            if (camera.zoom <= 1.3f) {
-                zoomStep = 0.01f;
-            } else {
-                zoomStep = 0;
-            }
-        } else if (zoomIn && camera.zoom > 1) {
-            if (camera.zoom > 1) {
-                zoomStep = -0.01f;
-            } else {
-                zoomStep = 0;
-            }
-        }
-
-        camera.zoom += zoomStep;
     }
 
     /**
