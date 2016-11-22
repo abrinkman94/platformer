@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="left-up" width="64" height="48" tilewidth="32" tileheight="32" nextobjectid="77">
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="64" height="48" tilewidth="32" tileheight="32" nextobjectid="81">
  <tileset firstgid="1" name="terrain" tilewidth="32" tileheight="32" tilecount="16" columns="4">
   <image source="Tiles/2.png" width="128" height="128"/>
  </tileset>
@@ -36,6 +36,10 @@
  <imagelayer name="Background Image" offsetx="0" offsety="-320">
   <image source="Sky/Sky 1 v2.jpg" width="6051" height="2371"/>
  </imagelayer>
+ <objectgroup name="saw">
+  <object id="71" gid="126" x="546" y="1489" width="96" height="96"/>
+  <object id="72" gid="126" x="641" y="1488" width="96" height="96"/>
+ </objectgroup>
  <layer name="Tile Layer 1" width="64" height="48">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -89,15 +93,19 @@
 </data>
  </layer>
  <objectgroup name="collision">
-  <object id="46" x="0" y="1408" width="544" height="128"/>
-  <object id="47" x="736" y="1408" width="1312" height="128"/>
-  <object id="48" x="1984" y="960" width="64" height="448"/>
-  <object id="49" x="1600" y="1056" width="256" height="64"/>
-  <object id="50" x="1248" y="1184" width="256" height="64"/>
-  <object id="51" x="896" y="1280" width="256" height="64"/>
-  <object id="52" x="480" y="928" width="64" height="480"/>
-  <object id="53" x="64" y="1056" width="256" height="64"/>
-  <object id="76" x="544" y="1408" width="192" height="128"/>
+  <object id="46" name="ground" x="0" y="1408" width="544" height="128"/>
+  <object id="47" name="ground" x="736" y="1408" width="1312" height="128"/>
+  <object id="48" name="ground" x="1984" y="960" width="64" height="448"/>
+  <object id="49" name="platform" x="1600" y="1056" width="256" height="64"/>
+  <object id="50" name="platform" x="1248" y="1184" width="256" height="64"/>
+  <object id="51" name="platform" x="896" y="1280" width="256" height="64"/>
+  <object id="52" name="ground" x="480" y="928" width="64" height="480"/>
+  <object id="53" name="platform" x="64" y="1056" width="256" height="64"/>
+  <object id="76" name="ground" x="544" y="1408" width="192" height="128"/>
+  <object id="77" name="platform" x="1632" y="1088" width="192" height="32"/>
+  <object id="78" name="platform" x="1280" y="1216" width="192" height="32"/>
+  <object id="79" name="platform" x="928" y="1312" width="192" height="32"/>
+  <object id="80" name="platform" x="96" y="1088" width="192" height="32"/>
  </objectgroup>
  <objectgroup name="coins">
   <object id="55" gid="73" x="96" y="1056" width="64" height="64"/>
@@ -118,10 +126,6 @@
  </objectgroup>
  <objectgroup name="exit">
   <object id="70" x="1984" y="896" width="64" height="64"/>
- </objectgroup>
- <objectgroup name="saw">
-  <object id="71" gid="126" x="546" y="1489" width="96" height="96"/>
-  <object id="72" gid="126" x="641" y="1488" width="96" height="96"/>
  </objectgroup>
  <objectgroup name="life item">
   <object id="73" gid="127" x="640" y="1216" width="40" height="39"/>
@@ -184,4 +188,5 @@
  <objectgroup name="zoom in">
   <object id="75" x="1568" y="768" width="32" height="768"/>
  </objectgroup>
+ <objectgroup name="key"/>
 </map>

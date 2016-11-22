@@ -99,6 +99,16 @@ public class GameWorld {
                 addEntity(item);
             }
         }
+
+        if (level.getMap().getMapObjects("key") != null) {
+            for (MapObject keyObject : level.getMap().getMapObjects("key")) {
+                float x = keyObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = keyObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                Item key = new Item("terrain/Object/key.png", ItemType.KEY, x, y + 1);
+                addEntity(key);
+            }
+        }
     }
 
     public void render(OrthographicCamera camera, float delta, Batch batch) {

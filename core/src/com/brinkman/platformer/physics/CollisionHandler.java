@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -40,7 +42,7 @@ public class CollisionHandler {
         Player player = (Player) world.getEntityByValue("player");
         Rectangle entityBounds = world.getEntityByValue("player").getBounds();
         player.setIsGrounded(false);
-     //   ((Player)world.getEntityByValue("player")).setCanJump(false);
+        player.setCanJump(false);
         player.setTouchingLeftWall(false);
         player.setTouchingRightWall(false);
 
@@ -100,9 +102,9 @@ public class CollisionHandler {
         Rectangle playerBounds = player.getBounds();
 
         for (Saw saw : saws) {
-            Rectangle sawBounds = saw.getBounds();
+            Circle sawBounds = saw.getCircleBounds();
 
-            if (playerBounds.overlaps(sawBounds)) {
+            if (Intersector.overlaps(sawBounds, playerBounds)) {
                 player.handleDeath();
             }
         }
@@ -119,7 +121,7 @@ public class CollisionHandler {
             Rectangle coinBounds = new Rectangle(coin.getPosition().x, coin.getPosition().y,
                     coin.getWidth(), coin.getHeight());
 
-            if (playerBounds.overlaps(coinBounds)) {
+            if (Intersector.overlaps(coinBounds, playerBounds)) {
                 coin.setCollected(true);
                 coins.removeValue(coin, true);
                 world.removeEntity(coin);
@@ -133,7 +135,7 @@ public class CollisionHandler {
      * @param world GameWorld
      */
     public void handleItemCollision(GameWorld world) {
-        Actor player = (Actor) world.getEntityByValue("player");
+        Player player = (Player) world.getEntityByValue("player");
         Rectangle playerBounds = player.getBounds();
 
         for (Iterator<Map.Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext();) {
@@ -142,11 +144,13 @@ public class CollisionHandler {
             if (entry.getValue().equalsIgnoreCase("item")) {
                 Rectangle itemBounds = entry.getKey().getBounds();
 
-                if (playerBounds.overlaps(itemBounds)) {
+                if (Intersector.overlaps(itemBounds, playerBounds)) {
                     it.remove();
 
                     if (((Item)entry.getKey()).getItemType() == ItemType.LIFE) {
                         player.setLives(player.getLives() + 1);
+                    } else if (((Item) entry.getKey()).getItemType() == ItemType.KEY) {
+                        player.getItems().add((Item) entry.getKey());
                     }
                 }
             }
@@ -186,7 +190,7 @@ public class CollisionHandler {
             Rectangle playerBounds = player.getBounds();
 
             MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");
-
+            
             for (MapObject object : mapObjects) {
                 float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
@@ -196,7 +200,7 @@ public class CollisionHandler {
                 Rectangle exitBounds = new Rectangle(x, y, width, height);
 
                 int levelNumber = world.getLevel().getLevelNumber();
-                if (playerBounds.overlaps(exitBounds)) {
+                if (Intersector.overlaps(exitBounds, playerBounds)) {
                     if (world.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
                         levelNumber++;
                         world.setLevel(new Level(levelNumber, spriteBatch));

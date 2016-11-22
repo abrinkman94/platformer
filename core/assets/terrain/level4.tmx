@@ -246,4 +246,5 @@
  <objectgroup name="zoom in">
   <object id="48" x="3904" y="800" width="32" height="1280"/>
  </objectgroup>
+ <objectgroup name="key"/>
 </map>

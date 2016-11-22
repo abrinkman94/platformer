@@ -5,5 +5,6 @@ package com.brinkman.platformer.entity;
  */
 public enum ItemType {
     LIFE,
-    ABILITY
+    ABILITY,
+    KEY
 }

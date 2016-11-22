@@ -2,9 +2,11 @@ package com.brinkman.platformer.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
@@ -75,6 +77,25 @@ public class GameScreen implements Screen {
         collisionHandler.handleItemCollision(gameWorld);
         collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
         collisionHandler.keepActorInMap(player);
+
+        //Placeholder for locked door
+        if (gameWorld.getLevel().getHasKey()) {
+            float x = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("x", float.class) * TO_WORLD_UNITS;
+            float y = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("y", float.class) * TO_WORLD_UNITS;
+            float width = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("width", float.class) * TO_WORLD_UNITS;
+            float height = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("height", float.class) * TO_WORLD_UNITS;
+
+            boolean render = player.getItems().size < 1;
+
+            if (render) {
+                ShapeRenderer renderer = new ShapeRenderer();
+                renderer.setProjectionMatrix(camera.combined);
+                renderer.begin(ShapeRenderer.ShapeType.Filled);
+                renderer.setColor(Color.GRAY);
+                renderer.rect(x, y, width, height);
+                renderer.end();
+            }
+        }
 
         //Debug
         if (DEBUG) {

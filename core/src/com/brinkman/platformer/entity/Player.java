@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.util.Constants;
 import com.brinkman.platformer.util.ControllerMappings;
@@ -30,6 +31,7 @@ public class Player extends Actor {
     private final Batch batch;
     private Animation animation;
     private Controller controller;
+    private final Array<Item> items;
 
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
@@ -62,6 +64,7 @@ public class Player extends Actor {
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
+        items = new Array<>();
 
         if (CONTROLLER_PRESENT) {
             controller = Controllers.getControllers().first();
@@ -100,6 +103,8 @@ public class Player extends Actor {
 
         LOGGER.info("Initialized");
     }
+
+    public Array<Item> getItems() { return items; }
 
     /**
      * Handles the switching of animations.
@@ -225,7 +230,7 @@ public class Player extends Actor {
      */
     public void reset() {
         position = new Vector2(originPosition);
-        velocity = new Vector2(moveSpeed, 0);
+        velocity = new Vector2(0, 0);
         orientation = "right";
     }
 

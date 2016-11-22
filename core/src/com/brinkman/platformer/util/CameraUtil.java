@@ -64,7 +64,7 @@ public final class CameraUtil
 
         Actor player = (Actor) world.getEntityByValue("player");
 
-        boolean reachedHeightToZoom = player.getPosition().y - (player.getBounds().height * 0.5f) >= 11f;
+        boolean reachedHeightToZoom = player.getPosition().y - (player.getBounds().height * 0.5f) >= 8f;
         boolean isAwayFromMapEdge = player.getBounds().x > 10 && (player.getBounds().x < TMXMap.mapWidth - 10);
         boolean zoomOut = reachedHeightToZoom && isAwayFromMapEdge;
 
