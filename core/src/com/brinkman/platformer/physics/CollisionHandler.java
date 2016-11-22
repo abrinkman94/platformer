@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Timer;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.level.Level;
@@ -119,9 +120,15 @@ public class CollisionHandler {
                     coin.getWidth(), coin.getHeight());
 
             if (Intersector.overlaps(coinBounds, playerBounds)) {
-                coin.setCollected(true);
-                coins.removeValue(coin, true);
-                world.removeEntity(coin);
+                Timer timer = new Timer();
+                coin.getAnimations().setFrameDuration(0.002f);
+                timer.scheduleTask(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        coins.removeValue(coin, true);
+                        world.removeEntity(coin);
+                    }
+                }, .20f);
             }
         }
     }
@@ -184,7 +191,7 @@ public class CollisionHandler {
         if (coins.size <= 0) {
             Player player = (Player) world.getEntityByValue("player");
 
-            if (!world.getLevel().getHasKey() || player.getItems().values().contains(ItemType.KEY)) {
+            if (!world.getLevel().hasKey() || player.getItems().values().contains(ItemType.KEY)) {
                 Rectangle playerBounds = player.getBounds();
 
                 MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");

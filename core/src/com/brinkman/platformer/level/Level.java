@@ -22,9 +22,9 @@ public class Level {
      */
     public Level(int levelNumber, SpriteBatch batch) {
         this.levelNumber = levelNumber;
-        map = new TMXMap(batch, "terrain/level" + levelNumber + ".tmx");
 
-        hasKey = map.getMapObjects("key").getCount() != 0;
+        map = new TMXMap(batch, "terrain/level" + levelNumber + ".tmx");
+        hasKey = map.getMapObjects("key").getCount() > 0;
     }
 
     public Level(String levelPath, SpriteBatch batch) {
@@ -41,7 +41,7 @@ public class Level {
      * Returns boolean value representing whether or not the Actor has obtained the key.
      * @return boolean
      */
-    public boolean getHasKey() { return hasKey; }
+    public boolean hasKey() { return hasKey; }
 
     /**
      * Returns the TMXMap map.

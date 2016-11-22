@@ -26,8 +26,6 @@ public class Coin extends Actor {
     private static final float ANIMATION_TIME = 0.025f;
     private static final int COIN_SIZE = 64;
 
-    private boolean collected;
-
     /**
      * Constructs the Coin object.
      * @param batch SpriteBatch
@@ -60,7 +58,7 @@ public class Coin extends Actor {
      * Sets the value for boolean collected.
      * @param collected boolean
      */
-    public void setCollected(boolean collected) { this.collected = collected; }
+    public Animation getAnimations() { return animations; }
 
     @Override
     public void handleDeath() {}

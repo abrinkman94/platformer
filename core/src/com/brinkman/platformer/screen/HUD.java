@@ -77,7 +77,7 @@ public class HUD {
         levelLabel.setText("Level: " + world.getLevel().getLevelNumber());
 
         //Update key image
-        if (world.getLevel().getHasKey()) {
+        if (world.getLevel().hasKey()) {
             Player player = (Player) world.getEntityByValue("player");
 
             if (player.getItems().values().contains(ItemType.KEY) && !keyImage.isVisible()) {
