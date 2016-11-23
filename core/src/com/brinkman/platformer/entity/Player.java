@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.input.ControllerProcessor;
+import com.brinkman.platformer.input.InputFlags;
+import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
 import com.brinkman.platformer.util.ControllerMappings;
@@ -33,7 +36,7 @@ public class Player extends Actor {
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
     private Animation animation;
-    private Controller controller;
+    private InputFlags inputFlags;
     private final HashMap<Item, ItemType> items;
 
     private static final int PLAYER_WIDTH = 32;
@@ -55,6 +58,7 @@ public class Player extends Actor {
     private boolean run;
     private boolean touchingRightWall;
     private boolean touchingLeftWall;
+    private boolean justJumped;
 
     /**
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
@@ -66,9 +70,12 @@ public class Player extends Actor {
         velocity = new Vector2(0, 0);
         orientation = "right";
         items = new HashMap<>();
+        inputFlags = new InputFlags();
 
         if (CONTROLLER_PRESENT) {
-            controller = Controllers.getControllers().first();
+            Controllers.addListener(new ControllerProcessor(inputFlags, this));
+        } else {
+            Gdx.input.setInputProcessor(new KeyboardProcessor(inputFlags, this));
         }
 
         initializeTextureAtlas();
@@ -173,15 +180,10 @@ public class Player extends Actor {
      * Sets boolean values for input.
      */
     private void setKeyFlags() {
-        left = CONTROLLER_PRESENT ? controller.getAxis(ControllerMappings.AXIS_LEFT_X) < -0.15f
-                : Gdx.input.isKeyPressed(Keys.LEFT);
-        right = CONTROLLER_PRESENT ? controller.getAxis(ControllerMappings.AXIS_LEFT_X) > 0.25f
-                : Gdx.input.isKeyPressed(Keys.RIGHT);
-        jump = CONTROLLER_PRESENT ? controller.getButton(ControllerMappings.BUTTON_A)
-                : Gdx.input.isKeyJustPressed(Keys.SPACE);
-        run = CONTROLLER_PRESENT ? controller.getAxis(ControllerMappings.AXIS_LEFT_TRIGGER) > 0.2f ||
-                controller.getAxis(ControllerMappings.AXIS_RIGHT_TRIGGER) < -0.2f
-                : Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
+        left = inputFlags.left();
+        right = inputFlags.right();
+        jump = inputFlags.jump();
+        run = inputFlags.run();
     }
 
     //TODO Figure out a way to simplify.
@@ -200,11 +202,11 @@ public class Player extends Actor {
         if (left && runningLeft) {
             xSpeed = xSpeed - ACCELERATION;
             orientation = "left";
-            currentAnimation = jump ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
+            currentAnimation = jump && !grounded ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
         } else if (right && runningRight) {
             xSpeed = xSpeed + ACCELERATION;
             orientation = "right";
-            currentAnimation = jump ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
+            currentAnimation = jump && !grounded ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
         } else {
             if(xSpeed > DECELERATION) {
                 if (grounded) {
@@ -220,27 +222,29 @@ public class Player extends Actor {
                 }
             } else {
                 if ("right".equalsIgnoreCase(orientation)) {
-                    currentAnimation = jump ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+                    currentAnimation = jump && !grounded ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
                 } else {
-                    currentAnimation = jump ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
+                    currentAnimation = jump && !grounded ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
                 }
                 xSpeed = 0;
             }
         }
 
         //Jump conditionals
-        if (jump && canJump) {
+        if (jump && canJump && !justJumped) {
             velocity.y = JUMP_VEL;
+
+            //Wall bounce
+            if (touchingRightWall) {
+                xSpeed = xSpeed - WALL_BOUNCE;
+            } else if (touchingLeftWall) {
+                xSpeed = xSpeed + WALL_BOUNCE;
+            }
             grounded = false;
             canJump = false;
+            justJumped = true;
         }
 
-        //Wall bounce
-        if (touchingRightWall && jump) {
-            xSpeed = xSpeed - WALL_BOUNCE;
-        } else if (touchingLeftWall && jump) {
-            xSpeed = xSpeed + WALL_BOUNCE;
-        }
 
         //Run conditionals
         moveSpeed = run ? 10 : 6;
@@ -254,6 +258,8 @@ public class Player extends Actor {
     public void setTouchingRightWall(boolean touching) { touchingRightWall = touching; }
 
     public void setTouchingLeftWall(boolean touching) { touchingLeftWall = touching; }
+
+    public void setJustJumped(boolean justJumped) { this.justJumped = justJumped; }
 
     /**
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.

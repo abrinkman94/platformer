@@ -130,7 +130,7 @@ public class CollisionHandler {
                 float height = coin.getHeight();
 
                 if (width > 0.1f) {
-                    coin.animateCollect(coin, width, height, -0.05f);
+                    coin.animateCollect(width, height, -0.05f);
                 }
 
                 Timer timer = new Timer();

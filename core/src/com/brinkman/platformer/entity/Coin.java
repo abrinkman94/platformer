@@ -66,12 +66,12 @@ public class Coin extends Actor {
 
     public Animation getAnimations() { return animations; }
 
-    public void animateCollect(Coin coin, float width, float height, float increment) {
+    public void animateCollect(float width, float height, float increment) {
         width += increment;
         height += increment;
 
-        coin.setWidth(width);
-        coin.setHeight(height);
+        this.width = width;
+        this.height = height;
     }
 
     @Override
