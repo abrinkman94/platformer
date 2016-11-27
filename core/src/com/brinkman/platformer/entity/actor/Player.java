@@ -322,6 +322,11 @@ public class Player extends Actor {
                 velocity.y -= GRAVITY;
             }
         }
+
+        //Handle player falling off map
+        if (position.x < 0 || position.y < 0){
+            handleDeath();
+        }
     }
 
     @Override

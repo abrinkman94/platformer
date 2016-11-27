@@ -23,7 +23,7 @@ public class Level {
     public Level(int levelNumber, SpriteBatch batch) {
         this.levelNumber = levelNumber;
 
-        map = new TMXMap(batch, "map/level" + levelNumber + ".tmx");
+        map = new TMXMap(batch, "map/World 1/level" + levelNumber + ".tmx");
         hasKey = map.getMapObjects("key").getCount() > 0;
     }
 

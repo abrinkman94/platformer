@@ -17,37 +17,37 @@ public final class AssetUtil
 	private AssetUtil() {}
 
 	public static void loadAllAssets() {
-		loadAsset("sprites/Idle/frame-1-left.png", Texture.class);
-		loadAsset("sprites/Idle/frame-1-right.png", Texture.class);
-		loadAsset("sprites/Idle/frame-2-left.png", Texture.class);
-		loadAsset("sprites/Idle/frame-2-right.png", Texture.class);
-		loadAsset("sprites/Jump/frame-1-left.png", Texture.class);
-		loadAsset("sprites/Jump/frame-1-right.png", Texture.class);
-		loadAsset("sprites/Jump/frame-2-left.png", Texture.class);
-		loadAsset("sprites/Jump/frame-2-right.png", Texture.class);
-		loadAsset("sprites/running/frame-1-left.png", Texture.class);
-		loadAsset("sprites/running/frame-1-right.png", Texture.class);
-		loadAsset("sprites/running/frame-2-left.png", Texture.class);
-		loadAsset("sprites/running/frame-2-right.png", Texture.class);
-		loadAsset("sprites/running/frame-3-left.png", Texture.class);
-		loadAsset("sprites/running/frame-3-right.png", Texture.class);
-		loadAsset("sprites/running/frame-4-left.png", Texture.class);
-		loadAsset("sprites/running/frame-4-right.png", Texture.class);
-		loadAsset("sprites/running/frame-5-left.png", Texture.class);
-		loadAsset("sprites/running/frame-5-right.png", Texture.class);
-		loadAsset("sprites/running/frame-6-left.png", Texture.class);
-		loadAsset("sprites/running/frame-6-right.png", Texture.class);
+		for (int i = 1; i <= 2; i++) {
+			loadAsset("sprites/Idle/frame-" + i + "-left.png", Texture.class);
+			loadAsset("sprites/Idle/frame-" + i + "-right.png", Texture.class);
+		}
+
+		for (int i = 1; i <= 2; i++) {
+			loadAsset("sprites/Jump/frame-" + i + "-left.png", Texture.class);
+			loadAsset("sprites/Jump/frame-" + i + "-right.png", Texture.class);
+		}
+
+		for (int i = 1; i <= 6; i++) {
+			loadAsset("sprites/running/frame-" + i + "-left.png", Texture.class);
+			loadAsset("sprites/running/frame-" + i + "-right.png", Texture.class);
+		}
+
 		loadAsset("sprites/coinsheet.png", Texture.class);
 		loadAsset("map/Object/saw.png", Texture.class);
 		loadAsset("map/Object/life.png", Texture.class);
 		loadAsset("map/Object/key.png", Texture.class);
 		loadAsset("map/Object/HUD key.png", Texture.class);
+
 		ASSET_MANAGER.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
 		loadAsset("map/level1.tmx", TiledMap.class);
 		loadAsset("map/level2.tmx", TiledMap.class);
 		loadAsset("map/level3.tmx", TiledMap.class);
 		loadAsset("map/level4.tmx", TiledMap.class);
+
+		for (int i = 1; i <= Constants.NUM_OF_LEVELS; i++) {
+			loadAsset("map/World 1/level" + i + ".tmx", TiledMap.class);
+		}
 
 		finishLoading();
 	}

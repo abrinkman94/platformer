@@ -24,7 +24,7 @@ public class Saw extends Actor
 	private static final float SAW_SPEED = 100.0f;
 	private static final float SAW_WIDTH = 128;
 	private static final float SAW_HEIGHT = 128;
-	private static final int SAW_Y_OFFSET = 2;
+	private static final float SAW_Y_OFFSET = 0.5f;
 
 
 	/**
