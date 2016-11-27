@@ -1,17 +1,16 @@
-package com.brinkman.platformer.entity;
+package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
 
-import static com.brinkman.platformer.util.AssetUtil.ASSET_MANAGER;
 import static com.brinkman.platformer.util.Constants.*;
 
 /**

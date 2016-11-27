@@ -2,7 +2,7 @@ package com.brinkman.platformer.level;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.brinkman.platformer.terrain.TMXMap;
+import com.brinkman.platformer.map.TMXMap;
 
 
 /**
@@ -23,7 +23,7 @@ public class Level {
     public Level(int levelNumber, SpriteBatch batch) {
         this.levelNumber = levelNumber;
 
-        map = new TMXMap(batch, "terrain/level" + levelNumber + ".tmx");
+        map = new TMXMap(batch, "map/level" + levelNumber + ".tmx");
         hasKey = map.getMapObjects("key").getCount() > 0;
     }
 

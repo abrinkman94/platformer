@@ -6,7 +6,7 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.entity.Player;
+import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.ControllerMappings;
 
 /**

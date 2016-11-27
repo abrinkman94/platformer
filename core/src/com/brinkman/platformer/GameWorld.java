@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.*;
+import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.util.TexturePaths;
 
@@ -22,6 +23,9 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 public class GameWorld {
     private Level level;
     private Map<Entity, String> entities;
+
+    private final int[] backgroundLayers = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    private final int[] foregroundLayers = new int[] {9};
 
     private static Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
 
@@ -113,11 +117,13 @@ public class GameWorld {
     }
 
     public void render(OrthographicCamera camera, float delta, Batch batch) {
-        level.getMap().render(camera);
+        level.getMap().render(camera, backgroundLayers);
 
         for (Entity entity : entities.keySet()) {
             entity.render(delta, batch);
         }
+
+        level.getMap().render(camera, foregroundLayers);
     }
 
     public void dispose() {

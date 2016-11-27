@@ -35,12 +35,12 @@ public class TexturePaths {
     public static final String COIN_SPRITESHEET = "sprites/coinsheet.png";
 
     //Saw
-    public static final String SAW_TEXTURE = "terrain/Object/saw.png";
+    public static final String SAW_TEXTURE = "map/Object/saw.png";
 
     //Life Item
-    public static final String LIFE_ITEM_TEXTURE = "terrain/Object/life.png";
+    public static final String LIFE_ITEM_TEXTURE = "map/Object/life.png";
 
     //Keys
-    public static final String KEY_TEXTURE = "terrain/Object/key.png";
-    public static final String HUD_KEY_TEXTURE = "terrain/Object/HUD key.png";
+    public static final String KEY_TEXTURE = "map/Object/key.png";
+    public static final String HUD_KEY_TEXTURE = "map/Object/HUD key.png";
 }

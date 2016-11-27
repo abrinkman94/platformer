@@ -2,8 +2,7 @@ package com.brinkman.platformer.input;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.brinkman.platformer.entity.Player;
+import com.brinkman.platformer.entity.actor.Player;
 
 /**
  * Created by Austin on 11/23/2016.

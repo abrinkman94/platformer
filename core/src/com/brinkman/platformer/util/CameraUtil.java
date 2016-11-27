@@ -1,17 +1,14 @@
 package com.brinkman.platformer.util;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-//import com.brinkman.platformer.entity.Actor;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
+//import com.brinkman.platformer.entity.actor.Actor;
 import com.badlogic.gdx.math.Vector3;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.entity.Actor;
-import com.brinkman.platformer.entity.Player;
-import com.brinkman.platformer.terrain.TMXMap;
+import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.map.TMXMap;
 
-import static com.brinkman.platformer.terrain.TMXMap.mapHeight;
-import static com.brinkman.platformer.terrain.TMXMap.mapWidth;
+import static com.brinkman.platformer.map.TMXMap.mapHeight;
+import static com.brinkman.platformer.map.TMXMap.mapWidth;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
 /**

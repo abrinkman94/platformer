@@ -1,9 +1,11 @@
-package com.brinkman.platformer.entity;
+package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.brinkman.platformer.entity.Entity;
+
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
 /**

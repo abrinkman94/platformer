@@ -38,16 +38,16 @@ public final class AssetUtil
 		loadAsset("sprites/running/frame-6-left.png", Texture.class);
 		loadAsset("sprites/running/frame-6-right.png", Texture.class);
 		loadAsset("sprites/coinsheet.png", Texture.class);
-		loadAsset("terrain/Object/saw.png", Texture.class);
-		loadAsset("terrain/Object/life.png", Texture.class);
-		loadAsset("terrain/Object/key.png", Texture.class);
-		loadAsset("terrain/Object/HUD key.png", Texture.class);
+		loadAsset("map/Object/saw.png", Texture.class);
+		loadAsset("map/Object/life.png", Texture.class);
+		loadAsset("map/Object/key.png", Texture.class);
+		loadAsset("map/Object/HUD key.png", Texture.class);
 		ASSET_MANAGER.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
-		loadAsset("terrain/level1.tmx", TiledMap.class);
-		loadAsset("terrain/level2.tmx", TiledMap.class);
-		loadAsset("terrain/level3.tmx", TiledMap.class);
-		loadAsset("terrain/level4.tmx", TiledMap.class);
+		loadAsset("map/level1.tmx", TiledMap.class);
+		loadAsset("map/level2.tmx", TiledMap.class);
+		loadAsset("map/level3.tmx", TiledMap.class);
+		loadAsset("map/level4.tmx", TiledMap.class);
 
 		finishLoading();
 	}

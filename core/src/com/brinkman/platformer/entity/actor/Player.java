@@ -1,24 +1,17 @@
-package com.brinkman.platformer.entity;
+package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.controllers.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
-import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
-import com.brinkman.platformer.util.ControllerMappings;
 
 import java.util.HashMap;
 
-import static com.brinkman.platformer.util.Constants.CONTROLLER_PRESENT;
 import static com.brinkman.platformer.util.Constants.GRAVITY;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 import static com.brinkman.platformer.util.TexturePaths.*;
@@ -37,6 +30,7 @@ public class Player extends Actor {
     private TextureAtlas jumpLeftAtlas;
     private Animation animation;
     private InputFlags inputFlags;
+    private ActorState state;
     private final HashMap<Item, ItemType> items;
 
     private static final int PLAYER_WIDTH = 32;
@@ -63,20 +57,16 @@ public class Player extends Actor {
     /**
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
      */
-    public Player() {
+    public Player(InputFlags inputFlags) {
+        this.inputFlags = inputFlags;
+
         width = PLAYER_WIDTH;
         height = PLAYER_HEIGHT;
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
         items = new HashMap<>();
-        inputFlags = new InputFlags();
-
-        if (CONTROLLER_PRESENT) {
-            Controllers.addListener(new ControllerProcessor(inputFlags, this));
-        } else {
-            Gdx.input.setInputProcessor(new KeyboardProcessor(inputFlags, this));
-        }
+        state = ActorState.IDLE;
 
         initializeTextureAtlas();
 
@@ -177,13 +167,38 @@ public class Player extends Actor {
     }
 
     /**
-     * Sets boolean values for input.
+     * Sets boolean values for input from InputFlags.
      */
     private void setKeyFlags() {
         left = inputFlags.left();
         right = inputFlags.right();
         jump = inputFlags.jump();
         run = inputFlags.run();
+    }
+
+    /**
+     * Sets player states.
+     */
+    private void handleStates() {
+        //JUMPING state
+        if (velocity.y > 0) {
+            state = ActorState.JUMPING;
+        }
+
+        //FALLING state
+        if (velocity.y < 0) {
+            state = ActorState.FALLING;
+        }
+
+        //GROUNDED state
+        if (grounded) {
+            state = ActorState.GROUNDED;
+        }
+
+        //IDLE state
+        if (velocity.x == 0 && velocity.y == 0) {
+            state = ActorState.IDLE;
+        }
     }
 
     //TODO Figure out a way to simplify.
@@ -235,10 +250,12 @@ public class Player extends Actor {
             velocity.y = JUMP_VEL;
 
             //Wall bounce
-            if (touchingRightWall) {
-                xSpeed = xSpeed - WALL_BOUNCE;
-            } else if (touchingLeftWall) {
-                xSpeed = xSpeed + WALL_BOUNCE;
+            if (state == ActorState.FALLING) {
+                if (touchingRightWall) {
+                    xSpeed = run ? xSpeed - (WALL_BOUNCE + 4) : xSpeed - WALL_BOUNCE;
+                } else if (touchingLeftWall) {
+                    xSpeed = run ? xSpeed + (WALL_BOUNCE + 4) : xSpeed + WALL_BOUNCE;
+                }
             }
             grounded = false;
             canJump = false;
@@ -288,6 +305,7 @@ public class Player extends Actor {
     public void render(float dt, Batch batch) {
         handleAnimation();
         handleMovement();
+        handleStates();
 
         elapsedTime += Gdx.graphics.getDeltaTime();
 

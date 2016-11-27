@@ -2,16 +2,22 @@ package com.brinkman.platformer.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.entity.*;
+import com.brinkman.platformer.entity.actor.Coin;
+import com.brinkman.platformer.entity.actor.ItemType;
+import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.entity.actor.Saw;
+import com.brinkman.platformer.input.ControllerProcessor;
+import com.brinkman.platformer.input.InputFlags;
+import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.AssetUtil;
@@ -28,6 +34,7 @@ public class GameScreen implements Screen {
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
     private final Player player;
+    private final InputFlags inputFlags;
     private final Array<Coin> coins;
     private final Array<Saw> saws;
     private final CollisionHandler collisionHandler;
@@ -43,7 +50,8 @@ public class GameScreen implements Screen {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
         gameWorld = new GameWorld(new Level(1, spriteBatch));
-        player = new Player();
+        inputFlags = new InputFlags();
+        player = new Player(inputFlags);
         collisionHandler = new CollisionHandler();
         coins = new Array<>();
         saws = new Array<>();
@@ -51,6 +59,12 @@ public class GameScreen implements Screen {
 
         gameWorld.addEntity(player);
         gameWorld.initializeMapObjects(spriteBatch, coins, saws);
+
+        if (CONTROLLER_PRESENT) {
+            Controllers.addListener(new ControllerProcessor(inputFlags, player));
+        } else {
+            Gdx.input.setInputProcessor(new KeyboardProcessor(inputFlags, player));
+        }
 
         LOGGER.info("Initialized");
     }

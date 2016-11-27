@@ -2,7 +2,6 @@ package com.brinkman.platformer.physics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
@@ -16,8 +15,9 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Timer;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.*;
+import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.level.Level;
-import com.brinkman.platformer.terrain.TMXMap;
+import com.brinkman.platformer.map.TMXMap;
 import com.brinkman.platformer.util.Constants;
 
 import java.util.Iterator;
