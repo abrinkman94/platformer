@@ -3,6 +3,7 @@ package com.brinkman.platformer.entity.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -48,7 +49,7 @@ public class Saw extends Actor
 	}
 
 	public Circle getCircleBounds() {
-		return new Circle(position.x + (width / 2), position.y + (SAW_Y_OFFSET * 1.5f), width * 0.5f);
+		return new Circle(position.x + (width / 2), position.y + (SAW_Y_OFFSET * 3), width * 0.5f);
 	}
 	@Override
 	public Rectangle getBounds() {
