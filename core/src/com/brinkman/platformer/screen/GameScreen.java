@@ -115,14 +115,6 @@ public class GameScreen implements Screen {
             }
         }
 
-        for (Saw saw : saws) {
-            ShapeRenderer renderer = new ShapeRenderer();
-            renderer.setProjectionMatrix(camera.combined);
-            renderer.begin(ShapeRenderer.ShapeType.Line);
-            renderer.circle(saw.getCircleBounds().x, saw.getCircleBounds().y, saw.getCircleBounds().radius);
-            renderer.end();
-        }
-
         //Debug
         if (DEBUG) {
             collisionHandler.debug(gameWorld.getLevel().getMap(), player, camera, saws);

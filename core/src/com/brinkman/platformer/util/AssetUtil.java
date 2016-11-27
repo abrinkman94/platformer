@@ -17,16 +17,19 @@ public final class AssetUtil
 	private AssetUtil() {}
 
 	public static void loadAllAssets() {
+		//Idle frames
 		for (int i = 1; i <= 2; i++) {
 			loadAsset("sprites/Idle/frame-" + i + "-left.png", Texture.class);
 			loadAsset("sprites/Idle/frame-" + i + "-right.png", Texture.class);
 		}
 
+		//Jump frames
 		for (int i = 1; i <= 2; i++) {
 			loadAsset("sprites/Jump/frame-" + i + "-left.png", Texture.class);
 			loadAsset("sprites/Jump/frame-" + i + "-right.png", Texture.class);
 		}
 
+		//Running frames
 		for (int i = 1; i <= 6; i++) {
 			loadAsset("sprites/running/frame-" + i + "-left.png", Texture.class);
 			loadAsset("sprites/running/frame-" + i + "-right.png", Texture.class);
