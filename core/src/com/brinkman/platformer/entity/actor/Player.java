@@ -295,7 +295,7 @@ public class Player extends Actor {
         if (lives > 0) {
             position.set(originPosition);
             velocity.y = 0;
-            lives--;
+        //    lives--;
         } else {
             Gdx.app.exit();
         }
