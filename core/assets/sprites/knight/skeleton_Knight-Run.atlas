@@ -1,0 +1,181 @@
+
+skeleton_Knight-Run.png
+size: 4096,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+skeleton_Knight-Run_0
+  rotate: false
+  xy: 2, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_1
+  rotate: false
+  xy: 365, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_10
+  rotate: false
+  xy: 3632, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_11
+  rotate: false
+  xy: 2, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_12
+  rotate: false
+  xy: 365, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_13
+  rotate: false
+  xy: 728, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_14
+  rotate: false
+  xy: 1091, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_15
+  rotate: false
+  xy: 1454, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_16
+  rotate: false
+  xy: 1817, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_17
+  rotate: false
+  xy: 2180, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_18
+  rotate: false
+  xy: 2543, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_19
+  rotate: false
+  xy: 2906, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_2
+  rotate: false
+  xy: 728, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_20
+  rotate: false
+  xy: 3269, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_21
+  rotate: false
+  xy: 3632, 406
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_22
+  rotate: false
+  xy: 2, 810
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_23
+  rotate: false
+  xy: 365, 810
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_24
+  rotate: false
+  xy: 728, 810
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_3
+  rotate: false
+  xy: 1091, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_4
+  rotate: false
+  xy: 1454, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_5
+  rotate: false
+  xy: 1817, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_6
+  rotate: false
+  xy: 2180, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_7
+  rotate: false
+  xy: 2543, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_8
+  rotate: false
+  xy: 2906, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Run_9
+  rotate: false
+  xy: 3269, 2
+  size: 361, 402
+  orig: 361, 402
+  offset: 0, 0
+  index: -1

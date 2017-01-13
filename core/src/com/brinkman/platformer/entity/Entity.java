@@ -2,6 +2,7 @@ package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Shape2D;
 
 /**
  * Created by Austin on 9/29/2016.
@@ -13,7 +14,7 @@ public interface Entity {
      * Returns the Rectangle bounds of entity.
      * @return Rectangle
      */
-    Rectangle getBounds();
+    Shape2D getBounds();
 
     /**
      * Handles the logic for 'death'.

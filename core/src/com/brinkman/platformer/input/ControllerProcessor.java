@@ -55,10 +55,12 @@ public class ControllerProcessor implements ControllerListener {
         if (axisCode == ControllerMappings.AXIS_LEFT_X) {
             if (value < -0.15f) {
                 inputFlags.setLeft(true);
-            } else if (value > 0.25f) {
-                inputFlags.setRight(true);
             } else {
                 inputFlags.setLeft(false);
+            }
+            if (value > 0.25f) {
+                inputFlags.setRight(true);
+            } else {
                 inputFlags.setRight(false);
             }
         }

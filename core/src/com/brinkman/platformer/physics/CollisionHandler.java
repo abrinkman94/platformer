@@ -19,6 +19,7 @@ import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TMXMap;
 import com.brinkman.platformer.util.Constants;
+import org.w3c.dom.css.Rect;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class CollisionHandler {
      */
     public void handleMapCollision(GameWorld world) {
         Player player = (Player) world.getEntityByValue("player");
-        Rectangle entityBounds = world.getEntityByValue("player").getBounds();
+        Rectangle entityBounds = (Rectangle) world.getEntityByValue("player").getBounds();
         player.setIsGrounded(false);
         player.setCanJump(false);
         player.setTouchingLeftWall(false);
@@ -72,18 +73,21 @@ public class CollisionHandler {
                     if (horizontalDistance > 0) {
                         player.setTouchingRightWall(true);
                         player.getPosition().x = player.getPosition().x - horizontalOverlap;
+                        player.getVelocity().x = 0;
                     } else {
                         player.setTouchingLeftWall(true);
                         player.getPosition().x = player.getPosition().x + horizontalOverlap;
+                        player.getVelocity().x = 0;
                     }
                     player.setCanJump(true);
                 } else {
                     if (verticalDistance > 0) {
                         player.getPosition().y = player.getPosition().y - verticalOverlap;
-                        player.getVelocity().y = -Constants.GRAVITY;
+                        player.getVelocity().y = -(player.getPosition().y - Constants.GRAVITY);
                         player.setCanJump(false);
                     } else {
                         player.getPosition().y = player.getPosition().y + verticalOverlap;
+                        player.getVelocity().y = 0;
                         player.setIsGrounded(true);
                         player.setCanJump(true);
                     }
@@ -98,10 +102,10 @@ public class CollisionHandler {
      */
     public void handleSawCollision(Array<Saw> saws, GameWorld world) {
         Entity player = world.getEntityByValue("player");
-        Rectangle playerBounds = player.getBounds();
+        Rectangle playerBounds = (Rectangle) player.getBounds();
 
         for (Saw saw : saws) {
-            Circle sawBounds = saw.getCircleBounds();
+            Circle sawBounds = (Circle) saw.getBounds();
 
             if (Intersector.overlaps(sawBounds, playerBounds)) {
                 player.handleDeath();
@@ -114,7 +118,7 @@ public class CollisionHandler {
      */
     public void handleCoinCollision(Array<Coin> coins, GameWorld world) {
         Entity player = world.getEntityByValue("player");
-        Rectangle playerBounds = player.getBounds();
+        Rectangle playerBounds = (Rectangle) player.getBounds();
 
         for (Coin coin : coins) {
             Circle coinBounds = coin.getCircleBounds();
@@ -151,13 +155,13 @@ public class CollisionHandler {
      */
     public void handleItemCollision(GameWorld world) {
         Player player = (Player) world.getEntityByValue("player");
-        Rectangle playerBounds = player.getBounds();
+        Rectangle playerBounds = (Rectangle) player.getBounds();
 
         for (Iterator<Map.Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext();) {
             Map.Entry<Entity, String> entry = it.next();
 
             if (entry.getValue().equalsIgnoreCase("item")) {
-                Rectangle itemBounds = entry.getKey().getBounds();
+                Rectangle itemBounds = (Rectangle) entry.getKey().getBounds();
 
                 if (Intersector.overlaps(itemBounds, playerBounds)) {
                     it.remove();
@@ -177,8 +181,8 @@ public class CollisionHandler {
      * @param world GameWorld
      */
     public void handleEnemyCollision(GameWorld world) {
-        Rectangle playerBounds = world.getEntityByValue("player").getBounds();
-        Rectangle enemyBounds = world.getEntityByValue("enemy").getBounds();
+        Rectangle playerBounds = (Rectangle) world.getEntityByValue("player").getBounds();
+        Rectangle enemyBounds = (Rectangle) world.getEntityByValue("enemy").getBounds();
 
         if (playerBounds.overlaps(enemyBounds)) {
             world.getEntityByValue("player").handleDeath();
@@ -204,7 +208,7 @@ public class CollisionHandler {
             Player player = (Player) world.getEntityByValue("player");
 
             if (!world.getLevel().hasKey() || player.getItems().values().contains(ItemType.KEY)) {
-                Rectangle playerBounds = player.getBounds();
+                Rectangle playerBounds = (Rectangle) player.getBounds();
 
                 MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");
 
@@ -270,7 +274,7 @@ public class CollisionHandler {
     }
 
     public void debug(TMXMap map, Player player, OrthographicCamera camera, Array<Saw> saws) {
-        Rectangle playerBounds = player.getBounds();
+        Rectangle playerBounds = (Rectangle) player.getBounds();
 
         for (Rectangle bounds : map.getMapCollisionRectangles()) {
             ShapeRenderer renderer = new ShapeRenderer();
@@ -282,11 +286,11 @@ public class CollisionHandler {
         }
 
         for (Saw saw : saws) {
-            Rectangle sawBounds = saw.getBounds();
+            Circle sawBounds = (Circle) saw.getBounds();
             ShapeRenderer renderer = new ShapeRenderer();
             renderer.setProjectionMatrix(camera.combined);
             renderer.begin(ShapeRenderer.ShapeType.Line);
-            renderer.rect(sawBounds.x, sawBounds.y, sawBounds.width, sawBounds.height);
+            renderer.circle(sawBounds.x, sawBounds.y, sawBounds.radius);
             renderer.end();
         }
     }

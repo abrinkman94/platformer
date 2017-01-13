@@ -48,14 +48,6 @@ public class Saw extends Actor
 		sprite.setOriginCenter();
 	}
 
-	public Circle getCircleBounds() {
-		return new Circle(position.x + (width / 2), position.y + (SAW_Y_OFFSET * 3), width * 0.5f);
-	}
-	@Override
-	public Rectangle getBounds() {
-		return new Rectangle(position.x, position.y + SAW_Y_OFFSET, width, height);
-	}
-
 	@Override
 	public void handleDeath() {
 

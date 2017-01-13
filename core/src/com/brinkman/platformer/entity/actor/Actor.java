@@ -2,7 +2,9 @@ package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.entity.Entity;
 
@@ -74,8 +76,13 @@ public abstract class Actor implements Entity {
      * Returns a new Rectangle, holding the bounds of the Actor.
      * @return Rectangle
      */
-    public Rectangle getBounds() {
-        return new Rectangle(position.x, position.y, width * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
+    public Shape2D getBounds() {
+        if (this instanceof Saw) {
+            return new Circle(position.x + (width / 2), position.y + (0.5f * 3), width * 0.5f);
+        } else if (!(this instanceof Saw)) {
+            return new Rectangle(position.x, position.y, width * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
+        }
+        return null;
     }
 
     /**

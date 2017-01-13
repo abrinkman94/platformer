@@ -28,6 +28,7 @@ public class Player extends Actor {
     private TextureAtlas idleLeftAtlas;
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
+    private TextureAtlas testAtlas;
     private Animation animation;
     private InputFlags inputFlags;
     private ActorState state;
@@ -42,7 +43,7 @@ public class Player extends Actor {
     private static final int JUMP_RIGHT_FRAMES = 4;
     private static final int JUMP_LEFT_FRAMES = 5;
     private static final int JUMP_VEL = 12;
-    private static final int WALL_BOUNCE = 12;
+    private static final int WALL_BOUNCE = 8;
     private static final float ACCELERATION = 0.5f;
     private static final float DECELERATION = 0.3f;
 
@@ -92,18 +93,11 @@ public class Player extends Actor {
                 new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
 
         walkLeftAtlas = new TextureAtlas();
-        walkLeftAtlas.addRegion("frame1",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_LEFT, Texture.class)));
-        walkLeftAtlas.addRegion("frame2",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_LEFT, Texture.class)));
-        walkLeftAtlas.addRegion("frame3",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_LEFT, Texture.class)));
-        walkLeftAtlas.addRegion("frame4",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_LEFT, Texture.class)));
-        walkLeftAtlas.addRegion("frame5",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_LEFT, Texture.class)));
-        walkLeftAtlas.addRegion("frame6",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_LEFT, Texture.class)));
+        for (TextureAtlas.AtlasRegion region : walkRightAtlas.getRegions()) {
+            int i = 0;
+            i++;
+            walkLeftAtlas.addRegion("frame " + i, new TextureRegion(region.getTexture())).flip(true, false);
+        }
 
         idleRightAtlas = new TextureAtlas();
         idleRightAtlas.addRegion("frame1",
@@ -112,18 +106,24 @@ public class Player extends Actor {
                 new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_2_RIGHT, Texture.class)));
 
         idleLeftAtlas = new TextureAtlas();
-        idleLeftAtlas.addRegion("frame1",
-                new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_LEFT, Texture.class)));
-        idleLeftAtlas.addRegion("frame2",
-                new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_LEFT, Texture.class)));
+        for (TextureAtlas.AtlasRegion region : idleRightAtlas.getRegions()) {
+            int i = 0;
+            i++;
+            idleLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        }
 
         jumpRightAtlas = new TextureAtlas();
         jumpRightAtlas.addRegion("frame1",
                 new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_RIGHT, Texture.class)));
 
         jumpLeftAtlas = new TextureAtlas();
-        jumpLeftAtlas.addRegion("frame1",
-                new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_LEFT, Texture.class)));
+        for (TextureAtlas.AtlasRegion region : jumpRightAtlas.getRegions()) {
+            int i = 0;
+            i++;
+            jumpLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        }
+
+        testAtlas = new TextureAtlas("sprites/knight/skeleton_Knight-Iddle.atlas");
     }
 
     /**
@@ -176,6 +176,8 @@ public class Player extends Actor {
         run = inputFlags.run();
     }
 
+    public ActorState getState() { return state; }
+
     /**
      * Sets player states.
      */
@@ -186,7 +188,7 @@ public class Player extends Actor {
         }
 
         //FALLING state
-        if (velocity.y < 0) {
+        if (velocity.y < -0.5) {
             state = ActorState.FALLING;
         }
 
@@ -252,9 +254,9 @@ public class Player extends Actor {
             //Wall bounce
             if (state == ActorState.FALLING) {
                 if (touchingRightWall) {
-                    xSpeed = run ? xSpeed - (WALL_BOUNCE + 4) : xSpeed - WALL_BOUNCE;
+                    xSpeed = run ? xSpeed - (WALL_BOUNCE + 1) : xSpeed - WALL_BOUNCE;
                 } else if (touchingLeftWall) {
-                    xSpeed = run ? xSpeed + (WALL_BOUNCE + 4) : xSpeed + WALL_BOUNCE;
+                    xSpeed = run ? xSpeed + (WALL_BOUNCE + 1) : xSpeed + WALL_BOUNCE;
                 }
             }
             grounded = false;

@@ -2,6 +2,8 @@ package com.brinkman.platformer.util;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -19,19 +21,16 @@ public final class AssetUtil
 	public static void loadAllAssets() {
 		//Idle frames
 		for (int i = 1; i <= 2; i++) {
-			loadAsset("sprites/Idle/frame-" + i + "-left.png", Texture.class);
 			loadAsset("sprites/Idle/frame-" + i + "-right.png", Texture.class);
 		}
 
 		//Jump frames
 		for (int i = 1; i <= 2; i++) {
-			loadAsset("sprites/Jump/frame-" + i + "-left.png", Texture.class);
 			loadAsset("sprites/Jump/frame-" + i + "-right.png", Texture.class);
 		}
 
 		//Running frames
 		for (int i = 1; i <= 6; i++) {
-			loadAsset("sprites/running/frame-" + i + "-left.png", Texture.class);
 			loadAsset("sprites/running/frame-" + i + "-right.png", Texture.class);
 		}
 
@@ -40,6 +39,10 @@ public final class AssetUtil
 		loadAsset("map/Object/life.png", Texture.class);
 		loadAsset("map/Object/key.png", Texture.class);
 		loadAsset("map/Object/HUD key.png", Texture.class);
+		loadAsset("hud/startscreen/button.png", Texture.class);
+		loadAsset("hud/startscreen/button2.png", Texture.class);
+		loadAsset("hud/startscreen/button3.png", Texture.class);
+		loadAsset("hud/startscreen/clouds.png", Texture.class);
 
 		ASSET_MANAGER.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
@@ -51,6 +54,10 @@ public final class AssetUtil
 		for (int i = 1; i <= Constants.NUM_OF_LEVELS; i++) {
 			loadAsset("map/World 1/level" + i + ".tmx", TiledMap.class);
 		}
+
+		loadAsset("audio/Eclipse.mp3", Music.class);
+		loadAsset("audio/heavy_throw_switch.mp3", Sound.class);
+		loadAsset("audio/5-5-14(brinkybeats@gmail.com).mp3", Music.class);
 
 		finishLoading();
 	}

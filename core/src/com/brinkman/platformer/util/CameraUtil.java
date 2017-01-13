@@ -2,6 +2,7 @@ package com.brinkman.platformer.util;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 //import com.brinkman.platformer.entity.actor.Actor;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.actor.Actor;
@@ -60,9 +61,10 @@ public final class CameraUtil
         float zoomStep = 0;
 
         Actor player = (Actor) world.getEntityByValue("player");
+        Rectangle bounds = (Rectangle) player.getBounds();
 
-        boolean reachedHeightToZoom = player.getPosition().y - (player.getBounds().height * 0.5f) >= 8f;
-        boolean isAwayFromMapEdge = player.getBounds().x > 10 && (player.getBounds().x < TMXMap.mapWidth - 10);
+        boolean reachedHeightToZoom = player.getPosition().y - (bounds.height * 0.5f) >= 8f;
+        boolean isAwayFromMapEdge = bounds.x > 10 && (bounds.x < TMXMap.mapWidth - 10);
         boolean zoomOut = reachedHeightToZoom && isAwayFromMapEdge;
 
         if (zoomOut) {

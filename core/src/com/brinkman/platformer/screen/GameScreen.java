@@ -2,19 +2,20 @@ package com.brinkman.platformer.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.loaders.SoundLoader;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.entity.actor.Coin;
-import com.brinkman.platformer.entity.actor.ItemType;
-import com.brinkman.platformer.entity.actor.Player;
-import com.brinkman.platformer.entity.actor.Saw;
+import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
@@ -22,6 +23,8 @@ import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
+
+import java.util.Objects;
 
 import static com.brinkman.platformer.util.Constants.*;
 
@@ -40,13 +43,13 @@ public class GameScreen implements Screen {
     private final CollisionHandler collisionHandler;
     private final HUD hud;
     private GameWorld gameWorld;
-
+    private ParticleEffect pe;
+    private ActorState tempState;
+    private Music gameAudio;
     /**
      * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
      */
     public GameScreen() {
-        AssetUtil.loadAllAssets();
-
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
         gameWorld = new GameWorld(new Level(1, spriteBatch));
@@ -56,6 +59,7 @@ public class GameScreen implements Screen {
         coins = new Array<>();
         saws = new Array<>();
         hud = new HUD(coins, gameWorld);
+        gameAudio = (Music) AssetUtil.getAsset("audio/5-5-14(brinkybeats@gmail.com).mp3", Music.class);
 
         gameWorld.addEntity(player);
         gameWorld.initializeMapObjects(spriteBatch, coins, saws);
@@ -66,37 +70,26 @@ public class GameScreen implements Screen {
             Gdx.input.setInputProcessor(new KeyboardProcessor(inputFlags, player));
         }
 
+        pe = new ParticleEffect();
+        pe.load(Gdx.files.internal("particle/GROUND_LAND"),Gdx.files.internal("particle"));
+        pe.getEmitters().first().getGravity().setHigh(GRAVITY, GRAVITY);
+        pe.start();
+
         LOGGER.info("Initialized");
     }
 
-    @Override
-    public void show() {}
+    public Music getMusic() { return gameAudio; }
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    public void playAudio() {
+        gameAudio.setVolume(0.1f);
+        gameAudio.play();
+    }
 
-        // Update the SpriteBatch projection matrix
-        spriteBatch.setProjectionMatrix(camera.combined);
+    public void stopAudio() {
+        gameAudio.stop();
+    }
 
-        //Renders GameWorld (Entities, Level)
-        gameWorld.render(camera, delta, spriteBatch);
-
-        //Camera utility methods
-        CameraUtil.lerpCameraToActor(player, camera);
-        CameraUtil.handleZoom(gameWorld, camera);
-        CameraUtil.keepCameraInMap(camera);
-
-        //Collision checks
-        collisionHandler.handleMapCollision(gameWorld);
-        collisionHandler.handleSawCollision(saws, gameWorld);
-        collisionHandler.handleCoinCollision(coins, gameWorld);
-        collisionHandler.handleItemCollision(gameWorld);
-        collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
-        collisionHandler.keepActorInMap(player);
-
-        //Placeholder for locked door
+    private void placeholderKeyHandler() {
         if (gameWorld.getLevel().hasKey()) {
             float x = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("y", float.class) * TO_WORLD_UNITS;
@@ -114,6 +107,44 @@ public class GameScreen implements Screen {
                 renderer.end();
             }
         }
+    }
+
+    private void handleCollisions() {
+        collisionHandler.handleMapCollision(gameWorld);
+        collisionHandler.handleSawCollision(saws, gameWorld);
+        collisionHandler.handleCoinCollision(coins, gameWorld);
+        collisionHandler.handleItemCollision(gameWorld);
+        collisionHandler.handleExitCollision(gameWorld, coins, saws, spriteBatch);
+        collisionHandler.keepActorInMap(player);
+    }
+
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        pe.update(delta);
+
+        // Update the SpriteBatch projection matrix
+        spriteBatch.setProjectionMatrix(camera.combined);
+
+        //Renders GameWorld (Entities, Level)
+        gameWorld.render(camera, delta, spriteBatch);
+
+        //Camera utility methods
+        CameraUtil.lerpCameraToActor(player, camera);
+        CameraUtil.handleZoom(gameWorld, camera);
+        CameraUtil.keepCameraInMap(camera);
+
+        //Collision checks
+        handleCollisions();
+
+        //Placeholder for locked door
+        placeholderKeyHandler();
 
         //Debug
         if (DEBUG) {
@@ -125,6 +156,24 @@ public class GameScreen implements Screen {
 
         //Updates camera
         camera.update();
+
+        if (tempState == null) {
+            if (player.getState() == ActorState.FALLING) {
+                tempState = ActorState.FALLING;
+            } else {
+                tempState = null;
+            }
+        }
+
+        //Temporary Particle Effect for landing
+        if (tempState == ActorState.FALLING && (player.getState() == ActorState.IDLE || player.getState() == ActorState.GROUNDED)) {
+            spriteBatch.begin();
+            pe.getEmitters().first().setPosition(player.getPosition().x, player.getPosition().y);
+            pe.draw(spriteBatch);
+            spriteBatch.end();
+            if (pe.isComplete())
+                pe.reset();
+        }
     }
 
     @Override
@@ -153,6 +202,7 @@ public class GameScreen implements Screen {
         spriteBatch.dispose();
         hud.dispose();
         gameWorld.dispose();
+        gameAudio.dispose();
 
         LOGGER.info("Disposed");
     }

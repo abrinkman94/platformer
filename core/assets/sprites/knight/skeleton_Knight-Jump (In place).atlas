@@ -1,0 +1,216 @@
+
+skeleton_Knight-Jump (In place).png
+size: 4096,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+skeleton_Knight-Jump (In place)_0
+  rotate: false
+  xy: 2, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_29
+  rotate: false
+  xy: 2, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_1
+  rotate: false
+  xy: 328, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_10
+  rotate: false
+  xy: 3262, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_11
+  rotate: false
+  xy: 3588, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_12
+  rotate: false
+  xy: 2, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_13
+  rotate: false
+  xy: 328, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_14
+  rotate: false
+  xy: 654, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_15
+  rotate: false
+  xy: 980, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_16
+  rotate: false
+  xy: 1306, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_17
+  rotate: false
+  xy: 1632, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_18
+  rotate: false
+  xy: 1958, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_19
+  rotate: false
+  xy: 2284, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_2
+  rotate: false
+  xy: 654, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_20
+  rotate: false
+  xy: 2610, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_21
+  rotate: false
+  xy: 2936, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_22
+  rotate: false
+  xy: 3262, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_23
+  rotate: false
+  xy: 3588, 419
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_24
+  rotate: false
+  xy: 2, 836
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_25
+  rotate: false
+  xy: 328, 836
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_26
+  rotate: false
+  xy: 654, 836
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_27
+  rotate: false
+  xy: 980, 836
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_28
+  rotate: false
+  xy: 1306, 836
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_3
+  rotate: false
+  xy: 980, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_4
+  rotate: false
+  xy: 1306, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_5
+  rotate: false
+  xy: 1632, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_6
+  rotate: false
+  xy: 1958, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_7
+  rotate: false
+  xy: 2284, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_8
+  rotate: false
+  xy: 2610, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Jump (In place)_9
+  rotate: false
+  xy: 2936, 2
+  size: 324, 415
+  orig: 324, 415
+  offset: 0, 0
+  index: -1

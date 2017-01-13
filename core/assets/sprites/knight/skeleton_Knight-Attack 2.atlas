@@ -1,0 +1,146 @@
+
+skeleton_Knight-Attack 2.png
+size: 4096,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+skeleton_Knight-Attack 2_0
+  rotate: false
+  xy: 2, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_19
+  rotate: false
+  xy: 2, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_1
+  rotate: false
+  xy: 487, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_10
+  rotate: false
+  xy: 972, 470
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_11
+  rotate: false
+  xy: 1457, 470
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_12
+  rotate: false
+  xy: 1942, 470
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_13
+  rotate: false
+  xy: 2427, 470
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_14
+  rotate: false
+  xy: 2912, 470
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_15
+  rotate: false
+  xy: 3397, 470
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_16
+  rotate: false
+  xy: 2, 938
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_17
+  rotate: false
+  xy: 487, 938
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_18
+  rotate: false
+  xy: 972, 938
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_2
+  rotate: false
+  xy: 972, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_3
+  rotate: false
+  xy: 1457, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_4
+  rotate: false
+  xy: 1942, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_5
+  rotate: false
+  xy: 2427, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_6
+  rotate: false
+  xy: 2912, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_7
+  rotate: false
+  xy: 3397, 2
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_8
+  rotate: false
+  xy: 2, 470
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Attack 2_9
+  rotate: false
+  xy: 487, 470
+  size: 483, 466
+  orig: 483, 466
+  offset: 0, 0
+  index: -1

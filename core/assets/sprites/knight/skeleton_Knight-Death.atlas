@@ -1,0 +1,153 @@
+
+skeleton_Knight-Death.png
+size: 4096,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+skeleton_Knight-Death_0
+  rotate: false
+  xy: 2, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_1
+  rotate: false
+  xy: 424, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_10
+  rotate: false
+  xy: 424, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_11
+  rotate: false
+  xy: 846, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_12
+  rotate: false
+  xy: 1268, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_13
+  rotate: false
+  xy: 1690, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_14
+  rotate: false
+  xy: 2112, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_15
+  rotate: false
+  xy: 2534, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_16
+  rotate: false
+  xy: 2956, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_17
+  rotate: false
+  xy: 3378, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_18
+  rotate: false
+  xy: 3378, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_19
+  rotate: false
+  xy: 3378, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_20
+  rotate: false
+  xy: 3378, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_2
+  rotate: false
+  xy: 846, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_3
+  rotate: false
+  xy: 1268, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_4
+  rotate: false
+  xy: 1690, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_5
+  rotate: false
+  xy: 2112, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_6
+  rotate: false
+  xy: 2534, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_7
+  rotate: false
+  xy: 2956, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_8
+  rotate: false
+  xy: 3378, 2
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
+skeleton_Knight-Death_9
+  rotate: false
+  xy: 2, 470
+  size: 420, 466
+  orig: 420, 466
+  offset: 0, 0
+  index: -1
