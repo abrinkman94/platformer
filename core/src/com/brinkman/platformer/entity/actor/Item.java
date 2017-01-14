@@ -3,10 +3,21 @@ package com.brinkman.platformer.entity.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
+
+import java.util.Iterator;
+import java.util.Map;
+
+import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
 /**
  * Created by Austin on 11/7/2016.
@@ -20,8 +31,8 @@ public class Item extends Actor {
     public Item(String texturePath, ItemType itemType, float x, float y) {
         this.itemType = itemType;
 
-        height = 40 * Constants.TO_WORLD_UNITS;
-        width = 39 * Constants.TO_WORLD_UNITS;
+        height = 40 * TO_WORLD_UNITS;
+        width = 39 * TO_WORLD_UNITS;
         position = new Vector2(x, y);
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
@@ -31,11 +42,25 @@ public class Item extends Actor {
         sprite.setPosition(position.x, position.y);
     }
 
-    public ItemType getItemType() { return itemType; }
+    @Override
+    public Shape2D getBounds() {
+        return new Rectangle(position.x, position.y, width * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
+    }
 
     @Override
-    public void handleDeath() {
+    public void handleCollisionEvent(GameWorld world) {
+        Player player = (Player) world.getEntityByValue("player");
+        Rectangle playerBounds = (Rectangle) player.getBounds();
 
+        if (Intersector.overlaps((Rectangle) getBounds(), playerBounds)) {
+            world.removeEntity(this);
+
+            if (itemType == ItemType.LIFE) {
+                player.setLives(player.getLives() + 1);
+            } else if (itemType == ItemType.KEY) {
+                player.getItems().put(this, ItemType.KEY);
+            }
+        }
     }
 
     @Override
@@ -47,6 +72,8 @@ public class Item extends Actor {
 
     @Override
     public void dispose() {
+        texture.dispose();
+
         LOGGER.info("Disposed");
     }
 }

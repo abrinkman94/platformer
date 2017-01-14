@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.util.Constants;
 
@@ -13,12 +14,9 @@ import com.brinkman.platformer.util.Constants;
  */
 public class Enemy extends Actor
 {
-	private SpriteBatch batch;
-
 	private boolean isDead;
 
-	public Enemy(SpriteBatch batch) {
-		this.batch = batch;
+	public Enemy() {
 		position = new Vector2(4, originPosition.y);
 		width = 32 * Constants.TO_WORLD_UNITS;
 		height = 64 * Constants.TO_WORLD_UNITS;
@@ -50,6 +48,11 @@ public class Enemy extends Actor
 
 	@Override
 	public void dispose() {
+
+	}
+
+	@Override
+	public void handleCollisionEvent(GameWorld world) {
 
 	}
 }

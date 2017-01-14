@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
@@ -74,6 +73,7 @@ public final class AssetUtil
 	/**
 	 * Returns asset, at assetPath, from the AssetManager.
 	 * @param assetPath String path to asset
+	 * @param assetClass Class
 	 *
 	 * @return assetPath class
 	 */

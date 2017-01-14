@@ -73,17 +73,9 @@ public abstract class Actor implements Entity {
     protected String orientation;
 
     /**
-     * Returns a new Rectangle, holding the bounds of the Actor.
-     * @return Rectangle
+     * Optional method to handle death of Actor.
      */
-    public Shape2D getBounds() {
-        if (this instanceof Saw) {
-            return new Circle(position.x + (width / 2), position.y + (0.5f * 3), width * 0.5f);
-        } else if (!(this instanceof Saw)) {
-            return new Rectangle(position.x, position.y, width * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
-        }
-        return null;
-    }
+    public void handleDeath() {};
 
     /**
      * .
@@ -109,6 +101,10 @@ public abstract class Actor implements Entity {
      */
     public float getWidth() { return width; }
 
+    /**
+     * Sets the Actor's width.
+     * @param width float
+     */
     public void setWidth(float width) { this.width = width; }
 
     /**
@@ -117,6 +113,10 @@ public abstract class Actor implements Entity {
      */
     public float getHeight() { return height; }
 
+    /**
+     * Sets the Actor's height.
+     * @param height float
+     */
     public void setHeight(float height) { this.height = height; }
 
     /**

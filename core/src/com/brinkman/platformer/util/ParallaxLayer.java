@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Austin on 8/26/2016.
  */
 public class ParallaxLayer {
-    public TextureRegion region ;
+    public TextureRegion region;
     public Vector2 parallaxRatio;
     public Vector2 startPosition;
     public Vector2 padding ;

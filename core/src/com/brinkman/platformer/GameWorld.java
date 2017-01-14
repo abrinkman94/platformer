@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.*;
@@ -22,26 +23,52 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
  */
 public class GameWorld {
     private Level level;
-    private Map<Entity, String> entities;
+    private final Map<Entity, String> entities;
+    private final Array<Shape2D> collidables;
+    private final Array<Coin> coins;
 
-    private final int[] backgroundLayers = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    private final int[] foregroundLayers = new int[] {9};
+    private final int[] backgroundLayers = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    private final int[] foregroundLayers = {9};
 
-    private static Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
+    private static final Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
 
+    /**
+     * Generates GameWorld containing the Level and all objects within.
+     * @param level Level
+     */
     public GameWorld(Level level) {
         this.level = level;
         entities = new HashMap<>(128);
+        collidables = new Array<>();
+        coins = new Array<>();
 
         LOGGER.info("Initialized");
     }
 
+    /**
+     * Returns current Level of GameWorld.
+     * @return Level
+     */
     public Level getLevel() { return level; }
 
+    /**
+     * Sets Level of GameWorld.
+     * @param level Level
+     */
     public void setLevel(Level level) { this.level = level; }
 
+    /**
+     * Returns Map(Entity, String) of entities.
+     * @return Map
+     */
     public Map<Entity, String> getEntities() { return entities; }
 
+    /**
+     * Returns Entity with given value.
+     * @param value String
+     *
+     * @return Entity
+     */
     public Entity getEntityByValue(String value) {
         for (Map.Entry<Entity, String> entry : entities.entrySet()) {
             if (Objects.equals(value, entry.getValue())) {
@@ -52,6 +79,10 @@ public class GameWorld {
         return null;
     }
 
+    /**
+     * Adds Entity to Map.
+     * @param entity Entity
+     */
     public void addEntity(Entity entity) {
         if (entity instanceof Player) {
             entities.put(entity, "player");
@@ -69,19 +100,30 @@ public class GameWorld {
         }
     }
 
+    /**
+     * Removes Entity from Map.
+     * @param entity Entity
+     */
     public void removeEntity(Entity entity) {
         entities.remove(entity);
     }
 
-    public void initializeMapObjects(SpriteBatch batch, Array<Coin> coins, Array<Saw> saws) {
+    public Array<Coin> getCoins() { return coins; }
+
+    /**
+     * Initializes all dynamic objects in Level.
+     * @param batch SpriteBatch
+     */
+    public void initializeMapObjects(SpriteBatch batch) {
         for (MapObject object : level.getMap().getMapObjects("coins")) {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
             final float coinYOffset = 1.0f;
-            Coin coin = new Coin(batch, x, y + coinYOffset);
+            Coin coin = new Coin(x, y + coinYOffset);
             coins.add(coin);
             addEntity(coin);
+            collidables.add(coin.getBounds());
         }
 
         if (level.getMap().getMapObjects("saw") != null) {
@@ -90,8 +132,8 @@ public class GameWorld {
                 float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
                 Saw saw = new Saw(batch, x, y);
-                saws.add(saw);
                 addEntity(saw);
+                collidables.add(saw.getBounds());
             }
         }
 
@@ -102,6 +144,7 @@ public class GameWorld {
 
                 Item item = new Item(TexturePaths.LIFE_ITEM_TEXTURE, ItemType.LIFE, x, y + 1);
                 addEntity(item);
+                collidables.add(item.getBounds());
             }
         }
 
@@ -112,10 +155,17 @@ public class GameWorld {
 
                 Item key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y + 1);
                 addEntity(key);
+                collidables.add(key.getBounds());
             }
         }
     }
 
+    /**
+     * Renders the GameWorld.
+     * @param camera OrthographicCamera
+     * @param delta float
+     * @param batch SpriteBatch
+     */
     public void render(OrthographicCamera camera, float delta, Batch batch) {
         level.getMap().render(camera, backgroundLayers);
 
@@ -126,6 +176,9 @@ public class GameWorld {
         level.getMap().render(camera, foregroundLayers);
     }
 
+    /**
+     * Disposes of disposable data in GameWorld.
+     */
     public void dispose() {
         level.dispose();
         entities.keySet().forEach(Entity::dispose);

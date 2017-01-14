@@ -1,6 +1,7 @@
 package com.brinkman.platformer.input;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.brinkman.platformer.entity.actor.Player;
 
@@ -8,8 +9,8 @@ import com.brinkman.platformer.entity.actor.Player;
  * Created by Austin on 11/23/2016.
  */
 public class KeyboardProcessor implements InputProcessor {
-    private InputFlags inputFlags;
-    private Player player;
+    private final InputFlags inputFlags;
+    private final Player player;
 
     public KeyboardProcessor(InputFlags inputFlags, Player player) {
         this.inputFlags = inputFlags;
@@ -18,17 +19,17 @@ public class KeyboardProcessor implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.LEFT) {
+        if (keycode == Keys.LEFT) {
             inputFlags.setLeft(true);
-        } else if (keycode == Input.Keys.RIGHT) {
+        } else if (keycode == Keys.RIGHT) {
             inputFlags.setRight(true);
         }
 
-        if (keycode == Input.Keys.SHIFT_LEFT) {
+        if (keycode == Keys.SHIFT_LEFT) {
             inputFlags.setRun(true);
         }
 
-        if (keycode == Input.Keys.SPACE) {
+        if (keycode == Keys.SPACE) {
             inputFlags.setJump(true);
         }
         return false;
@@ -36,16 +37,16 @@ public class KeyboardProcessor implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == Input.Keys.LEFT) {
+        if (keycode == Keys.LEFT) {
             inputFlags.setLeft(false);
         }
-        if (keycode == Input.Keys.RIGHT) {
+        if (keycode == Keys.RIGHT) {
             inputFlags.setRight(false);
         }
-        if (keycode == Input.Keys.SHIFT_LEFT) {
+        if (keycode == Keys.SHIFT_LEFT) {
             inputFlags.setRun(false);
         }
-        if (keycode == Input.Keys.SPACE) {
+        if (keycode == Keys.SPACE) {
             inputFlags.setJump(false);
             player.setJustJumped(false);
         }

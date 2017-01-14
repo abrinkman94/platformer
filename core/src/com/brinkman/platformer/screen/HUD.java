@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Coin;
 import com.brinkman.platformer.entity.actor.ItemType;
@@ -27,21 +28,17 @@ public class HUD {
     private final Label livesLabel;
     private final Label levelLabel;
     private final Image keyImage;
-    private final Array<Coin> coins;
     private final GameWorld world;
 
     private static final Logger LOGGER = new Logger(HUD.class.getName(), Logger.DEBUG);
 
     /**
      * Constructs the Heads-Up Display Object.
-     * @param coins Array Coin
      * @param world GameWorld
      */
-    public HUD(Array<Coin> coins, GameWorld world) {
-        this.coins = coins;
+    public HUD(GameWorld world) {
         stage = new Stage();
         this.world = world;
-
         keyImage = new Image((Texture) AssetUtil.getAsset(TexturePaths.HUD_KEY_TEXTURE, Texture.class));
         keyImage.setVisible(false);
 
@@ -69,8 +66,9 @@ public class HUD {
      */
     public void render(float delta) {
         //Update coin label
-        if (coins.size > 0) {
-            coinLabel.setText("Coins Left: " + coins.size);
+
+        if (world.getCoins().size > 0) {
+            coinLabel.setText("Coins Left: " + world.getCoins().size);
         } else {
             coinLabel.setText("Turn In!");
         }

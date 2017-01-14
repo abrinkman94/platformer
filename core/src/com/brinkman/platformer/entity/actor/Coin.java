@@ -4,10 +4,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
+import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
 
@@ -19,23 +24,19 @@ import static com.brinkman.platformer.util.Constants.*;
 public class Coin extends Actor {
     private static final Logger LOGGER = new Logger("Coin", Logger.DEBUG);
 
-    private final Batch batch;
-    private Animation animations;
+    private final Animation animations;
     private final TextureRegion[][] tmp;
     private final TextureRegion[] textureRegions;
 
-    private boolean isCollected;
     private static final float ANIMATION_TIME = 0.025f;
     private static final int COIN_SIZE = 64;
 
     /**
      * Constructs the Coin object.
-     * @param batch SpriteBatch
      * @param x float x position
      * @param y float y position
      */
-    public Coin(Batch batch, float x, float y) {
-        this.batch = batch;
+    public Coin(float x, float y) {
         elapsedTime = 0;
         position = new Vector2(x, y);
         width = COIN_SIZE * TO_WORLD_UNITS;
@@ -56,25 +57,45 @@ public class Coin extends Actor {
         animations = new Animation(ANIMATION_TIME, textureRegions);
     }
 
-    public Circle getCircleBounds() { return new Circle(position.x + (width / 2),
-            position.y, width * 0.5f); }
-
-    public void setIsCollected(boolean isCollected) { this.isCollected = isCollected; }
-
-    public boolean isCollected() { return isCollected; }
-
-    public Animation getAnimations() { return animations; }
-
-    public void animateCollect(float width, float height, float increment) {
-        width += increment;
-        height += increment;
-
-        this.width = width;
-        this.height = height;
+    @Override
+    public Shape2D getBounds() {
+        return new Circle(position.x + (width / 2),
+              position.y, width * 0.5f);
     }
 
     @Override
-    public void handleDeath() {}
+    public void handleCollisionEvent(GameWorld world) {
+        Entity player = world.getEntityByValue("player");
+        Rectangle playerBounds = (Rectangle) player.getBounds();
+        boolean isCollected = Intersector.overlaps((Circle) getBounds(), playerBounds);
+
+        if (isCollected) {
+            world.getCoins().removeValue(this, true);
+
+            animations.setFrameDuration(0.002f);
+
+            if (getWidth() > 0.1f) {
+                animateCollect(-0.05f);
+            }
+
+            Timer timer = new Timer();
+            timer.scheduleTask(new Task() {
+                @Override
+                public void run() {
+                    removeCoinFromWorld(world);
+                }
+            }, .30f);
+        }
+    }
+
+    private void removeCoinFromWorld(GameWorld world) {
+        world.removeEntity(this);
+    }
+
+    private void animateCollect(float increment) {
+        width += increment;
+        height += increment;
+    }
 
     @Override
     public void render(float dt, Batch batch) {

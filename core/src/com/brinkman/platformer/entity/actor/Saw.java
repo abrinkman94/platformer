@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
 
@@ -16,11 +17,8 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 /**
  * @author Austin Brinkman.
  */
-public class Saw extends Actor
-{
+public class Saw extends Actor {
 	private static final Logger LOGGER = new Logger(Saw.class.getName(), Logger.DEBUG);
-
-	private final Batch batch;
 
 	private static final float SAW_SPEED = 100.0f;
 	private static final float SAW_WIDTH = 128;
@@ -30,12 +28,10 @@ public class Saw extends Actor
 
 	/**
 	 * Constructs the Saw object.
-	 * @param batch SpriteBatch
 	 * @param x float x position
 	 * @param y float y position
 	 */
-	public Saw(Batch batch, float x, float y) {
-		this.batch = batch;
+	public Saw(float x, float y) {
 		position = new Vector2(x, y);
 		width = SAW_WIDTH * TO_WORLD_UNITS;
 		height = SAW_HEIGHT * TO_WORLD_UNITS;
@@ -49,8 +45,18 @@ public class Saw extends Actor
 	}
 
 	@Override
-	public void handleDeath() {
+	public Shape2D getBounds() {
+		return new Circle(position.x + (width / 2), position.y + (0.5f * 3), width * 0.5f);
+	}
 
+	@Override
+	public void handleCollisionEvent(GameWorld world) {
+		Actor player = (Actor) world.getEntityByValue("player");
+		Rectangle playerBounds = (Rectangle) player.getBounds();
+
+		if (Intersector.overlaps((Circle) getBounds(), playerBounds)) {
+			player.handleDeath();
+		}
 	}
 
 	@Override

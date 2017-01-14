@@ -15,8 +15,8 @@ import com.brinkman.platformer.util.ControllerMappings;
 public class ControllerProcessor implements ControllerListener {
     private static final Logger LOGGER = new Logger(ControllerProcessor.class.getName(), Logger.DEBUG);
 
-    private InputFlags inputFlags;
-    private Player player;
+    private final InputFlags inputFlags;
+    private final Player player;
 
     public ControllerProcessor(InputFlags inputFlags, Player player) {
         this.inputFlags = inputFlags;
@@ -66,7 +66,7 @@ public class ControllerProcessor implements ControllerListener {
         }
 
         if (axisCode == ControllerMappings.AXIS_LEFT_TRIGGER) {
-            if (value >= 0.25f || value <= -0.25f) {
+            if ((value >= 0.25f) || (value <= -0.25f)) {
                 inputFlags.setRun(true);
             } else {
                 inputFlags.setRun(false);

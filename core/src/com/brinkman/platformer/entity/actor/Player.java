@@ -4,13 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.brinkman.platformer.util.Constants.GRAVITY;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
@@ -28,11 +33,10 @@ public class Player extends Actor {
     private TextureAtlas idleLeftAtlas;
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
-    private TextureAtlas testAtlas;
     private Animation animation;
-    private InputFlags inputFlags;
+    private final InputFlags inputFlags;
     private ActorState state;
-    private final HashMap<Item, ItemType> items;
+    private final Map<Item, ItemType> items;
 
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
@@ -46,6 +50,7 @@ public class Player extends Actor {
     private static final int WALL_BOUNCE = 8;
     private static final float ACCELERATION = 0.5f;
     private static final float DECELERATION = 0.3f;
+    private static final float ANIMATION_TIME = 0.06f;
 
     private boolean left;
     private boolean right;
@@ -60,18 +65,27 @@ public class Player extends Actor {
      */
     public Player(InputFlags inputFlags) {
         this.inputFlags = inputFlags;
-
         width = PLAYER_WIDTH;
         height = PLAYER_HEIGHT;
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
-        items = new HashMap<>();
+        items = new HashMap<>(8);
         state = ActorState.IDLE;
 
         initializeTextureAtlas();
 
         LOGGER.info("Initialized");
+    }
+
+    @Override
+    public Shape2D getBounds() {
+        return new Rectangle(position.x, position.y, width, height);
+    }
+
+    @Override
+    public void handleCollisionEvent(GameWorld world) {
+
     }
 
     /**
@@ -93,7 +107,7 @@ public class Player extends Actor {
                 new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
 
         walkLeftAtlas = new TextureAtlas();
-        for (TextureAtlas.AtlasRegion region : walkRightAtlas.getRegions()) {
+        for (AtlasRegion region : walkRightAtlas.getRegions()) {
             int i = 0;
             i++;
             walkLeftAtlas.addRegion("frame " + i, new TextureRegion(region.getTexture())).flip(true, false);
@@ -106,7 +120,7 @@ public class Player extends Actor {
                 new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_2_RIGHT, Texture.class)));
 
         idleLeftAtlas = new TextureAtlas();
-        for (TextureAtlas.AtlasRegion region : idleRightAtlas.getRegions()) {
+        for (AtlasRegion region : idleRightAtlas.getRegions()) {
             int i = 0;
             i++;
             idleLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
@@ -117,13 +131,11 @@ public class Player extends Actor {
                 new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_RIGHT, Texture.class)));
 
         jumpLeftAtlas = new TextureAtlas();
-        for (TextureAtlas.AtlasRegion region : jumpRightAtlas.getRegions()) {
+        for (AtlasRegion region : jumpRightAtlas.getRegions()) {
             int i = 0;
             i++;
             jumpLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
         }
-
-        testAtlas = new TextureAtlas("sprites/knight/skeleton_Knight-Iddle.atlas");
     }
 
     /**
@@ -131,7 +143,7 @@ public class Player extends Actor {
      * life items.
      * @return HashMap Item, ItemType
      */
-    public HashMap<Item, ItemType> getItems() { return items; }
+    public Map<Item, ItemType> getItems() { return items; }
 
     /**
      * Handles the switching of animations.
@@ -139,19 +151,19 @@ public class Player extends Actor {
     private void handleAnimation() {
         switch(currentAnimation) {
             case IDLE_RIGHT_FRAMES:
-                animation = new Animation(0.06f, idleRightAtlas.getRegions());
+                animation = new Animation(ANIMATION_TIME, idleRightAtlas.getRegions());
                 animation.setPlayMode(PlayMode.LOOP);
                 break;
             case IDLE_LEFT_FRAMES:
-                animation = new Animation(0.06f, idleLeftAtlas.getRegions());
+                animation = new Animation(ANIMATION_TIME, idleLeftAtlas.getRegions());
                 animation.setPlayMode(PlayMode.LOOP);
                 break;
             case WALK_RIGHT_FRAMES:
-                animation = new Animation(0.06f, walkRightAtlas.getRegions());
+                animation = new Animation(ANIMATION_TIME, walkRightAtlas.getRegions());
                 animation.setPlayMode(PlayMode.LOOP);
                 break;
             case WALK_LEFT_FRAMES:
-                animation = new Animation(0.06f, walkLeftAtlas.getRegions());
+                animation = new Animation(ANIMATION_TIME, walkLeftAtlas.getRegions());
                 animation.setPlayMode(PlayMode.LOOP);
                 break;
             case JUMP_RIGHT_FRAMES:
@@ -176,6 +188,10 @@ public class Player extends Actor {
         run = inputFlags.run();
     }
 
+    /**
+     * Returns the current enum ActorState of the player.
+     * @return ActorState
+     */
     public ActorState getState() { return state; }
 
     /**
@@ -219,29 +235,21 @@ public class Player extends Actor {
         if (left && runningLeft) {
             xSpeed = xSpeed - ACCELERATION;
             orientation = "left";
-            currentAnimation = jump && !grounded ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
+            currentAnimation = (jump && !grounded) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
         } else if (right && runningRight) {
             xSpeed = xSpeed + ACCELERATION;
             orientation = "right";
-            currentAnimation = jump && !grounded ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
+            currentAnimation = (jump && !grounded) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
         } else {
             if(xSpeed > DECELERATION) {
-                if (grounded) {
-                    xSpeed -= DECELERATION;
-                } else {
-                    xSpeed -= (DECELERATION / 3);
-                }
+                xSpeed -= grounded ? DECELERATION : (DECELERATION / 3);
             } else if(xSpeed < -DECELERATION) {
-                if (grounded) {
-                    xSpeed += DECELERATION;
-                } else {
-                    xSpeed += (DECELERATION / 3);
-                }
+                xSpeed += grounded ? DECELERATION : (DECELERATION / 3);
             } else {
                 if ("right".equalsIgnoreCase(orientation)) {
-                    currentAnimation = jump && !grounded ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+                    currentAnimation = (jump && !grounded) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
                 } else {
-                    currentAnimation = jump && !grounded ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
+                    currentAnimation = (jump && !grounded) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
                 }
                 xSpeed = 0;
             }
@@ -252,11 +260,11 @@ public class Player extends Actor {
             velocity.y = JUMP_VEL;
 
             //Wall bounce
-            if (state == ActorState.FALLING) {
+            if (state != ActorState.GROUNDED) {
                 if (touchingRightWall) {
-                    xSpeed = run ? xSpeed - (WALL_BOUNCE + 1) : xSpeed - WALL_BOUNCE;
+                    xSpeed = run ? (xSpeed - (WALL_BOUNCE + 1)) : (xSpeed - WALL_BOUNCE);
                 } else if (touchingLeftWall) {
-                    xSpeed = run ? xSpeed + (WALL_BOUNCE + 1) : xSpeed + WALL_BOUNCE;
+                    xSpeed = run ? (xSpeed + (WALL_BOUNCE + 1)) : (xSpeed + WALL_BOUNCE);
                 }
             }
             grounded = false;
@@ -274,10 +282,22 @@ public class Player extends Actor {
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
 
+    /**
+     * Sets boolean touchingRightWall. True if the player is touching a wall to the right, else false.
+     * @param touching boolean
+     */
     public void setTouchingRightWall(boolean touching) { touchingRightWall = touching; }
 
+    /**
+     * Sets boolean touchingLeftWall. True if the player is touching a wall to the left, else false.
+     * @param touching boolean
+     */
     public void setTouchingLeftWall(boolean touching) { touchingLeftWall = touching; }
 
+    /**
+     * Sets boolean justJumped.  True if the player just jumped, else false.
+     * @param justJumped boolean
+     */
     public void setJustJumped(boolean justJumped) { this.justJumped = justJumped; }
 
     /**
@@ -326,7 +346,7 @@ public class Player extends Actor {
         }
 
         //Handle player falling off map
-        if (position.x < 0 || position.y < 0){
+        if ((position.x < 0) || (position.y < 0)){
             handleDeath();
         }
     }
