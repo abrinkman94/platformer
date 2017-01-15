@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
@@ -26,6 +27,8 @@ import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.brinkman.platformer.util.Constants.*;
@@ -50,7 +53,7 @@ public class GameScreen implements Screen {
     public GameScreen() {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
-        gameWorld = new GameWorld(new Level(1, spriteBatch));
+        gameWorld = new GameWorld(new Level(7, spriteBatch));
         InputFlags inputFlags = new InputFlags();
         player = new Player(inputFlags);
         collisionHandler = new CollisionHandler();
@@ -98,8 +101,8 @@ public class GameScreen implements Screen {
         collisionHandler.handleExitCollision(gameWorld, spriteBatch);
         collisionHandler.keepActorInMap(player);
 
-        for (Collidable collidable : gameWorld.getEntities().keySet()) {
-            collidable.handleCollisionEvent(gameWorld);
+        for (Entity entity : gameWorld.getEntities().keySet()) {
+            entity.handleCollisionEvent(gameWorld);
         }
     }
 

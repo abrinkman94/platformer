@@ -53,13 +53,12 @@ public class Item extends Actor {
         Rectangle playerBounds = (Rectangle) player.getBounds();
 
         if (Intersector.overlaps((Rectangle) getBounds(), playerBounds)) {
-            world.removeEntity(this);
-
             if (itemType == ItemType.LIFE) {
                 player.setLives(player.getLives() + 1);
             } else if (itemType == ItemType.KEY) {
                 player.getItems().put(this, ItemType.KEY);
             }
+            world.removeEntity(this);
         }
     }
 

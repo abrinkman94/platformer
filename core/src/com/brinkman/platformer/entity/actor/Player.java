@@ -16,6 +16,8 @@ import com.brinkman.platformer.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.brinkman.platformer.util.Constants.GRAVITY;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
@@ -36,7 +38,7 @@ public class Player extends Actor {
     private Animation animation;
     private final InputFlags inputFlags;
     private ActorState state;
-    private final Map<Item, ItemType> items;
+    private final ConcurrentMap<Item, ItemType> items;
 
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
@@ -71,7 +73,7 @@ public class Player extends Actor {
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
-        items = new HashMap<>(8);
+        items = new ConcurrentHashMap<>(8);
         state = ActorState.IDLE;
 
         initializeTextureAtlas();
@@ -308,6 +310,7 @@ public class Player extends Actor {
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
+        canJump = false;
     }
 
     /**
