@@ -15,6 +15,7 @@ import com.brinkman.platformer.util.TexturePaths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -37,7 +38,7 @@ public class GameWorld {
      */
     public GameWorld(Level level) {
         this.level = level;
-        entities = new HashMap<>(128);
+        entities = new ConcurrentHashMap<>(128);
         coins = new Array<>();
 
         LOGGER.info("Initialized");
@@ -128,7 +129,7 @@ public class GameWorld {
                 float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Saw saw = new Saw(x, y);
+                Entity saw = new Saw(x, y);
                 addEntity(saw);
             }
         }
@@ -138,7 +139,7 @@ public class GameWorld {
                 float x = itemObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = itemObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Item item = new Item(TexturePaths.LIFE_ITEM_TEXTURE, ItemType.LIFE, x, y + 1);
+                Entity item = new Item(TexturePaths.LIFE_ITEM_TEXTURE, ItemType.LIFE, x, y + 1);
                 addEntity(item);
             }
         }
@@ -148,7 +149,7 @@ public class GameWorld {
                 float x = keyObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = keyObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Item key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y + 1);
+                Entity key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y + 1);
                 addEntity(key);
             }
         }

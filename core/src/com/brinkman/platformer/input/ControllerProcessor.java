@@ -37,8 +37,14 @@ public class ControllerProcessor implements ControllerListener {
 
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
-        if (buttonCode == ControllerMappings.BUTTON_A) {
+        if (controller.getName().contains("Xbox")) {
+            if (buttonCode == ControllerMappings.BUTTON_A) {
                 inputFlags.setJump(true);
+            }
+        } else {
+            if (buttonCode == ControllerMappings.PS4_BUTTON_X) {
+                inputFlags.setJump(true);
+            }
         }
         return false;
     }
@@ -52,24 +58,47 @@ public class ControllerProcessor implements ControllerListener {
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
-        if (axisCode == ControllerMappings.AXIS_LEFT_X) {
-            if (value < -0.15f) {
-                inputFlags.setLeft(true);
-            } else {
-                inputFlags.setLeft(false);
+        if (controller.getName().contains("Xbox")) {
+            if (axisCode == ControllerMappings.AXIS_LEFT_X) {
+                if (value < -0.15f) {
+                    inputFlags.setLeft(true);
+                } else {
+                    inputFlags.setLeft(false);
+                }
+                if (value > 0.25f) {
+                    inputFlags.setRight(true);
+                } else {
+                    inputFlags.setRight(false);
+                }
             }
-            if (value > 0.25f) {
-                inputFlags.setRight(true);
-            } else {
-                inputFlags.setRight(false);
-            }
-        }
 
-        if (axisCode == ControllerMappings.AXIS_LEFT_TRIGGER) {
-            if ((value >= 0.25f) || (value <= -0.25f)) {
-                inputFlags.setRun(true);
-            } else {
-                inputFlags.setRun(false);
+            if (axisCode == ControllerMappings.AXIS_LEFT_TRIGGER) {
+                if ((value >= 0.25f) || (value <= -0.25f)) {
+                    inputFlags.setRun(true);
+                } else {
+                    inputFlags.setRun(false);
+                }
+            }
+        } else {
+            if (axisCode == ControllerMappings.PS4_AXIS_LEFT_X) {
+                if (value < -0.15f) {
+                    inputFlags.setLeft(true);
+                } else {
+                    inputFlags.setLeft(false);
+                }
+                if (value > 0.25f) {
+                    inputFlags.setRight(true);
+                } else {
+                    inputFlags.setRight(false);
+                }
+            }
+
+            if (axisCode == ControllerMappings.PS4_TRIGGER_L2) {
+                if ((value >= 0.25f) || (value <= -0.25f)) {
+                    inputFlags.setRun(true);
+                } else {
+                    inputFlags.setRun(false);
+                }
             }
         }
 
