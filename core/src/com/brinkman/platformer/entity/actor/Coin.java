@@ -30,6 +30,7 @@ public class Coin extends Actor {
 
     private static final float ANIMATION_TIME = 0.025f;
     private static final int COIN_SIZE = 64;
+    private boolean isCollected;
 
     /**
      * Constructs the Coin object.
@@ -67,7 +68,10 @@ public class Coin extends Actor {
     public void handleCollisionEvent(GameWorld world) {
         Entity player = world.getEntityByValue("player");
         Rectangle playerBounds = (Rectangle) player.getBounds();
-        boolean isCollected = Intersector.overlaps((Circle) getBounds(), playerBounds);
+
+        if (Intersector.overlaps((Circle) getBounds(), playerBounds)) {
+            isCollected = true;
+        }
 
         if (isCollected) {
             world.getCoins().removeValue(this, true);

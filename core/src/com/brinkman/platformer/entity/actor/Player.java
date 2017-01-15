@@ -345,7 +345,11 @@ public class Player extends Actor {
             velocity.y = 0;
         } else {
             if (velocity.y > Constants.MAX_GRAVITY) {
-                velocity.y -= GRAVITY;
+                if (run) {
+                    velocity.y -= GRAVITY * 0.95f;
+                } else {
+                    velocity.y -= GRAVITY;
+                }
             }
         }
 
