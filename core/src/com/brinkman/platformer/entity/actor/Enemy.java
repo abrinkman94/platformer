@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.actor.Actor;
@@ -49,6 +50,11 @@ public class Enemy extends Actor
 	@Override
 	public void dispose() {
 
+	}
+
+	@Override
+	public Shape2D getBounds() {
+		return null;
 	}
 
 	@Override

@@ -62,6 +62,7 @@ public class Player extends Actor {
 
     /**
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
+     * @param inputFlags InputFlags
      */
     public Player(InputFlags inputFlags) {
         this.inputFlags = inputFlags;
@@ -80,7 +81,7 @@ public class Player extends Actor {
 
     @Override
     public Shape2D getBounds() {
-        return new Rectangle(position.x, position.y, width, height);
+        return new Rectangle(position.x, position.y, width * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
     }
 
     @Override

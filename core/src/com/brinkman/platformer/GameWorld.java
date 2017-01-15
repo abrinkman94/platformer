@@ -131,7 +131,7 @@ public class GameWorld {
                 float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Saw saw = new Saw(batch, x, y);
+                Saw saw = new Saw(x, y);
                 addEntity(saw);
                 collidables.add(saw.getBounds());
             }
