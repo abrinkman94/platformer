@@ -19,6 +19,7 @@ import static com.brinkman.platformer.util.Constants.*;
 public class TMXMap {
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
+    private final Array<Rectangle> collisionRects;
 
     public static float mapWidth;
     public static float mapHeight;
@@ -31,8 +32,9 @@ public class TMXMap {
     public TMXMap(SpriteBatch batch, String tmxFilePath) {
         map = (TiledMap) AssetUtil.getAsset(tmxFilePath, TiledMap.class);
         renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
-        MapProperties mapProperties = map.getProperties();
+        collisionRects = new Array<>();
 
+        MapProperties mapProperties = map.getProperties();
         int width = mapProperties.get("width", Integer.class);
         int height = mapProperties.get("height", Integer.class);
         int tileWidth = mapProperties.get("tilewidth", Integer.class);
@@ -40,6 +42,8 @@ public class TMXMap {
 
         mapWidth = width * tileWidth * TO_WORLD_UNITS;
         mapHeight = height * tileHeight * TO_WORLD_UNITS;
+
+        initMapCollisionRectangles();
     }
 
     /**
@@ -54,8 +58,7 @@ public class TMXMap {
      * Returns the collision rectangles for MapObject objects in the "collision" layer.
      * @return Array<Rectangle>
      */
-    public Array<Rectangle> getMapCollisionRectangles() {
-        Array<Rectangle> rectangles = new Array<Rectangle>();
+    public void initMapCollisionRectangles() {
         for (MapObject object : getMapObjects("collision")) {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
@@ -64,10 +67,12 @@ public class TMXMap {
 
             Rectangle bounds = new Rectangle(x, y, width, height);
 
-            rectangles.add(bounds);
+            collisionRects.add(bounds);
         }
+    }
 
-        return rectangles;
+    public Array<Rectangle> getMapCollisionRectangles() {
+        return collisionRects;
     }
 
     public Rectangle getMapObjectBounds(MapObject object) {

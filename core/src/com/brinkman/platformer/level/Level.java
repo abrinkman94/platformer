@@ -38,7 +38,7 @@ public class Level {
     public int getLevelNumber() { return levelNumber; }
 
     /**
-     * Returns boolean value representing whether or not the Actor has obtained the key.
+     * Returns boolean value representing whether or not the Level has a key.
      * @return boolean
      */
     public boolean hasKey() { return hasKey; }

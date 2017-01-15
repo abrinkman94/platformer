@@ -8,19 +8,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.gdx.utils.Timer;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.*;
 import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TMXMap;
 import com.brinkman.platformer.util.Constants;
-import org.w3c.dom.css.Rect;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;

@@ -14,6 +14,7 @@ import com.brinkman.platformer.util.TexturePaths;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,7 +70,7 @@ public class GameWorld {
      * @return Entity
      */
     public Entity getEntityByValue(String value) {
-        for (Map.Entry<Entity, String> entry : entities.entrySet()) {
+        for (Entry<Entity, String> entry : entities.entrySet()) {
             if (Objects.equals(value, entry.getValue())) {
                 return entry.getKey();
             }
