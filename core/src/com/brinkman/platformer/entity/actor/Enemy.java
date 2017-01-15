@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.GameWorld;
@@ -18,7 +20,7 @@ public class Enemy extends Actor
 	private boolean isDead;
 
 	public Enemy() {
-		position = new Vector2(4, originPosition.y);
+		position = new Vector2(4, 2);
 		width = 32 * Constants.TO_WORLD_UNITS;
 		height = 64 * Constants.TO_WORLD_UNITS;
 		velocity = new Vector2(4 * Constants.TO_WORLD_UNITS, 0);
@@ -31,8 +33,18 @@ public class Enemy extends Actor
 	}
 
 	@Override
-	public void handleDeath() {
+	public Shape2D getBounds() {
+		return new Rectangle(position.x, position.y, width, height);
+	}
 
+	@Override
+	public void handleCollisionEvent(GameWorld world) {
+		Player player = (Player) world.getEntityByValue("player");
+		Rectangle playerBounds = (Rectangle) player.getBounds();
+
+		if (Intersector.overlaps(playerBounds, (Rectangle) getBounds())) {
+			player.handleDeath();
+		}
 	}
 
 	@Override
@@ -49,16 +61,6 @@ public class Enemy extends Actor
 
 	@Override
 	public void dispose() {
-
-	}
-
-	@Override
-	public Shape2D getBounds() {
-		return null;
-	}
-
-	@Override
-	public void handleCollisionEvent(GameWorld world) {
 
 	}
 }

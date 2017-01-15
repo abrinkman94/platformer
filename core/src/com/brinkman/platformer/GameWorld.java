@@ -24,7 +24,6 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 public class GameWorld {
     private Level level;
     private final Map<Entity, String> entities;
-    private final Array<Shape2D> collidables;
     private final Array<Coin> coins;
 
     private final int[] backgroundLayers = {0, 1, 2, 3, 4, 5, 6, 7, 8};
@@ -39,7 +38,6 @@ public class GameWorld {
     public GameWorld(Level level) {
         this.level = level;
         entities = new HashMap<>(128);
-        collidables = new Array<>();
         coins = new Array<>();
 
         LOGGER.info("Initialized");
@@ -123,7 +121,6 @@ public class GameWorld {
             Coin coin = new Coin(x, y + coinYOffset);
             coins.add(coin);
             addEntity(coin);
-            collidables.add(coin.getBounds());
         }
 
         if (level.getMap().getMapObjects("saw") != null) {
@@ -133,7 +130,6 @@ public class GameWorld {
 
                 Saw saw = new Saw(x, y);
                 addEntity(saw);
-                collidables.add(saw.getBounds());
             }
         }
 
@@ -144,7 +140,6 @@ public class GameWorld {
 
                 Item item = new Item(TexturePaths.LIFE_ITEM_TEXTURE, ItemType.LIFE, x, y + 1);
                 addEntity(item);
-                collidables.add(item.getBounds());
             }
         }
 
@@ -155,7 +150,6 @@ public class GameWorld {
 
                 Item key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y + 1);
                 addEntity(key);
-                collidables.add(key.getBounds());
             }
         }
     }

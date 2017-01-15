@@ -26,13 +26,20 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 public class Item extends Actor {
     private static final Logger LOGGER = new Logger(Item.class.getName(), Logger.DEBUG);
 
-    private ItemType itemType;
+    private final ItemType itemType;
 
+    /**
+     * Constructs new Item with given parameters.
+     * @param texturePath String
+     * @param itemType ItemType
+     * @param x float
+     * @param y float
+     */
     public Item(String texturePath, ItemType itemType, float x, float y) {
         this.itemType = itemType;
 
-        height = 40 * TO_WORLD_UNITS;
-        width = 39 * TO_WORLD_UNITS;
+        height = 32 * TO_WORLD_UNITS;
+        width = 32 * TO_WORLD_UNITS;
         position = new Vector2(x, y);
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
