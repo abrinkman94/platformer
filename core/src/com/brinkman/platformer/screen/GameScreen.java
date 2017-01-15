@@ -2,9 +2,6 @@ package com.brinkman.platformer.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.loaders.SoundLoader;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
@@ -22,14 +18,9 @@ import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
-import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
 
 import static com.brinkman.platformer.util.Constants.*;
 
@@ -99,7 +90,7 @@ public class GameScreen implements Screen {
     private void handleCollisions() {
         collisionHandler.handleMapCollision(gameWorld);
         collisionHandler.handleExitCollision(gameWorld, spriteBatch);
-        collisionHandler.keepActorInMap(player);
+        collisionHandler.keepEntitiesInMap(gameWorld);
 
         for (Entity entity : gameWorld.getEntities().keySet()) {
             entity.handleCollisionEvent(gameWorld);

@@ -150,23 +150,27 @@ public class CollisionHandler {
     }
 
     /**
-     * Keeps the player within the bounds of the map.
-     * @param actor Player
+     * Keeps entities within the bounds of the map.
+     * @param world GameWorld
      */
-    public void keepActorInMap(Actor actor) {
+    public void keepEntitiesInMap(GameWorld world) {
         float mapLeft = 0;
         float mapRight = TMXMap.mapWidth;
 
-        if (actor.getPosition().x <= mapLeft) {
-            actor.getPosition().x = mapLeft;
-            if (actor instanceof Enemy) {
-                actor.getVelocity().x = -actor.getVelocity().x;
+        for (Entity entity : world.getEntities().keySet()) {
+            Actor actor = (Actor) entity;
+
+            if (actor.getPosition().x <= mapLeft) {
+                actor.getPosition().x = mapLeft;
+                if (actor instanceof Enemy) {
+                    actor.getVelocity().x = -actor.getVelocity().x;
+                }
             }
-        }
-        if (actor.getPosition().x >= (mapRight - (actor.getWidth() * TO_WORLD_UNITS))) {
-            actor.getPosition().x = mapRight - (actor.getWidth() * TO_WORLD_UNITS);
-            if (actor instanceof Enemy) {
-                actor.getVelocity().x = -actor.getVelocity().x;
+            if (actor.getPosition().x >= (mapRight - (actor.getWidth() * TO_WORLD_UNITS))) {
+                actor.getPosition().x = mapRight - (actor.getWidth() * TO_WORLD_UNITS);
+                if (actor instanceof Enemy) {
+                    actor.getVelocity().x = -actor.getVelocity().x;
+                }
             }
         }
     }
