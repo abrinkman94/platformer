@@ -2,21 +2,22 @@ package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -106,8 +107,7 @@ public class Player extends Actor {
             } else if (ItemType.KEY == item.getItemType()) {
                 getItems().put(item, ItemType.KEY);
             }
-        }
-        if (other instanceof StaticEntity) {
+        } else if (other instanceof StaticEntity) {
             handleStaticCollisions(other);
         }
     }

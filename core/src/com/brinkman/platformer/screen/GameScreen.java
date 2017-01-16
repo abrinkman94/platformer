@@ -13,7 +13,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.entity.actor.*;
+import com.brinkman.platformer.entity.actor.ActorState;
+import com.brinkman.platformer.entity.actor.ItemType;
+import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
@@ -25,6 +27,7 @@ import com.brinkman.platformer.util.CameraUtil;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 import static com.brinkman.platformer.util.Constants.*;
 
@@ -92,7 +95,7 @@ public class GameScreen implements Screen {
     }
 
     private void handleCollisions() {
-        collisionHandler.handleExitCollision(gameWorld, spriteBatch);
+//        collisionHandler.handleExitCollision(gameWorld, spriteBatch);
         collisionHandler.keepEntitiesInMap(gameWorld);
 
         Collection<Collidable> toBeRemoved = new LinkedList<>();
@@ -107,6 +110,8 @@ public class GameScreen implements Screen {
             }
         }
 
+        Entity exit = gameWorld.getEntityByValue("exit");
+
         toBeRemoved.stream()
                    .filter(Entity.class::isInstance)
                    .map(Entity.class::cast)
@@ -114,7 +119,35 @@ public class GameScreen implements Screen {
 
         if(toBeRemoved.contains(player)) {
             // TODO Handle game over.
+        } else {
+            if (toBeRemoved.contains(exit)) {
+				int levelNumber = gameWorld.getLevel().getLevelNumber();
+
+				if (gameWorld.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
+					levelNumber++;
+					gameWorld.setLevel(new Level(levelNumber, spriteBatch));
+
+                    player.reset();
+                    clearWorld();
+
+					gameWorld.initializeMapObjects();
+				} else {
+					LOGGER.info("No more levels");
+					Gdx.app.exit();
+				}
+			}
         }
+    }
+
+    private void clearWorld() {
+        Collection<Entity> entitiesToRemove = gameWorld.getEntities().keySet()
+              .stream()
+              .filter(it -> !(it instanceof Player))
+              .collect(Collectors.toList());
+        entitiesToRemove.stream()
+              .filter(Entity.class::isInstance)
+              .map(Entity.class::cast)
+              .forEach(gameWorld::removeEntity);
     }
 
     @Override

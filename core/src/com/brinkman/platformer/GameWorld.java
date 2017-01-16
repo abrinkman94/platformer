@@ -2,18 +2,14 @@ package com.brinkman.platformer;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.math.Shape2D;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.entity.*;
+import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.util.TexturePaths;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -95,6 +91,8 @@ public class GameWorld {
             entities.put(entity, "item");
         } else if (entity instanceof StaticEntity) {
             entities.put(entity, "static entity");
+        } else if (entity instanceof Exit) {
+            entities.put(entity, "exit");
         }
         else {
             LOGGER.info("Entity type error");
@@ -171,6 +169,18 @@ public class GameWorld {
 
                 Entity key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y + 1);
                 addEntity(key);
+            }
+        }
+
+        if (level.getMap().getMapObjects("exit") != null) {
+            for (MapObject exitObject : level.getMap().getMapObjects("exit")) {
+                float x = exitObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = exitObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+                float width = exitObject.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+                float height = exitObject.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+
+                Entity exit = new Exit(this, x, y, width, height);
+                addEntity(exit);
             }
         }
     }

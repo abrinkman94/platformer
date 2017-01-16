@@ -1,25 +1,18 @@
 package com.brinkman.platformer.physics;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.entity.*;
-import com.brinkman.platformer.entity.actor.*;
-import com.brinkman.platformer.level.Level;
+import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.entity.StaticEntity;
+import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.entity.actor.Enemy;
+import com.brinkman.platformer.entity.actor.Exit;
 import com.brinkman.platformer.map.TMXMap;
-import com.brinkman.platformer.util.Constants;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
 /**
@@ -27,57 +20,6 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
  */
 public class CollisionHandler {
     private static final Logger LOGGER = new Logger(CollisionHandler.class.getName(), Logger.DEBUG);
-
-    /**
-     * Handle's the player's collision with the exit object, as well as the logic behind level changes.
-     * @param world GameWorld
-     * @param spriteBatch SpriteBatch
-     */
-    public void handleExitCollision(GameWorld world, SpriteBatch spriteBatch) {
-        if (world.getNumberOfCoins() <= 0) {
-            Player player = (Player) world.getEntityByValue("player");
-
-            if (!world.getLevel().hasKey() || player.getItems().values().contains(ItemType.KEY)) {
-                Rectangle playerBounds = (Rectangle) player.getBounds();
-
-                MapObjects mapObjects = world.getLevel().getMap().getMapObjects("exit");
-
-                for (MapObject object : mapObjects) {
-                    float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                    float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-                    float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-                    float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
-
-                    Rectangle exitBounds = new Rectangle(x, y, width, height);
-
-                    int levelNumber = world.getLevel().getLevelNumber();
-                    if (Intersector.overlaps(exitBounds, playerBounds)) {
-                        if (world.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
-                            levelNumber++;
-                            world.setLevel(new Level(levelNumber, spriteBatch));
-                            player.reset();
-
-                            //Remove saws and coins from GameWorld
-                            for (Iterator<Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext(); ) {
-                                Entry<Entity, String> entry = it.next();
-                                if (entry.getValue().equalsIgnoreCase("saw")
-                                      || entry.getValue().equalsIgnoreCase("coin")
-                                      || entry.getValue().equalsIgnoreCase("item")
-                                      || entry.getValue().equalsIgnoreCase("static entity")) {
-                                    it.remove();
-                                }
-                            }
-
-                            world.initializeMapObjects();
-                        } else {
-                            LOGGER.info("No more levels");
-                            Gdx.app.exit();
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Keeps entities within the bounds of the map.
@@ -88,7 +30,7 @@ public class CollisionHandler {
         float mapRight = TMXMap.mapWidth;
 
         for (Entity entity : world.getEntities().keySet()) {
-            if (!(entity instanceof StaticEntity)) {
+            if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
                 Actor actor = (Actor) entity;
 
                 if (actor.getPosition().x <= mapLeft) {

@@ -4,17 +4,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Shape2D;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
 
-import static com.brinkman.platformer.util.Constants.*;
+import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
 /**
  * Created by Austin on 10/1/2016.
@@ -28,7 +27,6 @@ public class Coin extends Actor {
 
     private static final float ANIMATION_TIME = 0.025f;
     private static final int COIN_SIZE = 64;
-    private boolean isCollected;
 
     /**
      * Constructs the Coin object.
