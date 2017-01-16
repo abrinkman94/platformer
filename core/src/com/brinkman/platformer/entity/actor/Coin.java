@@ -5,14 +5,11 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.entity.actor.Actor;
-import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
 
@@ -74,8 +71,6 @@ public class Coin extends Actor {
         }
 
         if (isCollected) {
-            world.getCoins().removeValue(this, true);
-
             animations.setFrameDuration(0.002f);
 
             if (getWidth() > 0.1f) {

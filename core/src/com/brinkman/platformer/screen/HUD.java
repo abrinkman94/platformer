@@ -7,12 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Actor;
-import com.brinkman.platformer.entity.actor.Coin;
 import com.brinkman.platformer.entity.actor.ItemType;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.AssetUtil;
@@ -66,9 +63,8 @@ public class HUD {
      */
     public void render(float delta) {
         //Update coin label
-
-        if (world.getCoins().size > 0) {
-            coinLabel.setText("Coins Left: " + world.getCoins().size);
+        if (world.getNumberOfCoins() > 0) {
+            coinLabel.setText("Coins Left: " + world.getNumberOfCoins());
         } else {
             coinLabel.setText("Turn In!");
         }

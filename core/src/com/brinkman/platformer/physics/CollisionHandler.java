@@ -99,7 +99,7 @@ public class CollisionHandler {
      * @param spriteBatch SpriteBatch
      */
     public void handleExitCollision(GameWorld world, SpriteBatch spriteBatch) {
-        if (world.getCoins().size <= 0) {
+        if (world.getNumberOfCoins() <= 0) {
             Player player = (Player) world.getEntityByValue("player");
 
             if (!world.getLevel().hasKey() || player.getItems().values().contains(ItemType.KEY)) {
@@ -121,9 +121,6 @@ public class CollisionHandler {
                             levelNumber++;
                             world.setLevel(new Level(levelNumber, spriteBatch));
                             player.reset();
-
-                            //Clear Array<Coin> coins
-                            world.getCoins().clear();
 
                             //Remove saws and coins from GameWorld
                             for (Iterator<Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext(); ) {

@@ -26,7 +26,6 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 public class GameWorld {
     private Level level;
     private final Map<Entity, String> entities;
-    private final Array<Coin> coins;
 
     private final int[] backgroundLayers = {0, 1, 2, 3, 4, 5, 6, 7, 8};
     private final int[] foregroundLayers = {9};
@@ -40,7 +39,6 @@ public class GameWorld {
     public GameWorld(Level level) {
         this.level = level;
         entities = new ConcurrentHashMap<>(128);
-        coins = new Array<>();
 
         LOGGER.info("Initialized");
     }
@@ -108,7 +106,17 @@ public class GameWorld {
         entities.remove(entity);
     }
 
-    public Array<Coin> getCoins() { return coins; }
+    public int getNumberOfCoins() {
+        int numberOfCoins = 0;
+
+        for (Entity entity : entities.keySet()) {
+            if (entity instanceof Coin) {
+                numberOfCoins++;
+            }
+        }
+
+        return numberOfCoins;
+    }
 
     /**
      * Initializes all dynamic objects in Level.
@@ -120,8 +128,7 @@ public class GameWorld {
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
             final float coinYOffset = 1.0f;
-            Coin coin = new Coin(x, y + coinYOffset);
-            coins.add(coin);
+            Entity coin = new Coin(x, y + coinYOffset);
             addEntity(coin);
         }
 
