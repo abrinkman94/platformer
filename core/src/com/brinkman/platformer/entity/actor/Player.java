@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.input.InputFlags;
+import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
 
@@ -87,8 +88,22 @@ public class Player extends Actor {
     }
 
     @Override
-    public void handleCollisionEvent(GameWorld world) {
+    public boolean shouldBeRemovedOnCollision() {
+        return lives < 0;
+    }
 
+    @Override
+    public void handleCollisionEvent(Collidable other) {
+        if(other instanceof Saw) {
+            handleDeath();
+        } else if(other instanceof Item) {
+            Item item = (Item) other;
+            if (ItemType.LIFE == item.getItemType()) {
+                setLives(getLives() + 1);
+            } else if (ItemType.KEY == item.getItemType()) {
+                getItems().put(item, ItemType.KEY);
+            }
+        }
     }
 
     /**
@@ -321,9 +336,8 @@ public class Player extends Actor {
         if (lives > 0) {
             position.set(originPosition);
             velocity.y = 0;
+            // TODO Remove to make game over actually happen
         //    lives--;
-        } else {
-            Gdx.app.exit();
         }
     }
 

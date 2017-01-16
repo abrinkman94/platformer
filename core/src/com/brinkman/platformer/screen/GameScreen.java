@@ -18,9 +18,13 @@ import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
+import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 import static com.brinkman.platformer.util.Constants.*;
 
@@ -92,8 +96,25 @@ public class GameScreen implements Screen {
         collisionHandler.handleExitCollision(gameWorld, spriteBatch);
         collisionHandler.keepEntitiesInMap(gameWorld);
 
-        for (Entity entity : gameWorld.getEntities().keySet()) {
-            entity.handleCollisionEvent(gameWorld);
+        Collection<Collidable> toBeRemoved = new LinkedList<>();
+        for (Entity root : gameWorld.getEntities().keySet()) {
+            for(Entity other : gameWorld.getEntities().keySet()) {
+                if(root.shouldCollideWith(other) && root.intersects(other)) {
+                    root.handleCollisionEvent(other);
+                    if(root.shouldBeRemovedOnCollision()) {
+                        toBeRemoved.add(root);
+                    }
+                }
+            }
+        }
+
+        toBeRemoved.stream()
+                   .filter(Entity.class::isInstance)
+                   .map(Entity.class::cast)
+                   .forEach(gameWorld::removeEntity);
+
+        if(toBeRemoved.contains(player)) {
+            // TODO Handle game over.
         }
     }
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
 
@@ -62,30 +63,23 @@ public class Coin extends Actor {
     }
 
     @Override
-    public void handleCollisionEvent(GameWorld world) {
-        Entity player = world.getEntityByValue("player");
-        Rectangle playerBounds = (Rectangle) player.getBounds();
+    public boolean shouldCollideWith(Collidable other) {
+        return other instanceof Player;
+    }
 
-        if (Intersector.overlaps((Circle) getBounds(), playerBounds)) {
-            isCollected = true;
-        }
-
-        if (isCollected) {
+    @Override
+    public void handleCollisionEvent(Collidable other) {
+        if (other instanceof Player) {
             animations.setFrameDuration(0.002f);
 
             if (getWidth() > 0.1f) {
                 animateCollect(-0.05f);
             }
-
-            Timer timer = new Timer();
-            timer.scheduleTask(new Task() {
-                @Override
-                public void run() {
-                    removeCoinFromWorld(world);
-                }
-            }, .30f);
         }
     }
+
+    @Override
+    public boolean shouldBeRemovedOnCollision() { return true; }
 
     private void removeCoinFromWorld(GameWorld world) {
         world.removeEntity(this);

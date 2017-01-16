@@ -55,19 +55,13 @@ public class Item extends Actor {
     }
 
     @Override
-    public void handleCollisionEvent(GameWorld world) {
-        Player player = (Player) world.getEntityByValue("player");
-        Rectangle playerBounds = (Rectangle) player.getBounds();
+    public void handleCollisionEvent(Collidable other) { }
 
-        if (Intersector.overlaps((Rectangle) getBounds(), playerBounds)) {
-            if (itemType == ItemType.LIFE) {
-                player.setLives(player.getLives() + 1);
-            } else if (itemType == ItemType.KEY) {
-                player.getItems().put(this, ItemType.KEY);
-            }
-            world.removeEntity(this);
-        }
-    }
+    @Override
+    public boolean shouldCollideWith(Collidable other) { return other instanceof Player; }
+
+    @Override
+    public boolean shouldBeRemovedOnCollision() { return true; }
 
     @Override
     public void render(float dt, Batch batch) {
@@ -82,5 +76,7 @@ public class Item extends Actor {
 
         LOGGER.info("Disposed");
     }
+
+    public ItemType getItemType() { return itemType; }
 }
 
