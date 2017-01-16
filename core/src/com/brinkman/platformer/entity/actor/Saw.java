@@ -50,14 +50,11 @@ public class Saw extends Actor {
 	}
 
 	@Override
-	public void handleCollisionEvent(GameWorld world) {
-		Actor player = (Actor) world.getEntityByValue("player");
-		Rectangle playerBounds = (Rectangle) player.getBounds();
-
-		if (Intersector.overlaps((Circle) getBounds(), playerBounds)) {
-			player.handleDeath();
-		}
+	public void handleCollisionEvent(Collidable other) {
 	}
+
+	@Override
+	public boolean shouldCollideWith(Collidable other) { return false; }
 
 	@Override
 	public void render(float dt, Batch batch) {

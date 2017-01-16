@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.Constants;
 
 /**
@@ -38,12 +39,9 @@ public class Enemy extends Actor
 	}
 
 	@Override
-	public void handleCollisionEvent(GameWorld world) {
-		Player player = (Player) world.getEntityByValue("player");
-		Rectangle playerBounds = (Rectangle) player.getBounds();
-
-		if (Intersector.overlaps(playerBounds, (Rectangle) getBounds())) {
-			player.handleDeath();
+	public void handleCollisionEvent(Collidable other) {
+		if(other instanceof Saw) {
+			handleDeath();
 		}
 	}
 
