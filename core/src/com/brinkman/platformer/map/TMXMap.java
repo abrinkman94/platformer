@@ -53,30 +53,6 @@ public class TMXMap {
      */
     public MapObjects getMapObjects(String layerName) { return map.getLayers().get(layerName).getObjects(); }
 
-    public Rectangle getMapObjectBounds(MapObject object) {
-        float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-        float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-        float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-        float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
-
-        return new Rectangle(x, y, width, height);
-    }
-
-    public Array<Rectangle> getSawCollisionRectangles() {
-        Array<Rectangle> rectangles = new Array<>();
-        for (MapObject object : getMapObjects("saw")) {
-            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-            float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-            float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
-
-            Rectangle bounds = new Rectangle(x, y, width, height);
-
-            rectangles.add(bounds);
-        }
-        return rectangles;
-    }
-
     /**
      * Renders all layers of map.
      * @param cam OrthographicCamera

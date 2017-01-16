@@ -13,15 +13,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.entity.actor.ActorState;
-import com.brinkman.platformer.entity.actor.ItemType;
-import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.entity.StaticEntity;
+import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
+import com.brinkman.platformer.map.TMXMap;
 import com.brinkman.platformer.physics.Collidable;
-import com.brinkman.platformer.physics.CollisionHandler;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
 
@@ -40,7 +39,6 @@ public class GameScreen implements Screen {
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
     private final Player player;
-    private final CollisionHandler collisionHandler;
     private final HUD hud;
     private final GameWorld gameWorld;
     private final ParticleEffect pe;
@@ -54,7 +52,6 @@ public class GameScreen implements Screen {
         gameWorld = new GameWorld(new Level(1, spriteBatch));
         InputFlags inputFlags = new InputFlags();
         player = new Player(inputFlags);
-        collisionHandler = new CollisionHandler();
         hud = new HUD(gameWorld);
 
         gameWorld.addEntity(player);
@@ -95,8 +92,7 @@ public class GameScreen implements Screen {
     }
 
     private void handleCollisions() {
-//        collisionHandler.handleExitCollision(gameWorld, spriteBatch);
-        collisionHandler.keepEntitiesInMap(gameWorld);
+        keepEntitiesInMap();
 
         Collection<Collidable> toBeRemoved = new LinkedList<>();
         for (Entity root : gameWorld.getEntities().keySet()) {
@@ -150,6 +146,30 @@ public class GameScreen implements Screen {
               .forEach(gameWorld::removeEntity);
     }
 
+    private void keepEntitiesInMap() {
+        float mapLeft = 0;
+        float mapRight = TMXMap.mapWidth;
+
+        for (Entity entity : gameWorld.getEntities().keySet()) {
+            if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
+                Actor actor = (Actor) entity;
+
+                if (actor.getPosition().x <= mapLeft) {
+                    actor.getPosition().x = mapLeft;
+                    if (actor instanceof Enemy) {
+                        actor.getVelocity().x = -actor.getVelocity().x;
+                    }
+                }
+                if (actor.getPosition().x >= (mapRight - (actor.getWidth() * TO_WORLD_UNITS))) {
+                    actor.getPosition().x = mapRight - (actor.getWidth() * TO_WORLD_UNITS);
+                    if (actor instanceof Enemy) {
+                        actor.getVelocity().x = -actor.getVelocity().x;
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void show() {
     }
@@ -177,11 +197,6 @@ public class GameScreen implements Screen {
 
         //Placeholder for locked door
         placeholderKeyHandler();
-
-        //Debug
-        if (DEBUG) {
-            collisionHandler.debug(gameWorld, camera);
-        }
 
         //Renders HUD
         hud.render(delta);

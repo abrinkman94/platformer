@@ -39,8 +39,8 @@ public class Player extends Actor {
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
     private Animation animation;
-    private final InputFlags inputFlags;
     private ActorState state;
+    private final InputFlags inputFlags;
     private final ConcurrentMap<Item, ItemType> items;
     private final Vector2 tempVector1 = new Vector2();
     private final Vector2 tempVector2 = new Vector2();

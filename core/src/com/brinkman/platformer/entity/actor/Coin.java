@@ -79,10 +79,6 @@ public class Coin extends Actor {
     @Override
     public boolean shouldBeRemovedOnCollision() { return true; }
 
-    private void removeCoinFromWorld(GameWorld world) {
-        world.removeEntity(this);
-    }
-
     private void animateCollect(float increment) {
         width += increment;
         height += increment;
