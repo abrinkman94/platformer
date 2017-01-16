@@ -3,6 +3,7 @@ package com.brinkman.platformer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Array;
@@ -92,6 +93,8 @@ public class GameWorld {
             entities.put(entity, "coin");
         } else if (entity instanceof Item) {
             entities.put(entity, "item");
+        } else if (entity instanceof StaticEntity) {
+            entities.put(entity, "static entity");
         }
         else {
             LOGGER.info("Entity type error");
@@ -120,9 +123,18 @@ public class GameWorld {
 
     /**
      * Initializes all dynamic objects in Level.
-     * @param batch SpriteBatch
      */
-    public void initializeMapObjects(SpriteBatch batch) {
+    public void initializeMapObjects() {
+        for (MapObject object : level.getMap().getMapObjects("collision")) {
+            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+            float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+            float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+
+            Entity staticEntity = new StaticEntity(x, y, width, height);
+            addEntity(staticEntity);
+        }
+
         for (MapObject object : level.getMap().getMapObjects("coins")) {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;

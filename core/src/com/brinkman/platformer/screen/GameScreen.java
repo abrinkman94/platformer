@@ -55,7 +55,7 @@ public class GameScreen implements Screen {
         hud = new HUD(gameWorld);
 
         gameWorld.addEntity(player);
-        gameWorld.initializeMapObjects(spriteBatch);
+        gameWorld.initializeMapObjects();
 
         if (CONTROLLER_PRESENT) {
             Controllers.addListener(new ControllerProcessor(inputFlags, player));
@@ -92,7 +92,6 @@ public class GameScreen implements Screen {
     }
 
     private void handleCollisions() {
-        collisionHandler.handleMapCollision(gameWorld);
         collisionHandler.handleExitCollision(gameWorld, spriteBatch);
         collisionHandler.keepEntitiesInMap(gameWorld);
 

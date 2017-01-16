@@ -9,6 +9,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.util.AssetUtil;
 
 import static com.brinkman.platformer.util.Constants.*;
@@ -19,7 +22,6 @@ import static com.brinkman.platformer.util.Constants.*;
 public class TMXMap {
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
-    private final Array<Rectangle> collisionRects;
 
     public static float mapWidth;
     public static float mapHeight;
@@ -32,7 +34,6 @@ public class TMXMap {
     public TMXMap(SpriteBatch batch, String tmxFilePath) {
         map = (TiledMap) AssetUtil.getAsset(tmxFilePath, TiledMap.class);
         renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
-        collisionRects = new Array<>();
 
         MapProperties mapProperties = map.getProperties();
         int width = mapProperties.get("width", Integer.class);
@@ -42,8 +43,6 @@ public class TMXMap {
 
         mapWidth = width * tileWidth * TO_WORLD_UNITS;
         mapHeight = height * tileHeight * TO_WORLD_UNITS;
-
-        initMapCollisionRectangles();
     }
 
     /**
@@ -53,27 +52,6 @@ public class TMXMap {
      * @return MapObjects
      */
     public MapObjects getMapObjects(String layerName) { return map.getLayers().get(layerName).getObjects(); }
-
-    /**
-     * Returns the collision rectangles for MapObject objects in the "collision" layer.
-     * @return Array<Rectangle>
-     */
-    public void initMapCollisionRectangles() {
-        for (MapObject object : getMapObjects("collision")) {
-            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-            float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-            float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
-
-            Rectangle bounds = new Rectangle(x, y, width, height);
-
-            collisionRects.add(bounds);
-        }
-    }
-
-    public Array<Rectangle> getMapCollisionRectangles() {
-        return collisionRects;
-    }
 
     public Rectangle getMapObjectBounds(MapObject object) {
         float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;

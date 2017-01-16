@@ -26,72 +26,7 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
  * Created by Austin on 9/30/2016.
  */
 public class CollisionHandler {
-    private final Vector2 tempVector1 = new Vector2();
-    private final Vector2 tempVector2 = new Vector2();
-
     private static final Logger LOGGER = new Logger(CollisionHandler.class.getName(), Logger.DEBUG);
-
-    /**
-     * Handles the player's collision with "ground".
-     * @param world GameWorld
-     */
-    public void handleMapCollision(GameWorld world) {
-        Player player = (Player) world.getEntityByValue("player");
-        Rectangle entityBounds = (Rectangle) world.getEntityByValue("player").getBounds();
-        player.setIsGrounded(false);
-        player.setCanJump(false);
-        player.setTouchingLeftWall(false);
-        player.setTouchingRightWall(false);
-
-        for (Rectangle mapBounds : world.getLevel().getMap().getMapCollisionRectangles()) {
-
-            // Simple collision check
-            if (Intersector.overlaps(mapBounds, entityBounds)) {
-                // Get the centers of the Entity AABB and map AABB; place in tempVector1 and tempVector2 respectively
-                entityBounds.getCenter(tempVector1);
-                mapBounds.getCenter(tempVector2);
-                // Get the absolute value of horizontal overlap between the entity and map tile
-                // Save signed value of distance for later
-                float horizontalDistance = tempVector2.x - tempVector1.x;
-                float entityHalfWidth = entityBounds.width / 2;
-                float mapHalfWidth = mapBounds.width / 2;
-                float horizontalOverlap = (entityHalfWidth + mapHalfWidth) - Math.abs(horizontalDistance);
-
-                // Get the absolute value of the vertical overlap between the entity and the map time
-                // Save signed value of distance for later
-                float verticalDistance = tempVector2.y - tempVector1.y;
-                float entityHalfHeight = entityBounds.height / 2;
-                float mapHalfHeight = mapBounds.height / 2;
-                float verticalOverlap = (entityHalfHeight + mapHalfHeight) - Math.abs(verticalDistance);
-
-                // Move the entity on the axis which has the least overlap.
-                // The direction that the entity will move is determined by the sign of the distance between the centers
-                if (horizontalOverlap < verticalOverlap) {
-                    if (horizontalDistance > 0) {
-                        player.setTouchingRightWall(true);
-                        player.getPosition().x = player.getPosition().x - horizontalOverlap;
-                        player.getVelocity().x = 0;
-                    } else {
-                        player.setTouchingLeftWall(true);
-                        player.getPosition().x = player.getPosition().x + horizontalOverlap;
-                        player.getVelocity().x = 0;
-                    }
-                    player.setCanJump(true);
-                } else {
-                    if (verticalDistance > 0) {
-                        player.getPosition().y = player.getPosition().y - verticalOverlap;
-                        player.getVelocity().y = -(player.getPosition().y - Constants.GRAVITY);
-                        player.setCanJump(false);
-                    } else {
-                        player.getPosition().y = player.getPosition().y + verticalOverlap;
-                        player.getVelocity().y = 0;
-                        player.setIsGrounded(true);
-                        player.setCanJump(true);
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Handle's the player's collision with the exit object, as well as the logic behind level changes.
@@ -125,13 +60,15 @@ public class CollisionHandler {
                             //Remove saws and coins from GameWorld
                             for (Iterator<Entry<Entity, String>> it = world.getEntities().entrySet().iterator(); it.hasNext(); ) {
                                 Entry<Entity, String> entry = it.next();
-                                if (entry.getValue().equalsIgnoreCase("saw") || entry.getValue().equalsIgnoreCase("coin")
-                                        || entry.getValue().equalsIgnoreCase("item")) {
+                                if (entry.getValue().equalsIgnoreCase("saw")
+                                      || entry.getValue().equalsIgnoreCase("coin")
+                                      || entry.getValue().equalsIgnoreCase("item")
+                                      || entry.getValue().equalsIgnoreCase("static entity")) {
                                     it.remove();
                                 }
                             }
 
-                            world.initializeMapObjects(spriteBatch);
+                            world.initializeMapObjects();
                         } else {
                             LOGGER.info("No more levels");
                             Gdx.app.exit();
@@ -151,18 +88,20 @@ public class CollisionHandler {
         float mapRight = TMXMap.mapWidth;
 
         for (Entity entity : world.getEntities().keySet()) {
-            Actor actor = (Actor) entity;
+            if (!(entity instanceof StaticEntity)) {
+                Actor actor = (Actor) entity;
 
-            if (actor.getPosition().x <= mapLeft) {
-                actor.getPosition().x = mapLeft;
-                if (actor instanceof Enemy) {
-                    actor.getVelocity().x = -actor.getVelocity().x;
+                if (actor.getPosition().x <= mapLeft) {
+                    actor.getPosition().x = mapLeft;
+                    if (actor instanceof Enemy) {
+                        actor.getVelocity().x = -actor.getVelocity().x;
+                    }
                 }
-            }
-            if (actor.getPosition().x >= (mapRight - (actor.getWidth() * TO_WORLD_UNITS))) {
-                actor.getPosition().x = mapRight - (actor.getWidth() * TO_WORLD_UNITS);
-                if (actor instanceof Enemy) {
-                    actor.getVelocity().x = -actor.getVelocity().x;
+                if (actor.getPosition().x >= (mapRight - (actor.getWidth() * TO_WORLD_UNITS))) {
+                    actor.getPosition().x = mapRight - (actor.getWidth() * TO_WORLD_UNITS);
+                    if (actor instanceof Enemy) {
+                        actor.getVelocity().x = -actor.getVelocity().x;
+                    }
                 }
             }
         }
@@ -172,22 +111,22 @@ public class CollisionHandler {
         Entity player = world.getEntityByValue("player");
         Rectangle playerBounds = (Rectangle) player.getBounds();
 
-        for (Rectangle bounds : world.getLevel().getMap().getMapCollisionRectangles()) {
+     /*   for (Rectangle bounds : world.getLevel().getMap().getMapCollisionRectangles()) {
             ShapeRenderer renderer = new ShapeRenderer();
             renderer.setProjectionMatrix(camera.combined);
             renderer.begin(ShapeType.Line);
             renderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
             renderer.rect(playerBounds.x, playerBounds.y, playerBounds.width, playerBounds.height);
             renderer.end();
-        }
+        } */
 
         for (Entity entity : world.getEntities().keySet()) {
-            if (entity instanceof Saw) {
-                Circle sawBounds = (Circle) entity.getBounds();
+            if (entity instanceof StaticEntity) {
+                Rectangle sawBounds = (Rectangle) entity.getBounds();
                 ShapeRenderer renderer = new ShapeRenderer();
                 renderer.setProjectionMatrix(camera.combined);
                 renderer.begin(ShapeType.Line);
-                renderer.circle(sawBounds.x, sawBounds.y, sawBounds.radius);
+                renderer.rect(sawBounds.x, sawBounds.y, sawBounds.width, sawBounds.height);
                 renderer.end();
             }
         }

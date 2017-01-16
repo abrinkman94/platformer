@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
@@ -40,6 +41,8 @@ public class Player extends Actor {
     private final InputFlags inputFlags;
     private ActorState state;
     private final ConcurrentMap<Item, ItemType> items;
+    private final Vector2 tempVector1 = new Vector2();
+    private final Vector2 tempVector2 = new Vector2();
 
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
@@ -102,6 +105,54 @@ public class Player extends Actor {
                 setLives(getLives() + 1);
             } else if (ItemType.KEY == item.getItemType()) {
                 getItems().put(item, ItemType.KEY);
+            }
+        }
+        if (other instanceof StaticEntity) {
+            handleStaticCollisions(other);
+        }
+    }
+
+    private void handleStaticCollisions(Collidable other) {
+        // Get the centers of the Entity AABB and map AABB; place in tempVector1 and tempVector2 respectively
+        ((Rectangle)getBounds()).getCenter(tempVector1);
+        ((Rectangle)other.getBounds()).getCenter(tempVector2);
+        // Get the absolute value of horizontal overlap between the entity and map tile
+        // Save signed value of distance for later
+        float horizontalDistance = tempVector2.x - tempVector1.x;
+        float entityHalfWidth = ((Rectangle)getBounds()).width / 2;
+        float mapHalfWidth = ((Rectangle)other.getBounds()).width / 2;
+        float horizontalOverlap = (entityHalfWidth + mapHalfWidth) - Math.abs(horizontalDistance);
+
+        // Get the absolute value of the vertical overlap between the entity and the map time
+        // Save signed value of distance for later
+        float verticalDistance = tempVector2.y - tempVector1.y;
+        float entityHalfHeight = ((Rectangle)getBounds()).height / 2;
+        float mapHalfHeight = ((Rectangle)other.getBounds()).height / 2;
+        float verticalOverlap = (entityHalfHeight + mapHalfHeight) - Math.abs(verticalDistance);
+
+        // Move the entity on the axis which has the least overlap.
+        // The direction that the entity will move is determined by the sign of the distance between the centers
+        if (horizontalOverlap < verticalOverlap) {
+            if (horizontalDistance > 0) {
+                touchingRightWall = true;
+                position.x = position.x - horizontalOverlap;
+                velocity.x = 0;
+            } else {
+                touchingLeftWall = true;
+                position.x = position.x + horizontalOverlap;
+                velocity.x = 0;
+            }
+            canJump = true;
+        } else {
+            if (verticalDistance > 0) {
+                position.y = position.y - verticalOverlap;
+                velocity.y = -(position.y - GRAVITY);
+                canJump = false;
+            } else {
+                position.y = position.y + verticalOverlap;
+                velocity.y = 0;
+                grounded = true;
+                canJump = true;
             }
         }
     }
@@ -368,6 +419,11 @@ public class Player extends Actor {
         if ((position.x < 0) || (position.y < 0)){
             handleDeath();
         }
+
+        grounded = false;
+        canJump = false;
+        touchingLeftWall = false;
+        touchingRightWall = false;
     }
 
     @Override
