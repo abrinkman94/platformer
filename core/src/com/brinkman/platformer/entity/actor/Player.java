@@ -302,14 +302,14 @@ public class Player extends Actor {
         //X-axis movement
         float maxSpeed = moveSpeed;
         float xSpeed = velocity.x;
-        boolean runningLeft = xSpeed > -maxSpeed;
-        boolean runningRight = xSpeed < maxSpeed;
+        boolean movingLeft = xSpeed > -maxSpeed;
+        boolean movingRight = xSpeed < maxSpeed;
 
-        if (left && runningLeft) {
+        if (left && movingLeft) {
             xSpeed = xSpeed - ACCELERATION;
             orientation = "left";
             currentAnimation = (jump && !grounded) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
-        } else if (right && runningRight) {
+        } else if (right && movingRight) {
             xSpeed = xSpeed + ACCELERATION;
             orientation = "right";
             currentAnimation = (jump && !grounded) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
@@ -329,6 +329,19 @@ public class Player extends Actor {
         }
 
         //Jump conditionals
+        handleJump(xSpeed);
+
+
+        //Run conditionals
+        moveSpeed = run ? 10 : 6;
+
+        //Update position and velocity
+        velocity.x = xSpeed;
+        position.x += velocity.x * Gdx.graphics.getDeltaTime();
+        position.y += velocity.y * Gdx.graphics.getDeltaTime();
+    }
+
+    private void handleJump(float xSpeed) {
         if (jump && canJump && !justJumped) {
             velocity.y = JUMP_VEL;
 
@@ -344,15 +357,6 @@ public class Player extends Actor {
             canJump = false;
             justJumped = true;
         }
-
-
-        //Run conditionals
-        moveSpeed = run ? 10 : 6;
-
-        //Update position and velocity
-        velocity.x = xSpeed;
-        position.x += velocity.x * Gdx.graphics.getDeltaTime();
-        position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
 
     /**
