@@ -77,7 +77,7 @@ public class HUD {
         if (world.getLevel().hasKey()) {
             Player player = (Player) world.getEntityByValue("player");
 
-            if (player.getItems().values().contains(ItemType.KEY) && !keyImage.isVisible()) {
+            if (player.getInventory().values().contains(ItemType.KEY) && !keyImage.isVisible()) {
                     keyImage.setVisible(true);
             }
         } else {

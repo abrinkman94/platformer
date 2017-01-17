@@ -78,7 +78,7 @@ public class GameScreen implements Screen {
             float width = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("width", float.class) * TO_WORLD_UNITS;
             float height = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-            boolean render = !player.getItems().values().contains(ItemType.KEY);
+            boolean render = !player.getInventory().values().contains(ItemType.KEY);
 
             if (render) {
                 ShapeRenderer renderer = new ShapeRenderer();

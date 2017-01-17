@@ -40,7 +40,7 @@ public class Exit implements Entity
 	public boolean shouldCollideWith(Collidable other) {
 		if (other instanceof Player) {
 			if (gameWorld.getNumberOfCoins() <= 0) {
-				if (!gameWorld.getLevel().hasKey() || ((Player)other).getItems().values().contains(ItemType.KEY)) {
+				if (!gameWorld.getLevel().hasKey() || ((Player)other).getInventory().values().contains(ItemType.KEY)) {
 					return true;
 				}
 			}

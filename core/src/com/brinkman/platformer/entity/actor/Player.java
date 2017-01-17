@@ -41,7 +41,7 @@ public class Player extends Actor {
     private Animation animation;
     private ActorState state;
     private final InputFlags inputFlags;
-    private final ConcurrentMap<Item, ItemType> items;
+    private final ConcurrentMap<Item, ItemType> inventory;
     private final Vector2 tempVector1 = new Vector2();
     private final Vector2 tempVector2 = new Vector2();
 
@@ -78,7 +78,7 @@ public class Player extends Actor {
         position = new Vector2(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
-        items = new ConcurrentHashMap<>(8);
+        inventory = new ConcurrentHashMap<>(8);
         state = ActorState.IDLE;
 
         initializeTextureAtlas();
@@ -105,7 +105,7 @@ public class Player extends Actor {
             if (ItemType.LIFE == item.getItemType()) {
                 setLives(getLives() + 1);
             } else if (ItemType.KEY == item.getItemType()) {
-                getItems().put(item, ItemType.KEY);
+                getInventory().put(item, ItemType.KEY);
             }
         } else if (other instanceof StaticEntity) {
             handleStaticCollisions(other);
@@ -212,11 +212,11 @@ public class Player extends Actor {
     }
 
     /**
-     * Returns the HashMap containing items currently in the player's 'inventory'. This does not include power-ups or
-     * life items.
+     * Returns the HashMap containing inventory currently in the player's 'inventory'. This does not include power-ups or
+     * life inventory.
      * @return HashMap Item, ItemType
      */
-    public Map<Item, ItemType> getItems() { return items; }
+    public Map<Item, ItemType> getInventory() { return inventory; }
 
     /**
      * Handles the switching of animations.
@@ -299,6 +299,9 @@ public class Player extends Actor {
     private void handleMovement() {
         setKeyFlags();
 
+        //Run conditionals
+        moveSpeed = run ? 10 : 6;
+
         //X-axis movement
         float maxSpeed = moveSpeed;
         float xSpeed = velocity.x;
@@ -329,11 +332,7 @@ public class Player extends Actor {
         }
 
         //Jump conditionals
-        handleJump(xSpeed);
-
-
-        //Run conditionals
-        moveSpeed = run ? 10 : 6;
+        xSpeed = handleJump(xSpeed);
 
         //Update position and velocity
         velocity.x = xSpeed;
@@ -341,7 +340,11 @@ public class Player extends Actor {
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
 
-    private void handleJump(float xSpeed) {
+    /**
+     * Handles the player's jump logic.
+     * @param xSpeed Player's x-axis speed.
+     */
+    private float handleJump(float xSpeed) {
         if (jump && canJump && !justJumped) {
             velocity.y = JUMP_VEL;
 
@@ -357,6 +360,8 @@ public class Player extends Actor {
             canJump = false;
             justJumped = true;
         }
+
+        return xSpeed;
     }
 
     /**
@@ -373,6 +378,9 @@ public class Player extends Actor {
         velocity = new Vector2(0, 0);
         orientation = "right";
         canJump = false;
+        grounded = false;
+        touchingLeftWall = false;
+        touchingRightWall = false;
     }
 
     /**
