@@ -112,6 +112,10 @@ public class Player extends Actor {
         }
     }
 
+    /**
+     * Handles collisions with StaticEntity(s) in the Level.
+     * @param other Collidable
+     */
     private void handleStaticCollisions(Collidable other) {
         // Get the centers of the Entity AABB and map AABB; place in tempVector1 and tempVector2 respectively
         ((Rectangle)getBounds()).getCenter(tempVector1);
@@ -350,18 +354,6 @@ public class Player extends Actor {
         position.x += velocity.x * Gdx.graphics.getDeltaTime();
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
-
-    /**
-     * Sets boolean touchingRightWall. True if the player is touching a wall to the right, else false.
-     * @param touching boolean
-     */
-    public void setTouchingRightWall(boolean touching) { touchingRightWall = touching; }
-
-    /**
-     * Sets boolean touchingLeftWall. True if the player is touching a wall to the left, else false.
-     * @param touching boolean
-     */
-    public void setTouchingLeftWall(boolean touching) { touchingLeftWall = touching; }
 
     /**
      * Sets boolean justJumped.  True if the player just jumped, else false.
