@@ -41,8 +41,6 @@ public class GameScreen implements Screen {
     private final Player player;
     private final HUD hud;
     private final GameWorld gameWorld;
-    private final ParticleEffect pe;
-    private ActorState tempState;
     /**
      * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
      */
@@ -62,11 +60,6 @@ public class GameScreen implements Screen {
         } else {
             Gdx.input.setInputProcessor(new KeyboardProcessor(inputFlags, player));
         }
-
-        pe = new ParticleEffect();
-        pe.load(Gdx.files.internal("particle/GROUND_LAND"),Gdx.files.internal("particle"));
-        pe.getEmitters().first().getGravity().setHigh(GRAVITY, GRAVITY);
-        pe.start();
 
         LOGGER.info("Initialized");
     }
@@ -179,8 +172,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        pe.update(delta);
-
         // Update the SpriteBatch projection matrix
         spriteBatch.setProjectionMatrix(camera.combined);
 
@@ -203,21 +194,6 @@ public class GameScreen implements Screen {
 
         //Updates camera
         camera.update();
-
-        if (tempState == null) {
-            tempState = (player.getState() == ActorState.FALLING) ? ActorState.FALLING : null;
-        }
-
-        //Temporary Particle Effect for landing
-        if ((tempState == ActorState.FALLING) && ((player.getState() == ActorState.IDLE) ||
-              (player.getState() == ActorState.GROUNDED))) {
-            spriteBatch.begin();
-            pe.getEmitters().first().setPosition(player.getPosition().x, player.getPosition().y);
-            pe.draw(spriteBatch);
-            spriteBatch.end();
-            if (pe.isComplete())
-                pe.reset();
-        }
     }
 
     @Override

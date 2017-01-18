@@ -54,10 +54,9 @@ public class Player extends Actor {
     private static final int JUMP_RIGHT_FRAMES = 4;
     private static final int JUMP_LEFT_FRAMES = 5;
     private static final int JUMP_VEL = 12;
-    private static final int WALL_BOUNCE = 8;
-    private static final float ACCELERATION = 0.5f;
-    private static final float DECELERATION = 0.3f;
-    private static final float ANIMATION_TIME = 0.06f;
+    private static final int WALL_BOUNCE = 6;
+    private static final float ACCELERATION = 0.8f;
+    private static final float DECELERATION = 0.8f;
 
     private boolean left;
     private boolean right;
@@ -221,22 +220,24 @@ public class Player extends Actor {
     /**
      * Handles the switching of animations.
      */
-    private void handleAnimation() {
+    private void handleAnimationSwitching() {
+        float animationTime = run ? 0.05f : 0.08f;
+
         switch(currentAnimation) {
             case IDLE_RIGHT_FRAMES:
-                animation = new Animation(ANIMATION_TIME, idleRightAtlas.getRegions());
+                animation = new Animation(animationTime, idleRightAtlas.getRegions());
                 animation.setPlayMode(PlayMode.LOOP);
                 break;
             case IDLE_LEFT_FRAMES:
-                animation = new Animation(ANIMATION_TIME, idleLeftAtlas.getRegions());
+                animation = new Animation(animationTime, idleLeftAtlas.getRegions());
                 animation.setPlayMode(PlayMode.LOOP);
                 break;
             case WALK_RIGHT_FRAMES:
-                animation = new Animation(ANIMATION_TIME, walkRightAtlas.getRegions());
+                animation = new Animation(animationTime, walkRightAtlas.getRegions());
                 animation.setPlayMode(PlayMode.LOOP);
                 break;
             case WALK_LEFT_FRAMES:
-                animation = new Animation(ANIMATION_TIME, walkLeftAtlas.getRegions());
+                animation = new Animation(animationTime, walkLeftAtlas.getRegions());
                 animation.setPlayMode(PlayMode.LOOP);
                 break;
             case JUMP_RIGHT_FRAMES:
@@ -287,7 +288,7 @@ public class Player extends Actor {
         }
 
         //IDLE state
-        if (velocity.x == 0 && velocity.y == 0) {
+        if (((int) velocity.x == 0) && ((int) velocity.y == 0)) {
             state = ActorState.IDLE;
         }
     }
@@ -331,7 +332,7 @@ public class Player extends Actor {
             }
         }
 
-        //Jump conditionals
+        //Jump
         xSpeed = handleJump(xSpeed);
 
         //Update position and velocity
@@ -342,7 +343,6 @@ public class Player extends Actor {
 
     /**
      * Handles the player's jump logic.
-     * @param xSpeed Player's x-axis speed.
      */
     private float handleJump(float xSpeed) {
         if (jump && canJump && !justJumped) {
@@ -351,17 +351,30 @@ public class Player extends Actor {
             //Wall bounce
             if (state != ActorState.GROUNDED) {
                 if (touchingRightWall) {
-                    xSpeed = run ? (xSpeed - (WALL_BOUNCE + 1)) : (xSpeed - WALL_BOUNCE);
+                    xSpeed = run ? (velocity.x - (WALL_BOUNCE + 1)) : (velocity.x - WALL_BOUNCE);
                 } else if (touchingLeftWall) {
-                    xSpeed = run ? (xSpeed + (WALL_BOUNCE + 1)) : (xSpeed + WALL_BOUNCE);
+                    xSpeed = run ? (velocity.x + (WALL_BOUNCE + 1)) : (velocity.x + WALL_BOUNCE);
                 }
             }
             grounded = false;
             canJump = false;
             justJumped = true;
         }
-
         return xSpeed;
+    }
+
+    /**
+     * Sets player's y velocity based on 'grounded' and 'GRAVITY'.
+     */
+    private void handleGravity() {
+        if (grounded) {
+            velocity.y = 0;
+        } else {
+            if (velocity.y > Constants.MAX_GRAVITY) {
+                // Slight decrease in Gravity when running to allow for more air control.
+                velocity.y -= run ? (GRAVITY * 0.95f) : GRAVITY;
+            }
+        }
     }
 
     /**
@@ -398,7 +411,7 @@ public class Player extends Actor {
 
     @Override
     public void render(float dt, Batch batch) {
-        handleAnimation();
+        handleAnimationSwitching();
         handleMovement();
         handleStates();
 
@@ -410,14 +423,7 @@ public class Player extends Actor {
         batch.end();
 
         //Checks if player is on the ground
-        if (grounded) {
-            velocity.y = 0;
-        } else {
-            if (velocity.y > Constants.MAX_GRAVITY) {
-                // Slight decrease in Gravity when running to allow for more air control.
-                velocity.y -= run ? (GRAVITY * 0.95f) : GRAVITY;
-            }
-        }
+        handleGravity();
 
         //Handle player falling off map
         if ((position.x < 0) || ((position.y + height) < 0)){
