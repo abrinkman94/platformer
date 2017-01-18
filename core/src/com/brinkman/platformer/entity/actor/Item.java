@@ -3,19 +3,12 @@ package com.brinkman.platformer.entity.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
-import com.brinkman.platformer.util.Constants;
-
-import java.util.Iterator;
-import java.util.Map;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -39,13 +32,13 @@ public class Item extends Actor {
         this.itemType = itemType;
 
         height = 32 * TO_WORLD_UNITS;
-        width = 32 * TO_WORLD_UNITS;
+        setWidth(32 * TO_WORLD_UNITS);
         getBody().getPosition().set(x, y);
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
 
         sprite = new Sprite(texture);
-        sprite.setSize(width, height);
+        sprite.setSize(getWidth(), height);
         Vector2 position = getBody().getPosition();
         sprite.setPosition(position.x, position.y);
     }
@@ -53,7 +46,7 @@ public class Item extends Actor {
     @Override
     public Shape2D getBounds() {
         Vector2 position = getBody().getPosition();
-        return new Rectangle(position.x, position.y, width * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
+        return new Rectangle(position.x, position.y, getWidth() * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
     }
 
     @Override
