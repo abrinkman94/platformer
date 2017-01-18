@@ -74,6 +74,7 @@ public class Player extends Actor {
         this.inputFlags = inputFlags;
         width = PLAYER_WIDTH * TO_WORLD_UNITS;
         height = PLAYER_HEIGHT * TO_WORLD_UNITS;
+        Vector2 originPosition = getBody().getOriginPosition();
         getBody().getPosition().set(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
@@ -390,6 +391,7 @@ public class Player extends Actor {
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */
     public void reset() {
+        Vector2 originPosition = getBody().getOriginPosition();
         getBody().getPosition().set(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
@@ -405,6 +407,7 @@ public class Player extends Actor {
     @Override
     public void handleDeath() {
         if (lives > 0) {
+            Vector2 originPosition = getBody().getOriginPosition();
             getBody().getPosition().set(originPosition);
             velocity.y = 0;
             // TODO Remove to make game over actually happen
