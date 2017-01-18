@@ -157,7 +157,7 @@ public class Player extends Actor {
             } else {
                 position.y += verticalOverlap;
                 velocity.y = 0;
-                grounded = true;
+                getBody().setGrounded(true);
                 canJump = true;
             }
         }
@@ -288,7 +288,7 @@ public class Player extends Actor {
         }
 
         //GROUNDED state
-        if (grounded) {
+        if (getBody().isGrounded()) {
             state = ActorState.GROUNDED;
         }
 
@@ -318,21 +318,21 @@ public class Player extends Actor {
         if (left && movingLeft) {
             xSpeed = xSpeed - ACCELERATION;
             orientation = "left";
-            currentAnimation = (jump && !grounded) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
+            currentAnimation = (jump && !getBody().isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
         } else if (right && movingRight) {
             xSpeed = xSpeed + ACCELERATION;
             orientation = "right";
-            currentAnimation = (jump && !grounded) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
+            currentAnimation = (jump && !getBody().isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
         } else {
             if(xSpeed > DECELERATION) {
-                xSpeed -= grounded ? DECELERATION : (DECELERATION / 3);
+                xSpeed -= getBody().isGrounded() ? DECELERATION : (DECELERATION / 3);
             } else if(xSpeed < -DECELERATION) {
-                xSpeed += grounded ? DECELERATION : (DECELERATION / 3);
+                xSpeed += getBody().isGrounded() ? DECELERATION : (DECELERATION / 3);
             } else {
                 if ("right".equalsIgnoreCase(orientation)) {
-                    currentAnimation = (jump && !grounded) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+                    currentAnimation = (jump && !getBody().isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
                 } else {
-                    currentAnimation = (jump && !grounded) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
+                    currentAnimation = (jump && !getBody().isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
                 }
                 xSpeed = 0;
             }
@@ -365,7 +365,7 @@ public class Player extends Actor {
                     xSpeed = run ? (velocity.x + (WALL_BOUNCE + 1)) : (velocity.x + WALL_BOUNCE);
                 }
             }
-            grounded = false;
+            getBody().setGrounded(false);
             canJump = false;
             justJumped = true;
         }
@@ -377,7 +377,7 @@ public class Player extends Actor {
      */
     private void handleGravity() {
         Vector2 velocity = getBody().getVelocity();
-        if (grounded) {
+        if (getBody().isGrounded()) {
             velocity.y = 0;
         } else {
             if (velocity.y > Constants.MAX_GRAVITY) {
@@ -402,7 +402,7 @@ public class Player extends Actor {
         getBody().getVelocity().set(0.0f, 0.0f);
         orientation = "right";
         canJump = false;
-        grounded = false;
+        getBody().setGrounded(false);
         touchingLeftWall = false;
         touchingRightWall = false;
     }
@@ -444,7 +444,7 @@ public class Player extends Actor {
             handleDeath();
         }
 
-        grounded = false;
+        getBody().setGrounded(false);
         canJump = false;
         touchingLeftWall = false;
         touchingRightWall = false;

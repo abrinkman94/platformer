@@ -2,7 +2,6 @@ package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.PhysicsBody;
@@ -12,7 +11,6 @@ import com.brinkman.platformer.physics.PhysicsBody;
  */
 public abstract class Actor implements Entity {
     private final Body body = new PhysicsBody();
-
     /**
      * The Actor's Sprite.
      */
@@ -33,10 +31,6 @@ public abstract class Actor implements Entity {
      * The Actor's int currentAnimation, used for animations.
      */
     protected int currentAnimation;
-    /**
-     * The Actor's boolean grounded field.
-     */
-    protected boolean grounded;
     /**
      * The Actor's boolean canJump field.
      */
@@ -68,18 +62,6 @@ public abstract class Actor implements Entity {
      * @param lives int
      */
     public void setLives(int lives) { this.lives = lives; }
-
-    /**
-     * Returns the value of boolean grounded.
-     * @return boolean
-     */
-    public boolean isGrounded() { return grounded; }
-
-    /**
-     * Sets the value of boolean grounded.
-     * @param grounded boolean
-     */
-    public void setIsGrounded(boolean grounded) { this.grounded = grounded; }
 
     /**
      * Returns the value of boolean canJump.
