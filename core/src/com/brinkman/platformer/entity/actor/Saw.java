@@ -33,12 +33,12 @@ public class Saw extends Actor {
 	public Saw(float x, float y) {
 		getBody().getPosition().set(x, y);
 		getBody().setWidth(SAW_WIDTH * TO_WORLD_UNITS);
-		height = SAW_HEIGHT * TO_WORLD_UNITS;
+		getBody().setHeight(SAW_HEIGHT * TO_WORLD_UNITS);
 
 		texture = (Texture) AssetUtil.getAsset(TexturePaths.SAW_TEXTURE, Texture.class);
 
 		sprite = new Sprite(texture);
-		sprite.setSize(getBody().getWidth(), height);
+		sprite.setSize(getBody().getWidth(), getBody().getHeight());
 		sprite.setPosition(x, y + SAW_Y_OFFSET);
 		sprite.setOriginCenter();
 	}

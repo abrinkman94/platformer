@@ -73,7 +73,7 @@ public class Player extends Actor {
     public Player(InputFlags inputFlags) {
         this.inputFlags = inputFlags;
         getBody().setWidth(PLAYER_WIDTH * TO_WORLD_UNITS);
-        height = PLAYER_HEIGHT * TO_WORLD_UNITS;
+        getBody().setHeight(PLAYER_HEIGHT * TO_WORLD_UNITS);
         Vector2 originPosition = getBody().getOriginPosition();
         getBody().getPosition().set(originPosition);
         orientation = "right";
@@ -88,7 +88,7 @@ public class Player extends Actor {
     @Override
     public Shape2D getBounds() {
         Vector2 position = getBody().getPosition();
-        return new Rectangle(position.x, position.y, getBody().getWidth(), height);
+        return new Rectangle(position.x, position.y, getBody().getWidth(), getBody().getHeight());
     }
 
     @Override
@@ -431,14 +431,15 @@ public class Player extends Actor {
         Vector2 position = getBody().getPosition();
         batch.begin();
         batch.draw(animation.getKeyFrame(elapsedTime, false), position.x, position.y, getBody().getWidth(),
-                   height);
+                   getBody().getHeight()
+                  );
         batch.end();
 
         //Checks if player is on the ground
         handleGravity();
 
         //Handle player falling off map
-        if ((position.x < 0) || ((position.y + height) < 0)){
+        if ((position.x < 0) || ((position.y + getBody().getHeight()) < 0)){
             handleDeath();
         }
 

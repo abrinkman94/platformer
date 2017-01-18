@@ -36,7 +36,7 @@ public class Coin extends Actor {
         elapsedTime = 0;
         getBody().getPosition().set(x, y);
         getBody().setWidth(COIN_SIZE * TO_WORLD_UNITS);
-        height = COIN_SIZE  * TO_WORLD_UNITS;
+        getBody().setHeight(COIN_SIZE  * TO_WORLD_UNITS);
 
         texture = (Texture) AssetUtil.getAsset(TexturePaths.COIN_SPRITESHEET, Texture.class);
 
@@ -83,7 +83,7 @@ public class Coin extends Actor {
 
     private void animateCollect(float increment) {
         getBody().setWidth(getBody().getWidth() + increment);
-        height += increment;
+        getBody().setHeight(getBody().getHeight() + increment);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class Coin extends Actor {
         TextureRegion currentFrame = animations.getKeyFrame(elapsedTime, true);
         batch.begin();
         Vector2 position = getBody().getPosition();
-        batch.draw(currentFrame, position.x, position.y, getBody().getWidth(), height);
+        batch.draw(currentFrame, position.x, position.y, getBody().getWidth(), getBody().getHeight());
         batch.end();
     }
 

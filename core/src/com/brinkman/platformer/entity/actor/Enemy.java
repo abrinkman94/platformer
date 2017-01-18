@@ -19,7 +19,7 @@ public class Enemy extends Actor
 	public Enemy() {
 		getBody().getPosition().set(4, 2);
 		getBody().setWidth(32 * Constants.TO_WORLD_UNITS);
-		height = 64 * Constants.TO_WORLD_UNITS;
+		getBody().setHeight(64 * Constants.TO_WORLD_UNITS);
 		getBody().getVelocity().set(4 * Constants.TO_WORLD_UNITS, 0);
 
 		texture = new Texture("sprites/idle/frame-1-right.png");
@@ -27,13 +27,13 @@ public class Enemy extends Actor
 
 		Vector2 position = getBody().getPosition();
 		sprite.setPosition(position.x, position.y);
-		sprite.setSize(getBody().getWidth(), height);
+		sprite.setSize(getBody().getWidth(), getBody().getHeight());
 	}
 
 	@Override
 	public Shape2D getBounds() {
 		Vector2 position = getBody().getPosition();
-		return new Rectangle(position.x, position.y, getBody().getWidth(), height);
+		return new Rectangle(position.x, position.y, getBody().getWidth(), getBody().getHeight());
 	}
 
 	@Override

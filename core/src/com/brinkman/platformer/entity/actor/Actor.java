@@ -22,10 +22,6 @@ public abstract class Actor implements Entity {
      */
     protected Texture texture;
     /**
-     * The Actor's float height.
-     */
-    protected float height;
-    /**
      * The Actor's float moveSpeed.
      */
     protected float moveSpeed = 7;
@@ -64,18 +60,6 @@ public abstract class Actor implements Entity {
      * @return Sprite
      */
     public Sprite getSprite() { return sprite; }
-
-    /**
-     * Returns the float height.
-     * @return float
-     */
-    public float getHeight() { return height; }
-
-    /**
-     * Sets the Actor's height.
-     * @param height float
-     */
-    public void setHeight(float height) { this.height = height; }
 
     /**
      * Returns the int lives.
