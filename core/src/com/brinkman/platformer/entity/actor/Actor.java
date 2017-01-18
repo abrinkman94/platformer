@@ -22,10 +22,6 @@ public abstract class Actor implements Entity {
      */
     protected Texture texture;
     /**
-     * The Actor's Vector2 originPosition.
-     */
-    protected final Vector2 originPosition = new Vector2(2, 6);
-    /**
      * The Actor's Vector2 velocity.
      */
     protected Vector2 velocity;
