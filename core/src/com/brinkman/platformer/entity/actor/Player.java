@@ -420,7 +420,7 @@ public class Player extends Actor {
         }
 
         //Handle player falling off map
-        if ((position.x < 0) || (position.y < 0)){
+        if ((position.x < 0) || ((position.y + (height * TO_WORLD_UNITS)) < 0)){
             handleDeath();
         }
 
