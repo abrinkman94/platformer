@@ -6,7 +6,6 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -156,8 +155,8 @@ public class GameScreen implements Screen {
                         velocity.x = -velocity.x;
                     }
                 }
-                if (position.x >= (mapRight - (actor.getWidth() * TO_WORLD_UNITS))) {
-                    position.x = mapRight - (actor.getWidth() * TO_WORLD_UNITS);
+                if (position.x >= (mapRight - (actor.getBody().getWidth() * TO_WORLD_UNITS))) {
+                    position.x = mapRight - (actor.getBody().getWidth() * TO_WORLD_UNITS);
                     if (actor instanceof Enemy) {
                         velocity.x = -velocity.x;
                     }

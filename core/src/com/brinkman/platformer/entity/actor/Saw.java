@@ -32,13 +32,13 @@ public class Saw extends Actor {
 	 */
 	public Saw(float x, float y) {
 		getBody().getPosition().set(x, y);
-		setWidth(SAW_WIDTH * TO_WORLD_UNITS);
+		getBody().setWidth(SAW_WIDTH * TO_WORLD_UNITS);
 		height = SAW_HEIGHT * TO_WORLD_UNITS;
 
 		texture = (Texture) AssetUtil.getAsset(TexturePaths.SAW_TEXTURE, Texture.class);
 
 		sprite = new Sprite(texture);
-		sprite.setSize(getWidth(), height);
+		sprite.setSize(getBody().getWidth(), height);
 		sprite.setPosition(x, y + SAW_Y_OFFSET);
 		sprite.setOriginCenter();
 	}
@@ -46,7 +46,7 @@ public class Saw extends Actor {
 	@Override
 	public Shape2D getBounds() {
 		Vector2 position = getBody().getPosition();
-		return new Circle(position.x + (getWidth() / 2), position.y + (0.5f * 3), getWidth() * 0.5f);
+		return new Circle(position.x + (getBody().getWidth() / 2), position.y + (0.5f * 3), getBody().getWidth() * 0.5f);
 	}
 
 	@Override

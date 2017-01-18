@@ -18,7 +18,7 @@ public class Enemy extends Actor
 
 	public Enemy() {
 		getBody().getPosition().set(4, 2);
-		setWidth(32 * Constants.TO_WORLD_UNITS);
+		getBody().setWidth(32 * Constants.TO_WORLD_UNITS);
 		height = 64 * Constants.TO_WORLD_UNITS;
 		getBody().getVelocity().set(4 * Constants.TO_WORLD_UNITS, 0);
 
@@ -27,13 +27,13 @@ public class Enemy extends Actor
 
 		Vector2 position = getBody().getPosition();
 		sprite.setPosition(position.x, position.y);
-		sprite.setSize(getWidth(), height);
+		sprite.setSize(getBody().getWidth(), height);
 	}
 
 	@Override
 	public Shape2D getBounds() {
 		Vector2 position = getBody().getPosition();
-		return new Rectangle(position.x, position.y, getWidth(), height);
+		return new Rectangle(position.x, position.y, getBody().getWidth(), height);
 	}
 
 	@Override

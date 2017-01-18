@@ -35,7 +35,7 @@ public class Coin extends Actor {
     public Coin(float x, float y) {
         elapsedTime = 0;
         getBody().getPosition().set(x, y);
-        setWidth(COIN_SIZE * TO_WORLD_UNITS);
+        getBody().setWidth(COIN_SIZE * TO_WORLD_UNITS);
         height = COIN_SIZE  * TO_WORLD_UNITS;
 
         texture = (Texture) AssetUtil.getAsset(TexturePaths.COIN_SPRITESHEET, Texture.class);
@@ -56,9 +56,9 @@ public class Coin extends Actor {
     @Override
     public Shape2D getBounds() {
         Vector2 position = getBody().getPosition();
-        float x = position.x + (getWidth() / 2);
+        float x = position.x + (getBody().getWidth() / 2);
         float y = position.y;
-        float radius = getWidth() * 0.5f;
+        float radius = getBody().getWidth() * 0.5f;
         return new Circle(x, y, radius);
     }
 
@@ -72,7 +72,7 @@ public class Coin extends Actor {
         if (other instanceof Player) {
             animations.setFrameDuration(0.002f);
 
-            if (getWidth() > 0.1f) {
+            if (getBody().getWidth() > 0.1f) {
                 animateCollect(-0.05f);
             }
         }
@@ -82,7 +82,7 @@ public class Coin extends Actor {
     public boolean shouldBeRemovedOnCollision() { return true; }
 
     private void animateCollect(float increment) {
-        setWidth(getWidth() + increment);
+        getBody().setWidth(getBody().getWidth() + increment);
         height += increment;
     }
 
@@ -92,7 +92,7 @@ public class Coin extends Actor {
         TextureRegion currentFrame = animations.getKeyFrame(elapsedTime, true);
         batch.begin();
         Vector2 position = getBody().getPosition();
-        batch.draw(currentFrame, position.x, position.y, getWidth(), height);
+        batch.draw(currentFrame, position.x, position.y, getBody().getWidth(), height);
         batch.end();
     }
 

@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.actor.Actor;
-import com.brinkman.platformer.map.TMXMap;
 
 import static com.brinkman.platformer.map.TMXMap.mapHeight;
 import static com.brinkman.platformer.map.TMXMap.mapWidth;
@@ -88,7 +87,7 @@ public final class CameraUtil
      */
     public static void lerpCameraToActor(Actor actor, OrthographicCamera cam) {
         Vector2 position = actor.getBody().getPosition();
-        cam.position.lerp(new Vector3(position.x + ((actor.getWidth() * 0.5f) * TO_WORLD_UNITS),
+        cam.position.lerp(new Vector3(position.x + ((actor.getBody().getWidth() * 0.5f) * TO_WORLD_UNITS),
                                       position.y + ((actor.getHeight() * 0.5f) * TO_WORLD_UNITS), 0), 0.06f);
     }
 }

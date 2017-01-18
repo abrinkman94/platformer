@@ -32,13 +32,13 @@ public class Item extends Actor {
         this.itemType = itemType;
 
         height = 32 * TO_WORLD_UNITS;
-        setWidth(32 * TO_WORLD_UNITS);
+        getBody().setWidth(32 * TO_WORLD_UNITS);
         getBody().getPosition().set(x, y);
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
 
         sprite = new Sprite(texture);
-        sprite.setSize(getWidth(), height);
+        sprite.setSize(getBody().getWidth(), height);
         Vector2 position = getBody().getPosition();
         sprite.setPosition(position.x, position.y);
     }
@@ -46,7 +46,7 @@ public class Item extends Actor {
     @Override
     public Shape2D getBounds() {
         Vector2 position = getBody().getPosition();
-        return new Rectangle(position.x, position.y, getWidth() * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
+        return new Rectangle(position.x, position.y, getBody().getWidth() * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
     }
 
     @Override

@@ -22,10 +22,6 @@ public abstract class Actor implements Entity {
      */
     protected Texture texture;
     /**
-     * The Actor's float width.
-     */
-    protected float width;
-    /**
      * The Actor's float height.
      */
     protected float height;
@@ -68,18 +64,6 @@ public abstract class Actor implements Entity {
      * @return Sprite
      */
     public Sprite getSprite() { return sprite; }
-
-    /**
-     * Returns the float width.
-     * @return float
-     */
-    public float getWidth() { return width; }
-
-    /**
-     * Sets the Actor's width.
-     * @param width float
-     */
-    public void setWidth(float width) { this.width = width; }
 
     /**
      * Returns the float height.
