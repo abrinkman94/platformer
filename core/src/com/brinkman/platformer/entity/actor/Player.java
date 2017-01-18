@@ -76,7 +76,6 @@ public class Player extends Actor {
         height = PLAYER_HEIGHT * TO_WORLD_UNITS;
         Vector2 originPosition = getBody().getOriginPosition();
         getBody().getPosition().set(originPosition);
-        velocity = new Vector2(0, 0);
         orientation = "right";
         inventory = new ConcurrentHashMap<>(8);
         state = ActorState.IDLE;
@@ -138,6 +137,7 @@ public class Player extends Actor {
         // Move the entity on the axis which has the least overlap.
         // The direction that the entity will move is determined by the sign of the distance between the centers
         Vector2 position = getBody().getPosition();
+        Vector2 velocity = getBody().getVelocity();
         if (horizontalOverlap < verticalOverlap) {
             if (horizontalDistance > 0) {
                 touchingRightWall = true;
@@ -276,6 +276,8 @@ public class Player extends Actor {
      */
     private void handleStates() {
         //JUMPING state
+        Vector2 velocity = getBody().getVelocity();
+
         if (velocity.y > 0) {
             state = ActorState.JUMPING;
         }
@@ -308,7 +310,7 @@ public class Player extends Actor {
 
         //X-axis movement
         float maxSpeed = moveSpeed;
-        float xSpeed = velocity.x;
+        float xSpeed = getBody().getVelocity().x;
         boolean movingLeft = xSpeed > -maxSpeed;
         boolean movingRight = xSpeed < maxSpeed;
 
@@ -339,8 +341,9 @@ public class Player extends Actor {
         xSpeed = handleJump(xSpeed);
 
         //Update position and velocity
-        velocity.x = xSpeed;
+        Vector2 velocity = getBody().getVelocity();
         Vector2 position = getBody().getPosition();
+        velocity.x = xSpeed;
         position.x += velocity.x * Gdx.graphics.getDeltaTime();
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
@@ -350,6 +353,7 @@ public class Player extends Actor {
      */
     private float handleJump(float xSpeed) {
         if (jump && canJump && !justJumped) {
+            Vector2 velocity = getBody().getVelocity();
             velocity.y = JUMP_VEL;
 
             //Wall bounce
@@ -371,6 +375,7 @@ public class Player extends Actor {
      * Sets player's y velocity based on 'grounded' and 'GRAVITY'.
      */
     private void handleGravity() {
+        Vector2 velocity = getBody().getVelocity();
         if (grounded) {
             velocity.y = 0;
         } else {
@@ -393,7 +398,7 @@ public class Player extends Actor {
     public void reset() {
         Vector2 originPosition = getBody().getOriginPosition();
         getBody().getPosition().set(originPosition);
-        velocity = new Vector2(0, 0);
+        getBody().getVelocity().set(0.0f, 0.0f);
         orientation = "right";
         canJump = false;
         grounded = false;
@@ -409,7 +414,7 @@ public class Player extends Actor {
         if (lives > 0) {
             Vector2 originPosition = getBody().getOriginPosition();
             getBody().getPosition().set(originPosition);
-            velocity.y = 0;
+            getBody().getVelocity().y = 0;
             // TODO Remove to make game over actually happen
         //    lives--;
         }

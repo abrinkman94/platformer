@@ -24,7 +24,7 @@ public class Enemy extends Actor
 		getBody().getPosition().set(4, 2);
 		width = 32 * Constants.TO_WORLD_UNITS;
 		height = 64 * Constants.TO_WORLD_UNITS;
-		velocity = new Vector2(4 * Constants.TO_WORLD_UNITS, 0);
+		getBody().getVelocity().set(4 * Constants.TO_WORLD_UNITS, 0);
 
 		texture = new Texture("sprites/idle/frame-1-right.png");
 		sprite = new Sprite(texture);
@@ -55,6 +55,7 @@ public class Enemy extends Actor
 			batch.end();
 
 			Vector2 position = getBody().getPosition();
+			Vector2 velocity = getBody().getVelocity();
 			position.x += velocity.x;
 			sprite.setPosition(position.x, position.y);
 		}
