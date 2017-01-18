@@ -306,10 +306,11 @@ public class Player extends Actor {
         setKeyFlags();
 
         //Run conditionals
-        moveSpeed = run ? 10 : 6;
+        float moveSpeed1 = run ? 10 : 6;
+        getBody().setMoveSpeed(moveSpeed1);
 
         //X-axis movement
-        float maxSpeed = moveSpeed;
+        float maxSpeed = getBody().getMoveSpeed();
         float xSpeed = getBody().getVelocity().x;
         boolean movingLeft = xSpeed > -maxSpeed;
         boolean movingRight = xSpeed < maxSpeed;

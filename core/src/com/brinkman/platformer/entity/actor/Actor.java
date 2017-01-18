@@ -22,10 +22,6 @@ public abstract class Actor implements Entity {
      */
     protected Texture texture;
     /**
-     * The Actor's float moveSpeed.
-     */
-    protected float moveSpeed = 7;
-    /**
      * The Actor's float elapsedTime, used for animations.
      */
     protected float elapsedTime;
@@ -110,4 +106,5 @@ public abstract class Actor implements Entity {
     public void setOrientation(String orientation) { this.orientation = orientation; }
 
     public Body getBody() { return body; }
+
 }
