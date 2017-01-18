@@ -22,10 +22,6 @@ public abstract class Actor implements Entity {
      */
     protected Texture texture;
     /**
-     * The Actor's Vector2 position.
-     */
-    protected Vector2 position;
-    /**
      * The Actor's Vector2 originPosition.
      */
     protected final Vector2 originPosition = new Vector2(2, 6);
@@ -80,12 +76,6 @@ public abstract class Actor implements Entity {
      * @return Sprite
      */
     public Sprite getSprite() { return sprite; }
-
-    /**
-     * Returns the Vector2 position.
-     * @return Vector2
-     */
-    public Vector2 getPosition() { return position; }
 
     /**
      * Returns the Vector2 velocity.
