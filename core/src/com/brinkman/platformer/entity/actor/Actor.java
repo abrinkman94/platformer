@@ -22,10 +22,6 @@ public abstract class Actor implements Entity {
      */
     protected Texture texture;
     /**
-     * The Actor's Vector2 velocity.
-     */
-    protected Vector2 velocity;
-    /**
      * The Actor's float width.
      */
     protected float width;
@@ -72,12 +68,6 @@ public abstract class Actor implements Entity {
      * @return Sprite
      */
     public Sprite getSprite() { return sprite; }
-
-    /**
-     * Returns the Vector2 velocity.
-     * @return Vector2
-     */
-    public Vector2 getVelocity() { return velocity; }
 
     /**
      * Returns the float width.
