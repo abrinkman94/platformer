@@ -34,7 +34,7 @@ public class Coin extends Actor {
      */
     public Coin(float x, float y) {
         elapsedTime = 0;
-        position = new Vector2(x, y);
+        getBody().getPosition().set(x, y);
         width = COIN_SIZE * TO_WORLD_UNITS;
         height = COIN_SIZE  * TO_WORLD_UNITS;
 
@@ -55,8 +55,11 @@ public class Coin extends Actor {
 
     @Override
     public Shape2D getBounds() {
-        return new Circle(position.x + (width / 2),
-              position.y, width * 0.5f);
+        Vector2 position = getBody().getPosition();
+        float x = position.x + (width / 2);
+        float y = position.y;
+        float radius = width * 0.5f;
+        return new Circle(x, y, radius);
     }
 
     @Override
@@ -88,6 +91,7 @@ public class Coin extends Actor {
         elapsedTime += dt;
         TextureRegion currentFrame = animations.getKeyFrame(elapsedTime, true);
         batch.begin();
+        Vector2 position = getBody().getPosition();
         batch.draw(currentFrame, position.x, position.y, width, height);
         batch.end();
     }

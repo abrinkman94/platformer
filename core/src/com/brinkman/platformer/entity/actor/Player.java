@@ -74,7 +74,7 @@ public class Player extends Actor {
         this.inputFlags = inputFlags;
         width = PLAYER_WIDTH * TO_WORLD_UNITS;
         height = PLAYER_HEIGHT * TO_WORLD_UNITS;
-        position = new Vector2(originPosition);
+        getBody().getPosition().set(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
         inventory = new ConcurrentHashMap<>(8);
@@ -87,6 +87,7 @@ public class Player extends Actor {
 
     @Override
     public Shape2D getBounds() {
+        Vector2 position = getBody().getPosition();
         return new Rectangle(position.x, position.y, width, height);
     }
 
@@ -135,24 +136,25 @@ public class Player extends Actor {
 
         // Move the entity on the axis which has the least overlap.
         // The direction that the entity will move is determined by the sign of the distance between the centers
+        Vector2 position = getBody().getPosition();
         if (horizontalOverlap < verticalOverlap) {
             if (horizontalDistance > 0) {
                 touchingRightWall = true;
-                position.x = position.x - horizontalOverlap;
+                position.x -= horizontalOverlap;
                 velocity.x = 0;
             } else {
                 touchingLeftWall = true;
-                position.x = position.x + horizontalOverlap;
+                position.x += horizontalOverlap;
                 velocity.x = 0;
             }
             canJump = true;
         } else {
             if (verticalDistance > 0) {
-                position.y = position.y - verticalOverlap;
+                position.y -= verticalOverlap;
                 velocity.y = -(position.y - GRAVITY);
                 canJump = false;
             } else {
-                position.y = position.y + verticalOverlap;
+                position.y += verticalOverlap;
                 velocity.y = 0;
                 grounded = true;
                 canJump = true;
@@ -337,6 +339,7 @@ public class Player extends Actor {
 
         //Update position and velocity
         velocity.x = xSpeed;
+        Vector2 position = getBody().getPosition();
         position.x += velocity.x * Gdx.graphics.getDeltaTime();
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
@@ -387,7 +390,7 @@ public class Player extends Actor {
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */
     public void reset() {
-        position = new Vector2(originPosition);
+        getBody().getPosition().set(originPosition);
         velocity = new Vector2(0, 0);
         orientation = "right";
         canJump = false;
@@ -402,7 +405,7 @@ public class Player extends Actor {
     @Override
     public void handleDeath() {
         if (lives > 0) {
-            position.set(originPosition);
+            getBody().getPosition().set(originPosition);
             velocity.y = 0;
             // TODO Remove to make game over actually happen
         //    lives--;
@@ -417,6 +420,7 @@ public class Player extends Actor {
 
         elapsedTime += Gdx.graphics.getDeltaTime();
 
+        Vector2 position = getBody().getPosition();
         batch.begin();
         batch.draw(animation.getKeyFrame(elapsedTime, false), position.x, position.y, width,
                 height);

@@ -40,17 +40,19 @@ public class Item extends Actor {
 
         height = 32 * TO_WORLD_UNITS;
         width = 32 * TO_WORLD_UNITS;
-        position = new Vector2(x, y);
+        getBody().getPosition().set(x, y);
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
 
         sprite = new Sprite(texture);
         sprite.setSize(width, height);
+        Vector2 position = getBody().getPosition();
         sprite.setPosition(position.x, position.y);
     }
 
     @Override
     public Shape2D getBounds() {
+        Vector2 position = getBody().getPosition();
         return new Rectangle(position.x, position.y, width * TO_WORLD_UNITS, height * TO_WORLD_UNITS);
     }
 

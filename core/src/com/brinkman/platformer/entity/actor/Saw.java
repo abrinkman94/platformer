@@ -31,7 +31,7 @@ public class Saw extends Actor {
 	 * @param y float y position
 	 */
 	public Saw(float x, float y) {
-		position = new Vector2(x, y);
+		getBody().getPosition().set(x, y);
 		width = SAW_WIDTH * TO_WORLD_UNITS;
 		height = SAW_HEIGHT * TO_WORLD_UNITS;
 
@@ -45,6 +45,7 @@ public class Saw extends Actor {
 
 	@Override
 	public Shape2D getBounds() {
+		Vector2 position = getBody().getPosition();
 		return new Circle(position.x + (width / 2), position.y + (0.5f * 3), width * 0.5f);
 	}
 

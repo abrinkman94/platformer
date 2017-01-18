@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
@@ -147,14 +148,15 @@ public class GameScreen implements Screen {
             if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
                 Actor actor = (Actor) entity;
 
-                if (actor.getPosition().x <= mapLeft) {
-                    actor.getPosition().x = mapLeft;
+                Vector2 position = actor.getBody().getPosition();
+                if (position.x <= mapLeft) {
+                    position.x = mapLeft;
                     if (actor instanceof Enemy) {
                         actor.getVelocity().x = -actor.getVelocity().x;
                     }
                 }
-                if (actor.getPosition().x >= (mapRight - (actor.getWidth() * TO_WORLD_UNITS))) {
-                    actor.getPosition().x = mapRight - (actor.getWidth() * TO_WORLD_UNITS);
+                if (position.x >= (mapRight - (actor.getWidth() * TO_WORLD_UNITS))) {
+                    position.x = mapRight - (actor.getWidth() * TO_WORLD_UNITS);
                     if (actor instanceof Enemy) {
                         actor.getVelocity().x = -actor.getVelocity().x;
                     }

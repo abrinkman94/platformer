@@ -3,6 +3,7 @@ package com.brinkman.platformer.util;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 //import com.brinkman.platformer.entity.actor.Actor;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.actor.Actor;
@@ -63,7 +64,7 @@ public final class CameraUtil
         Actor player = (Actor) world.getEntityByValue("player");
         Rectangle bounds = (Rectangle) player.getBounds();
 
-        boolean reachedHeightToZoom = (player.getPosition().y - (bounds.height * 0.5f)) >= 8f;
+        boolean reachedHeightToZoom = (player.getBody().getPosition().y - (bounds.height * 0.5f)) >= 8f;
         boolean isAwayFromMapEdge = (bounds.x > 10) && (bounds.x < (mapWidth - 10));
         boolean zoomOut = reachedHeightToZoom && isAwayFromMapEdge;
 
@@ -86,7 +87,8 @@ public final class CameraUtil
      * @param cam OrthographicCamera
      */
     public static void lerpCameraToActor(Actor actor, OrthographicCamera cam) {
-        cam.position.lerp(new Vector3(actor.getPosition().x + ((actor.getWidth() * 0.5f) * TO_WORLD_UNITS),
-                actor.getPosition().y + ((actor.getHeight() * 0.5f) * TO_WORLD_UNITS), 0), 0.06f);
+        Vector2 position = actor.getBody().getPosition();
+        cam.position.lerp(new Vector3(position.x + ((actor.getWidth() * 0.5f) * TO_WORLD_UNITS),
+                                      position.y + ((actor.getHeight() * 0.5f) * TO_WORLD_UNITS), 0), 0.06f);
     }
 }
