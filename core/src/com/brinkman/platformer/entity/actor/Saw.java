@@ -31,21 +31,22 @@ public class Saw extends Actor {
 	 * @param y float y position
 	 */
 	public Saw(float x, float y) {
-		position = new Vector2(x, y);
-		width = SAW_WIDTH * TO_WORLD_UNITS;
-		height = SAW_HEIGHT * TO_WORLD_UNITS;
+		getBody().getPosition().set(x, y);
+		getBody().setWidth(SAW_WIDTH * TO_WORLD_UNITS);
+		getBody().setHeight(SAW_HEIGHT * TO_WORLD_UNITS);
 
 		texture = (Texture) AssetUtil.getAsset(TexturePaths.SAW_TEXTURE, Texture.class);
 
 		sprite = new Sprite(texture);
-		sprite.setSize(width, height);
+		sprite.setSize(getBody().getWidth(), getBody().getHeight());
 		sprite.setPosition(x, y + SAW_Y_OFFSET);
 		sprite.setOriginCenter();
 	}
 
 	@Override
 	public Shape2D getBounds() {
-		return new Circle(position.x + (width / 2), position.y + (0.5f * 3), width * 0.5f);
+		Vector2 position = getBody().getPosition();
+		return new Circle(position.x + (getBody().getWidth() / 2), position.y + (0.5f * 3), getBody().getWidth() * 0.5f);
 	}
 
 	@Override

@@ -34,9 +34,9 @@ public class Coin extends Actor {
      */
     public Coin(float x, float y) {
         elapsedTime = 0;
-        position = new Vector2(x, y);
-        width = COIN_SIZE * TO_WORLD_UNITS;
-        height = COIN_SIZE  * TO_WORLD_UNITS;
+        getBody().getPosition().set(x, y);
+        getBody().setWidth(COIN_SIZE * TO_WORLD_UNITS);
+        getBody().setHeight(COIN_SIZE  * TO_WORLD_UNITS);
 
         texture = (Texture) AssetUtil.getAsset(TexturePaths.COIN_SPRITESHEET, Texture.class);
 
@@ -55,8 +55,11 @@ public class Coin extends Actor {
 
     @Override
     public Shape2D getBounds() {
-        return new Circle(position.x + (width / 2),
-              position.y, width * 0.5f);
+        Vector2 position = getBody().getPosition();
+        float x = position.x + (getBody().getWidth() / 2);
+        float y = position.y;
+        float radius = getBody().getWidth() * 0.5f;
+        return new Circle(x, y, radius);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class Coin extends Actor {
         if (other instanceof Player) {
             animations.setFrameDuration(0.002f);
 
-            if (getWidth() > 0.1f) {
+            if (getBody().getWidth() > 0.1f) {
                 animateCollect(-0.05f);
             }
         }
@@ -79,8 +82,8 @@ public class Coin extends Actor {
     public boolean shouldBeRemovedOnCollision() { return true; }
 
     private void animateCollect(float increment) {
-        width += increment;
-        height += increment;
+        getBody().setWidth(getBody().getWidth() + increment);
+        getBody().setHeight(getBody().getHeight() + increment);
     }
 
     @Override
@@ -88,7 +91,8 @@ public class Coin extends Actor {
         elapsedTime += dt;
         TextureRegion currentFrame = animations.getKeyFrame(elapsedTime, true);
         batch.begin();
-        batch.draw(currentFrame, position.x, position.y, width, height);
+        Vector2 position = getBody().getPosition();
+        batch.draw(currentFrame, position.x, position.y, getBody().getWidth(), getBody().getHeight());
         batch.end();
     }
 

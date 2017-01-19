@@ -2,19 +2,15 @@ package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Shape2D;
-import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.entity.Entity;
-
-import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
+import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.physics.PhysicsBody;
 
 /**
  * Created by Austin on 9/29/2016.
  */
 public abstract class Actor implements Entity {
-
+    private final Body body = new PhysicsBody();
     /**
      * The Actor's Sprite.
      */
@@ -23,30 +19,6 @@ public abstract class Actor implements Entity {
      * The Actor's Texture.
      */
     protected Texture texture;
-    /**
-     * The Actor's Vector2 position.
-     */
-    protected Vector2 position;
-    /**
-     * The Actor's Vector2 originPosition.
-     */
-    protected final Vector2 originPosition = new Vector2(2, 6);
-    /**
-     * The Actor's Vector2 velocity.
-     */
-    protected Vector2 velocity;
-    /**
-     * The Actor's float width.
-     */
-    protected float width;
-    /**
-     * The Actor's float height.
-     */
-    protected float height;
-    /**
-     * The Actor's float moveSpeed.
-     */
-    protected float moveSpeed = 7;
     /**
      * The Actor's float elapsedTime, used for animations.
      */
@@ -59,10 +31,6 @@ public abstract class Actor implements Entity {
      * The Actor's int currentAnimation, used for animations.
      */
     protected int currentAnimation;
-    /**
-     * The Actor's boolean grounded field.
-     */
-    protected boolean grounded;
     /**
      * The Actor's boolean canJump field.
      */
@@ -84,42 +52,6 @@ public abstract class Actor implements Entity {
     public Sprite getSprite() { return sprite; }
 
     /**
-     * Returns the Vector2 position.
-     * @return Vector2
-     */
-    public Vector2 getPosition() { return position; }
-
-    /**
-     * Returns the Vector2 velocity.
-     * @return Vector2
-     */
-    public Vector2 getVelocity() { return velocity; }
-
-    /**
-     * Returns the float width.
-     * @return float
-     */
-    public float getWidth() { return width; }
-
-    /**
-     * Sets the Actor's width.
-     * @param width float
-     */
-    public void setWidth(float width) { this.width = width; }
-
-    /**
-     * Returns the float height.
-     * @return float
-     */
-    public float getHeight() { return height; }
-
-    /**
-     * Sets the Actor's height.
-     * @param height float
-     */
-    public void setHeight(float height) { this.height = height; }
-
-    /**
      * Returns the int lives.
      * @return int
      */
@@ -130,18 +62,6 @@ public abstract class Actor implements Entity {
      * @param lives int
      */
     public void setLives(int lives) { this.lives = lives; }
-
-    /**
-     * Returns the value of boolean grounded.
-     * @return boolean
-     */
-    public boolean isGrounded() { return grounded; }
-
-    /**
-     * Sets the value of boolean grounded.
-     * @param grounded boolean
-     */
-    public void setIsGrounded(boolean grounded) { this.grounded = grounded; }
 
     /**
      * Returns the value of boolean canJump.
@@ -166,4 +86,7 @@ public abstract class Actor implements Entity {
      * @param orientation String
      */
     public void setOrientation(String orientation) { this.orientation = orientation; }
+
+    public Body getBody() { return body; }
+
 }

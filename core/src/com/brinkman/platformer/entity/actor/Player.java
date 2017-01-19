@@ -72,10 +72,10 @@ public class Player extends Actor {
      */
     public Player(InputFlags inputFlags) {
         this.inputFlags = inputFlags;
-        width = PLAYER_WIDTH * TO_WORLD_UNITS;
-        height = PLAYER_HEIGHT * TO_WORLD_UNITS;
-        position = new Vector2(originPosition);
-        velocity = new Vector2(0, 0);
+        getBody().setWidth(PLAYER_WIDTH * TO_WORLD_UNITS);
+        getBody().setHeight(PLAYER_HEIGHT * TO_WORLD_UNITS);
+        Vector2 originPosition = getBody().getOriginPosition();
+        getBody().getPosition().set(originPosition);
         orientation = "right";
         inventory = new ConcurrentHashMap<>(8);
         state = ActorState.IDLE;
@@ -87,7 +87,8 @@ public class Player extends Actor {
 
     @Override
     public Shape2D getBounds() {
-        return new Rectangle(position.x, position.y, width, height);
+        Vector2 position = getBody().getPosition();
+        return new Rectangle(position.x, position.y, getBody().getWidth(), getBody().getHeight());
     }
 
     @Override
@@ -135,26 +136,28 @@ public class Player extends Actor {
 
         // Move the entity on the axis which has the least overlap.
         // The direction that the entity will move is determined by the sign of the distance between the centers
+        Vector2 position = getBody().getPosition();
+        Vector2 velocity = getBody().getVelocity();
         if (horizontalOverlap < verticalOverlap) {
             if (horizontalDistance > 0) {
                 touchingRightWall = true;
-                position.x = position.x - horizontalOverlap;
+                position.x -= horizontalOverlap;
                 velocity.x = 0;
             } else {
                 touchingLeftWall = true;
-                position.x = position.x + horizontalOverlap;
+                position.x += horizontalOverlap;
                 velocity.x = 0;
             }
             canJump = true;
         } else {
             if (verticalDistance > 0) {
-                position.y = position.y - verticalOverlap;
+                position.y -= verticalOverlap;
                 velocity.y = -(position.y - GRAVITY);
                 canJump = false;
             } else {
-                position.y = position.y + verticalOverlap;
+                position.y += verticalOverlap;
                 velocity.y = 0;
-                grounded = true;
+                getBody().setGrounded(true);
                 canJump = true;
             }
         }
@@ -273,6 +276,8 @@ public class Player extends Actor {
      */
     private void handleStates() {
         //JUMPING state
+        Vector2 velocity = getBody().getVelocity();
+
         if (velocity.y > 0) {
             state = ActorState.JUMPING;
         }
@@ -283,7 +288,7 @@ public class Player extends Actor {
         }
 
         //GROUNDED state
-        if (grounded) {
+        if (getBody().isGrounded()) {
             state = ActorState.GROUNDED;
         }
 
@@ -301,32 +306,33 @@ public class Player extends Actor {
         setKeyFlags();
 
         //Run conditionals
-        moveSpeed = run ? 10 : 6;
+        float moveSpeed1 = run ? 10 : 6;
+        getBody().setMoveSpeed(moveSpeed1);
 
         //X-axis movement
-        float maxSpeed = moveSpeed;
-        float xSpeed = velocity.x;
+        float maxSpeed = getBody().getMoveSpeed();
+        float xSpeed = getBody().getVelocity().x;
         boolean movingLeft = xSpeed > -maxSpeed;
         boolean movingRight = xSpeed < maxSpeed;
 
         if (left && movingLeft) {
             xSpeed = xSpeed - ACCELERATION;
             orientation = "left";
-            currentAnimation = (jump && !grounded) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
+            currentAnimation = (jump && !getBody().isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
         } else if (right && movingRight) {
             xSpeed = xSpeed + ACCELERATION;
             orientation = "right";
-            currentAnimation = (jump && !grounded) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
+            currentAnimation = (jump && !getBody().isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
         } else {
             if(xSpeed > DECELERATION) {
-                xSpeed -= grounded ? DECELERATION : (DECELERATION / 3);
+                xSpeed -= getBody().isGrounded() ? DECELERATION : (DECELERATION / 3);
             } else if(xSpeed < -DECELERATION) {
-                xSpeed += grounded ? DECELERATION : (DECELERATION / 3);
+                xSpeed += getBody().isGrounded() ? DECELERATION : (DECELERATION / 3);
             } else {
                 if ("right".equalsIgnoreCase(orientation)) {
-                    currentAnimation = (jump && !grounded) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+                    currentAnimation = (jump && !getBody().isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
                 } else {
-                    currentAnimation = (jump && !grounded) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
+                    currentAnimation = (jump && !getBody().isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
                 }
                 xSpeed = 0;
             }
@@ -336,6 +342,8 @@ public class Player extends Actor {
         xSpeed = handleJump(xSpeed);
 
         //Update position and velocity
+        Vector2 velocity = getBody().getVelocity();
+        Vector2 position = getBody().getPosition();
         velocity.x = xSpeed;
         position.x += velocity.x * Gdx.graphics.getDeltaTime();
         position.y += velocity.y * Gdx.graphics.getDeltaTime();
@@ -346,6 +354,7 @@ public class Player extends Actor {
      */
     private float handleJump(float xSpeed) {
         if (jump && canJump && !justJumped) {
+            Vector2 velocity = getBody().getVelocity();
             velocity.y = JUMP_VEL;
 
             //Wall bounce
@@ -356,7 +365,7 @@ public class Player extends Actor {
                     xSpeed = run ? (velocity.x + (WALL_BOUNCE + 1)) : (velocity.x + WALL_BOUNCE);
                 }
             }
-            grounded = false;
+            getBody().setGrounded(false);
             canJump = false;
             justJumped = true;
         }
@@ -367,7 +376,8 @@ public class Player extends Actor {
      * Sets player's y velocity based on 'grounded' and 'GRAVITY'.
      */
     private void handleGravity() {
-        if (grounded) {
+        Vector2 velocity = getBody().getVelocity();
+        if (getBody().isGrounded()) {
             velocity.y = 0;
         } else {
             if (velocity.y > Constants.MAX_GRAVITY) {
@@ -387,11 +397,12 @@ public class Player extends Actor {
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */
     public void reset() {
-        position = new Vector2(originPosition);
-        velocity = new Vector2(0, 0);
+        Vector2 originPosition = getBody().getOriginPosition();
+        getBody().getPosition().set(originPosition);
+        getBody().getVelocity().set(0.0f, 0.0f);
         orientation = "right";
         canJump = false;
-        grounded = false;
+        getBody().setGrounded(false);
         touchingLeftWall = false;
         touchingRightWall = false;
     }
@@ -402,8 +413,9 @@ public class Player extends Actor {
     @Override
     public void handleDeath() {
         if (lives > 0) {
-            position.set(originPosition);
-            velocity.y = 0;
+            Vector2 originPosition = getBody().getOriginPosition();
+            getBody().getPosition().set(originPosition);
+            getBody().getVelocity().y = 0;
             // TODO Remove to make game over actually happen
         //    lives--;
         }
@@ -417,20 +429,22 @@ public class Player extends Actor {
 
         elapsedTime += Gdx.graphics.getDeltaTime();
 
+        Vector2 position = getBody().getPosition();
         batch.begin();
-        batch.draw(animation.getKeyFrame(elapsedTime, false), position.x, position.y, width,
-                height);
+        batch.draw(animation.getKeyFrame(elapsedTime, false), position.x, position.y, getBody().getWidth(),
+                   getBody().getHeight()
+                  );
         batch.end();
 
         //Checks if player is on the ground
         handleGravity();
 
         //Handle player falling off map
-        if ((position.x < 0) || ((position.y + height) < 0)){
+        if ((position.x < 0) || ((position.y + getBody().getHeight()) < 0)){
             handleDeath();
         }
 
-        grounded = false;
+        getBody().setGrounded(false);
         canJump = false;
         touchingLeftWall = false;
         touchingRightWall = false;
