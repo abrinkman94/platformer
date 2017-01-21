@@ -36,7 +36,7 @@ public class GameWorld {
     public GameWorld(Level level) {
         this.level = level;
         entities = new LinkedList<>();
-        unmodifiableEntities = Collections.unmodifiableList(entities);
+        unmodifiableEntities = Collections.unmodifiableList(new ArrayList<>(entities));
 
         LOGGER.info("Initialized");
     }
