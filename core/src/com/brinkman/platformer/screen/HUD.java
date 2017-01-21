@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.ItemType;
 import com.brinkman.platformer.entity.actor.Player;
@@ -69,14 +70,19 @@ public class HUD {
             coinLabel.setText("Turn In!");
         }
 
+        Player player = null;
+        for (Entity entity : world.getEntities()) {
+            if (entity instanceof Player) {
+                player = (Player) entity;
+            }
+        }
+
         //Update lives and level labels
-        livesLabel.setText("Lives: " + ((Actor)world.getEntityByValue("player")).getLives());
+        livesLabel.setText("Lives: " + player.getLives());
         levelLabel.setText("Level: " + world.getLevel().getLevelNumber());
 
         //Update key image
         if (world.getLevel().hasKey()) {
-            Player player = (Player) world.getEntityByValue("player");
-
             if (player.getInventory().values().contains(ItemType.KEY) && !keyImage.isVisible()) {
                     keyImage.setVisible(true);
             }

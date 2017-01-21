@@ -88,8 +88,8 @@ public class GameScreen implements Screen {
         keepEntitiesInMap();
 
         Collection<Collidable> toBeRemoved = new LinkedList<>();
-        for (Entity root : gameWorld.getEntities().keySet()) {
-            for(Entity other : gameWorld.getEntities().keySet()) {
+        for (Entity root : gameWorld.getEntities()) {
+            for(Entity other : gameWorld.getEntities()) {
                 if(root.shouldCollideWith(other) && root.intersects(other)) {
                     root.handleCollisionEvent(other);
                     if(root.shouldBeRemovedOnCollision()) {
@@ -99,7 +99,12 @@ public class GameScreen implements Screen {
             }
         }
 
-        Entity exit = gameWorld.getEntityByValue("exit");
+        Entity exit = null;
+        for (Entity entity : gameWorld.getEntities()) {
+            if (entity instanceof Exit) {
+                exit = entity;
+            }
+        }
 
         toBeRemoved.stream()
                    .filter(Entity.class::isInstance)
@@ -129,7 +134,7 @@ public class GameScreen implements Screen {
     }
 
     private void clearWorld() {
-        Collection<Entity> entitiesToRemove = gameWorld.getEntities().keySet()
+        Collection<Entity> entitiesToRemove = gameWorld.getEntities()
               .stream()
               .filter(it -> !(it instanceof Player))
               .collect(Collectors.toList());
@@ -143,7 +148,7 @@ public class GameScreen implements Screen {
         float mapLeft = 0;
         float mapRight = TMXMap.mapWidth;
 
-        for (Entity entity : gameWorld.getEntities().keySet()) {
+        for (Entity entity : gameWorld.getEntities()) {
             if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
                 Actor actor = (Actor) entity;
 

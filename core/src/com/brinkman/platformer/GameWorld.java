@@ -10,9 +10,8 @@ import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.util.TexturePaths;
 
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
@@ -22,7 +21,8 @@ import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
  */
 public class GameWorld {
     private Level level;
-    private final Map<Entity, String> entities;
+    private final List<Entity> entities;
+    private final List<Entity> unmodifiableEntities;
 
     private final int[] backgroundLayers = {0, 1, 2, 3, 4, 5, 6, 7, 8};
     private final int[] foregroundLayers = {9};
@@ -35,7 +35,8 @@ public class GameWorld {
      */
     public GameWorld(Level level) {
         this.level = level;
-        entities = new ConcurrentHashMap<>(128);
+        entities = new LinkedList<>();
+        unmodifiableEntities = Collections.unmodifiableList(entities);
 
         LOGGER.info("Initialized");
     }
@@ -56,47 +57,14 @@ public class GameWorld {
      * Returns Map(Entity, String) of entities.
      * @return Map
      */
-    public Map<Entity, String> getEntities() { return entities; }
-
-    /**
-     * Returns Entity with given value.
-     * @param value String
-     *
-     * @return Entity
-     */
-    public Entity getEntityByValue(String value) {
-        for (Entry<Entity, String> entry : entities.entrySet()) {
-            if (Objects.equals(value, entry.getValue())) {
-                return entry.getKey();
-            }
-        }
-
-        return null;
-    }
+    public List<Entity> getEntities() { return unmodifiableEntities; }
 
     /**
      * Adds Entity to Map.
      * @param entity Entity
      */
     public void addEntity(Entity entity) {
-        if (entity instanceof Player) {
-            entities.put(entity, "player");
-        } else if (entity instanceof Enemy) {
-            entities.put(entity, "enemy");
-        } else if (entity instanceof Saw) {
-            entities.put(entity, "saw");
-        } else if (entity instanceof Coin) {
-            entities.put(entity, "coin");
-        } else if (entity instanceof Item) {
-            entities.put(entity, "item");
-        } else if (entity instanceof StaticEntity) {
-            entities.put(entity, "static entity");
-        } else if (entity instanceof Exit) {
-            entities.put(entity, "exit");
-        }
-        else {
-            LOGGER.info("Entity type error");
-        }
+        entities.add(entity);
     }
 
     /**
@@ -110,7 +78,7 @@ public class GameWorld {
     public int getNumberOfCoins() {
         int numberOfCoins = 0;
 
-        for (Entity entity : entities.keySet()) {
+        for (Entity entity : entities) {
             if (entity instanceof Coin) {
                 numberOfCoins++;
             }
@@ -194,7 +162,7 @@ public class GameWorld {
     public void render(OrthographicCamera camera, float delta, Batch batch) {
         level.getMap().render(camera, backgroundLayers);
 
-        for (Entity entity : entities.keySet()) {
+        for (Entity entity : entities) {
             entity.render(delta, batch);
         }
 
@@ -206,7 +174,7 @@ public class GameWorld {
      */
     public void dispose() {
         level.dispose();
-        entities.keySet().forEach(Entity::dispose);
+        entities.forEach(Entity::dispose);
 
         LOGGER.info("Disposed");
     }

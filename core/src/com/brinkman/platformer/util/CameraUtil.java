@@ -6,7 +6,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.entity.actor.Player;
 
 import static com.brinkman.platformer.map.TMXMap.mapHeight;
 import static com.brinkman.platformer.map.TMXMap.mapWidth;
@@ -60,8 +62,14 @@ public final class CameraUtil
     public static void handleZoom(GameWorld world, OrthographicCamera camera) {
         float zoomStep = 0;
 
-        Actor player = (Actor) world.getEntityByValue("player");
-        Rectangle bounds = (Rectangle) player.getBounds();
+        Player player = null;
+        Rectangle bounds = null;
+        for (Entity entity : world.getEntities()) {
+            if (entity instanceof Player) {
+                player = (Player) entity;
+                bounds = (Rectangle) player.getBounds();
+            }
+        }
 
         boolean reachedHeightToZoom = (player.getBody().getPosition().y - (bounds.height * 0.5f)) >= 8f;
         boolean isAwayFromMapEdge = (bounds.x > 10) && (bounds.x < (mapWidth - 10));
