@@ -39,7 +39,6 @@ public class Player extends Actor {
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
     private Animation animation;
-    private ActorState state;
     private final InputFlags inputFlags;
     private final ConcurrentMap<Item, ItemType> inventory;
     private final Vector2 tempVector1 = new Vector2();
@@ -78,7 +77,6 @@ public class Player extends Actor {
         getBody().getPosition().set(originPosition);
         orientation = "right";
         inventory = new ConcurrentHashMap<>(8);
-        state = ActorState.IDLE;
 
         initializeTextureAtlas();
 
@@ -265,39 +263,6 @@ public class Player extends Actor {
         run = inputFlags.run();
     }
 
-    /**
-     * Returns the current enum ActorState of the player.
-     * @return ActorState
-     */
-    public ActorState getState() { return state; }
-
-    /**
-     * Sets player states.
-     */
-    private void handleStates() {
-        //JUMPING state
-        Vector2 velocity = getBody().getVelocity();
-
-        if (velocity.y > 0) {
-            state = ActorState.JUMPING;
-        }
-
-        //FALLING state
-        if (velocity.y < -0.5) {
-            state = ActorState.FALLING;
-        }
-
-        //GROUNDED state
-        if (getBody().isGrounded()) {
-            state = ActorState.GROUNDED;
-        }
-
-        //IDLE state
-        if (((int) velocity.x == 0) && ((int) velocity.y == 0)) {
-            state = ActorState.IDLE;
-        }
-    }
-
     //TODO Figure out a way to simplify.
     /**
      * Handles the player's movement logic.
@@ -358,11 +323,11 @@ public class Player extends Actor {
             velocity.y = JUMP_VEL;
 
             //Wall bounce
-            if (state != ActorState.GROUNDED) {
+            if (!getBody().isGrounded()) {
                 if (touchingRightWall) {
-                    xSpeed = run ? (velocity.x - (WALL_BOUNCE + 1)) : (velocity.x - WALL_BOUNCE);
+                    xSpeed = run ? (velocity.x - (WALL_BOUNCE + 2)) : (velocity.x - WALL_BOUNCE);
                 } else if (touchingLeftWall) {
-                    xSpeed = run ? (velocity.x + (WALL_BOUNCE + 1)) : (velocity.x + WALL_BOUNCE);
+                    xSpeed = run ? (velocity.x + (WALL_BOUNCE + 2)) : (velocity.x + WALL_BOUNCE);
                 }
             }
             getBody().setGrounded(false);
@@ -425,7 +390,6 @@ public class Player extends Actor {
     public void render(float dt, Batch batch) {
         handleAnimationSwitching();
         handleMovement();
-        handleStates();
 
         elapsedTime += Gdx.graphics.getDeltaTime();
 
