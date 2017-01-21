@@ -382,7 +382,7 @@ public class Player extends Actor {
         } else {
             if (velocity.y > Constants.MAX_GRAVITY) {
                 // Slight decrease in Gravity when running to allow for more air control.
-                velocity.y -= run ? (GRAVITY * 0.95f) : GRAVITY;
+                velocity.y -= GRAVITY;
             }
         }
     }
