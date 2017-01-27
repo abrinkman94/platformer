@@ -22,7 +22,6 @@ public class Saw extends Actor {
 	private static final float SAW_SPEED = 100.0f;
 	private static final float SAW_WIDTH = 128;
 	private static final float SAW_HEIGHT = 128;
-	private static final float SAW_Y_OFFSET = 0.5f;
 
 
 	/**
@@ -39,14 +38,14 @@ public class Saw extends Actor {
 
 		sprite = new Sprite(texture);
 		sprite.setSize(getBody().getWidth(), getBody().getHeight());
-		sprite.setPosition(x, y + SAW_Y_OFFSET);
+		sprite.setPosition(x, y);
 		sprite.setOriginCenter();
 	}
 
 	@Override
 	public Shape2D getBounds() {
 		Vector2 position = getBody().getPosition();
-		return new Circle(position.x + (getBody().getWidth() / 2), position.y + (0.5f * 3), getBody().getWidth() * 0.5f);
+		return new Circle(position.x + (getBody().getWidth() / 2), position.y + (getBody().getHeight() / 2), getBody().getWidth() * 0.5f);
 	}
 
 	@Override

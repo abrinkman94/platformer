@@ -105,8 +105,7 @@ public class GameWorld {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-            final float coinYOffset = 1.0f;
-            Entity coin = new Coin(x, y + coinYOffset);
+            Entity coin = new Coin(x, y);
             addEntity(coin);
         }
 
@@ -125,7 +124,7 @@ public class GameWorld {
                 float x = itemObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = itemObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Entity item = new Item(TexturePaths.LIFE_ITEM_TEXTURE, ItemType.LIFE, x, y + 1);
+                Entity item = new Item(TexturePaths.LIFE_ITEM_TEXTURE, ItemType.LIFE, x, y);
                 addEntity(item);
             }
         }
@@ -135,7 +134,7 @@ public class GameWorld {
                 float x = keyObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = keyObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
-                Entity key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y + 1);
+                Entity key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y);
                 addEntity(key);
             }
         }

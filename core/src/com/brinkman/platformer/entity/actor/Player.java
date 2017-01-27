@@ -395,7 +395,7 @@ public class Player extends Actor {
 
         Vector2 position = getBody().getPosition();
         batch.begin();
-        batch.draw(animation.getKeyFrame(elapsedTime, false), position.x, position.y, getBody().getWidth(),
+        batch.draw((TextureRegion)animation.getKeyFrame(elapsedTime, false), position.x, position.y, getBody().getWidth(),
                    getBody().getHeight()
                   );
         batch.end();

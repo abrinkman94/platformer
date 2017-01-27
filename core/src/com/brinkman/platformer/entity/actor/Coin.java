@@ -89,7 +89,7 @@ public class Coin extends Actor {
     @Override
     public void render(float dt, Batch batch) {
         elapsedTime += dt;
-        TextureRegion currentFrame = animations.getKeyFrame(elapsedTime, true);
+        TextureRegion currentFrame = (TextureRegion) animations.getKeyFrame(elapsedTime, true);
         batch.begin();
         Vector2 position = getBody().getPosition();
         batch.draw(currentFrame, position.x, position.y, getBody().getWidth(), getBody().getHeight());
