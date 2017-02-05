@@ -2,17 +2,28 @@ package com.brinkman.platformer;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
-import com.brinkman.platformer.entity.actor.*;
+import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.entity.actor.Coin;
+import com.brinkman.platformer.entity.actor.Exit;
+import com.brinkman.platformer.entity.actor.Saw;
+import com.brinkman.platformer.entity.actor.item.Item;
+import com.brinkman.platformer.entity.actor.item.ItemType;
+import com.brinkman.platformer.entity.actor.platform.Platform;
+import com.brinkman.platformer.entity.actor.platform.PlatformType;
 import com.brinkman.platformer.level.Level;
+import com.brinkman.platformer.map.TextureMapObjectRenderer;
 import com.brinkman.platformer.util.TexturePaths;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -23,6 +34,7 @@ public class GameWorld {
     private Level level;
     private final List<Entity> entities;
     private final List<Entity> unmodifiableEntities;
+    private TextureMapObjectRenderer textureMapObjectRenderer;
 
     private final int[] backgroundLayers = {0, 1, 2, 3, 4, 5, 6, 7, 8};
     private final int[] foregroundLayers = {9};
@@ -91,7 +103,7 @@ public class GameWorld {
      * Initializes all dynamic objects in Level.
      */
     public void initializeMapObjects() {
-        for (MapObject object : level.getMap().getMapObjects("collision")) {
+        for (MapObject object : level.getTmxMap().getMapObjects("collision")) {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
             float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
@@ -101,7 +113,7 @@ public class GameWorld {
             addEntity(staticEntity);
         }
 
-        for (MapObject object : level.getMap().getMapObjects("coins")) {
+        for (MapObject object : level.getTmxMap().getMapObjects("coins")) {
             float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
             float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
@@ -109,8 +121,8 @@ public class GameWorld {
             addEntity(coin);
         }
 
-        if (level.getMap().getMapObjects("saw") != null) {
-            for (MapObject sawObject : level.getMap().getMapObjects("saw")) {
+        if (level.getTmxMap().getMapObjects("saw") != null) {
+            for (MapObject sawObject : level.getTmxMap().getMapObjects("saw")) {
                 float x = sawObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = sawObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
@@ -119,8 +131,8 @@ public class GameWorld {
             }
         }
 
-        if (level.getMap().getMapObjects("life item") != null) {
-            for (MapObject itemObject : level.getMap().getMapObjects("life item")) {
+        if (level.getTmxMap().getMapObjects("life item") != null) {
+            for (MapObject itemObject : level.getTmxMap().getMapObjects("life item")) {
                 float x = itemObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = itemObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
@@ -129,8 +141,8 @@ public class GameWorld {
             }
         }
 
-        if (level.getMap().getMapObjects("key") != null) {
-            for (MapObject keyObject : level.getMap().getMapObjects("key")) {
+        if (level.getTmxMap().getMapObjects("key") != null) {
+            for (MapObject keyObject : level.getTmxMap().getMapObjects("key")) {
                 float x = keyObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = keyObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
 
@@ -139,8 +151,8 @@ public class GameWorld {
             }
         }
 
-        if (level.getMap().getMapObjects("exit") != null) {
-            for (MapObject exitObject : level.getMap().getMapObjects("exit")) {
+        if (level.getTmxMap().getMapObjects("exit") != null) {
+            for (MapObject exitObject : level.getTmxMap().getMapObjects("exit")) {
                 float x = exitObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
                 float y = exitObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
                 float width = exitObject.getProperties().get("width", float.class) * TO_WORLD_UNITS;
@@ -148,6 +160,18 @@ public class GameWorld {
 
                 Entity exit = new Exit(this, x, y, width, height);
                 addEntity(exit);
+            }
+        }
+
+        if (level.getTmxMap().getMapObjects("falling platform") != null) {
+            for (MapObject fallingPlatformObject : level.getTmxMap().getMapObjects("falling platform")) {
+                float x = fallingPlatformObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = fallingPlatformObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+                float width = fallingPlatformObject.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+                float height = fallingPlatformObject.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+
+                Entity platform = new Platform(x, y, width, height, PlatformType.FALLING);
+                addEntity(platform);
             }
         }
     }
@@ -159,13 +183,27 @@ public class GameWorld {
      * @param batch SpriteBatch
      */
     public void render(OrthographicCamera camera, float delta, Batch batch) {
-        level.getMap().render(camera, backgroundLayers);
+        level.getTmxMap().render(camera, backgroundLayers);
+        if (textureMapObjectRenderer == null) {
+            textureMapObjectRenderer = new TextureMapObjectRenderer(level.getTmxMap(), batch);
+        }
 
         for (Entity entity : entities) {
+            if (entity instanceof Platform) {
+               for (MapObject object : level.getTmxMap().getMapObjects("falling platform")) {
+                   Actor platform = (Actor) entity;
+                   textureMapObjectRenderer.renderObject(
+                           object,
+                           platform.getBody().getPosition().x,
+                           platform.getBody().getPosition().y,
+                           platform.getBody().getWidth(),
+                           platform.getBody().getHeight());
+               }
+            }
             entity.render(delta, batch);
         }
 
-        level.getMap().render(camera, foregroundLayers);
+        level.getTmxMap().render(camera, foregroundLayers);
     }
 
     /**

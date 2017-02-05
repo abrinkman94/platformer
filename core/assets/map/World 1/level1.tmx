@@ -36,7 +36,7 @@
  <tileset firstgid="129" name="window exit" tilewidth="32" tileheight="32" tilecount="12" columns="3">
   <image source="../Building 1/Window.png" width="96" height="128"/>
  </tileset>
- <tileset firstgid="141" name="exit sign" tilewidth="32" tileheight="32" tilecount="25" columns="5">
+ <tileset firstgid="141" name="exit sign" tilewidth="32" tileheight="32" tilecount="20" columns="5">
   <image source="../exit-sign.png" width="160" height="128"/>
  </tileset>
  <imagelayer name="Background Image" offsetx="0" offsety="-320">
@@ -217,4 +217,5 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="falling platform"/>
 </map>

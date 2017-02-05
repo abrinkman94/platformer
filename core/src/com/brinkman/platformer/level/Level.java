@@ -47,7 +47,7 @@ public class Level {
      * Returns the TMXMap map.
      * @return TMXMap
      */
-    public TMXMap getMap() { return map; }
+    public TMXMap getTmxMap() { return map; }
 
     /**
      * Handles the renderering of the TMXMap.

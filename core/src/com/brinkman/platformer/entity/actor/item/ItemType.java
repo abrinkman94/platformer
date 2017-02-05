@@ -1,4 +1,4 @@
-package com.brinkman.platformer.entity.actor;
+package com.brinkman.platformer.entity.actor.item;
 
 /**
  * Created by Austin on 11/7/2016.

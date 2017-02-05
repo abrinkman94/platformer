@@ -2,16 +2,10 @@ package com.brinkman.platformer.map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
-import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.util.AssetUtil;
 
 import static com.brinkman.platformer.util.Constants.*;
@@ -19,7 +13,7 @@ import static com.brinkman.platformer.util.Constants.*;
 /**
  * Created by Austin on 9/29/2016.
  */
-public class TMXMap {
+public class TMXMap extends TiledMap {
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
 

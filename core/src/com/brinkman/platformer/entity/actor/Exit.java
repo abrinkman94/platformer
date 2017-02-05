@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.physics.Collidable;
 
 /**

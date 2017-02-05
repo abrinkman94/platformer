@@ -13,6 +13,9 @@ import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.StaticEntity;
+import com.brinkman.platformer.entity.actor.item.Item;
+import com.brinkman.platformer.entity.actor.item.ItemType;
+import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
@@ -105,7 +108,7 @@ public class Player extends Actor {
             } else if (ItemType.KEY == item.getItemType()) {
                 getInventory().put(item, ItemType.KEY);
             }
-        } else if (other instanceof StaticEntity) {
+        } else if (other instanceof StaticEntity || other instanceof Platform) {
             handleStaticCollisions(other);
         }
     }
@@ -136,6 +139,13 @@ public class Player extends Actor {
         // The direction that the entity will move is determined by the sign of the distance between the centers
         Vector2 position = getBody().getPosition();
         Vector2 velocity = getBody().getVelocity();
+
+        // Might be temporary solution.  Basically adjusting the overlap so that the Collidable actually overlaps
+        // to trigger collision event.
+        if (other instanceof Platform) {
+            horizontalOverlap = horizontalOverlap * 0.995f;
+            verticalOverlap = verticalOverlap * 0.995f;
+        }
         if (horizontalOverlap < verticalOverlap) {
             if (horizontalDistance > 0) {
                 touchingRightWall = true;

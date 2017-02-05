@@ -39,7 +39,7 @@
  <tileset firstgid="149" name="window exit" tilewidth="32" tileheight="32" tilecount="12" columns="3">
   <image source="../Building 1/Window.png" width="96" height="128"/>
  </tileset>
- <tileset firstgid="161" name="gamepad" tilewidth="32" tileheight="32" tilecount="176" columns="10">
+ <tileset firstgid="161" name="gamepad" tilewidth="32" tileheight="32" tilecount="70" columns="10">
   <image source="../../HUD/gamepad.png" width="320" height="224"/>
  </tileset>
  <imagelayer name="Background Image" offsetx="0" offsety="-320">
@@ -218,4 +218,5 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="falling platform"/>
 </map>

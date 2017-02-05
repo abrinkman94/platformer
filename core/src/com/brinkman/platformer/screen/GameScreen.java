@@ -15,6 +15,8 @@ import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
+import com.brinkman.platformer.entity.actor.item.ItemType;
+import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
@@ -47,7 +49,7 @@ public class GameScreen implements Screen {
     public GameScreen() {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
-        gameWorld = new GameWorld(new Level(1, spriteBatch));
+        gameWorld = new GameWorld(new Level(7, spriteBatch));
         InputFlags inputFlags = new InputFlags();
         player = new Player(inputFlags);
         hud = new HUD(gameWorld);
@@ -66,10 +68,10 @@ public class GameScreen implements Screen {
 
     private void placeholderKeyHandler() {
         if (gameWorld.getLevel().hasKey()) {
-            float x = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("x", float.class) * TO_WORLD_UNITS;
-            float y = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("y", float.class) * TO_WORLD_UNITS;
-            float width = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("width", float.class) * TO_WORLD_UNITS;
-            float height = gameWorld.getLevel().getMap().getMapObjects("exit").get(0).getProperties().get("height", float.class) * TO_WORLD_UNITS;
+            float x = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("x", float.class) * TO_WORLD_UNITS;
+            float y = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("y", float.class) * TO_WORLD_UNITS;
+            float width = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("width", float.class) * TO_WORLD_UNITS;
+            float height = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
             boolean render = !player.getInventory().values().contains(ItemType.KEY);
 
