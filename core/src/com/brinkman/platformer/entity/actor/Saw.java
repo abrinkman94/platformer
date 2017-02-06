@@ -64,7 +64,6 @@ public class Saw extends Actor {
 		batch.end();
 
 		sprite.setRotation(rotationStep);
-
 	}
 
 	@Override

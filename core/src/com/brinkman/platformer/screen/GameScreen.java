@@ -49,7 +49,7 @@ public class GameScreen implements Screen {
     public GameScreen() {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
-        gameWorld = new GameWorld(new Level(1, spriteBatch));
+        gameWorld = new GameWorld(new Level(8, spriteBatch));
         InputFlags inputFlags = new InputFlags();
         player = new Player(inputFlags);
         hud = new HUD(gameWorld);

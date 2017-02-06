@@ -13,8 +13,8 @@ import com.brinkman.platformer.physics.Collidable;
 public class Platform  extends Actor{
     private final PlatformType platformType;
 
-    private boolean touched = false;
     private float fallVelocity = 0;
+    private boolean touched;
 
     public Platform(float x, float y, float width, float height, PlatformType platformType) {
         getBody().getPosition().set(x, y);
@@ -37,12 +37,15 @@ public class Platform  extends Actor{
     }
 
     @Override
+    public boolean shouldBeRemovedOnCollision() { return getBody().getPosition().y < (0 - getBody().getHeight()); }
+
+    @Override
     public boolean shouldCollideWith(Collidable other) { return other instanceof Player; }
 
     @Override
     public void render(float dt, Batch batch) {
         if (platformType == PlatformType.FALLING && touched) {
-            fallVelocity += 0.002f;
+            fallVelocity += 0.003f;
             getBody().getPosition().y -= fallVelocity;
         }
     }

@@ -190,15 +190,15 @@ public class GameWorld {
 
         for (Entity entity : entities) {
             if (entity instanceof Platform) {
-               for (MapObject object : level.getTmxMap().getMapObjects("falling platform")) {
-                   Actor platform = (Actor) entity;
-                   textureMapObjectRenderer.renderObject(
-                           object,
-                           platform.getBody().getPosition().x,
-                           platform.getBody().getPosition().y,
-                           platform.getBody().getWidth(),
-                           platform.getBody().getHeight());
-               }
+                for (MapObject object : level.getTmxMap().getMapObjects("falling platform")) {
+                    Actor platform = (Actor) entity;
+                    textureMapObjectRenderer.renderObject(
+                            object,
+                            platform.getBody().getPosition().x,
+                            platform.getBody().getPosition().y,
+                            platform.getBody().getWidth(),
+                            platform.getBody().getHeight());
+                }
             }
             entity.render(delta, batch);
         }

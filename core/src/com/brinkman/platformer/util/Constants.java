@@ -37,7 +37,7 @@ public final class Constants {
     /**
      * int total number of levels.
      */
-    public static final int NUM_OF_LEVELS = 7;
+    public static final int NUM_OF_LEVELS = 8;
 
     /**
      * boolean value representing whether or not a controller is plugged in.
