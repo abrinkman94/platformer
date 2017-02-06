@@ -160,7 +160,7 @@ public class Player extends Actor {
         } else {
             if (verticalDistance > 0) {
                 position.y -= verticalOverlap;
-                velocity.y = -(position.y - GRAVITY);
+                velocity.y -= GRAVITY * 3;
                 canJump = false;
             } else {
                 position.y += verticalOverlap;
@@ -356,7 +356,6 @@ public class Player extends Actor {
             velocity.y = 0;
         } else {
             if (velocity.y > Constants.MAX_GRAVITY) {
-                // Slight decrease in Gravity when running to allow for more air control.
                 velocity.y -= GRAVITY;
             }
         }

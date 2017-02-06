@@ -1,11 +1,13 @@
 package com.brinkman.platformer.entity.actor.platform;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.physics.Collidable;
+import com.brinkman.platformer.util.Constants;
 
 /**
  * Created by Austin on 2/3/2017.
@@ -13,7 +15,8 @@ import com.brinkman.platformer.physics.Collidable;
 public class Platform  extends Actor{
     private final PlatformType platformType;
 
-    private float fallVelocity = 0;
+    private float gravity = Constants.GRAVITY - 0.1f;
+    private float maxGravity = Constants.MAX_GRAVITY;
     private boolean touched;
 
     public Platform(float x, float y, float width, float height, PlatformType platformType) {
@@ -45,8 +48,10 @@ public class Platform  extends Actor{
     @Override
     public void render(float dt, Batch batch) {
         if (platformType == PlatformType.FALLING && touched) {
-            fallVelocity += 0.003f;
-            getBody().getPosition().y -= fallVelocity;
+            if (getBody().getVelocity().y > maxGravity) {
+                getBody().getVelocity().y -= gravity;
+            }
+            getBody().getPosition().y += getBody().getVelocity().y * dt;
         }
     }
 
