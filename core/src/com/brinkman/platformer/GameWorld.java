@@ -9,10 +9,7 @@ import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
-import com.brinkman.platformer.entity.actor.Actor;
-import com.brinkman.platformer.entity.actor.Coin;
-import com.brinkman.platformer.entity.actor.Exit;
-import com.brinkman.platformer.entity.actor.Saw;
+import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.entity.actor.platform.Platform;
@@ -191,7 +188,7 @@ public class GameWorld {
         for (Entity entity : entities) {
             if (entity instanceof Platform) {
                 for (MapObject object : level.getTmxMap().getMapObjects("falling platform")) {
-                    Actor platform = (Actor) entity;
+                    Platform platform = (Platform) entity;
                     textureMapObjectRenderer.renderObject(
                             object,
                             platform.getBody().getPosition().x,

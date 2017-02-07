@@ -15,8 +15,6 @@ import com.brinkman.platformer.util.Constants;
 public class Platform  extends Actor{
     private final PlatformType platformType;
 
-    private float gravity = Constants.GRAVITY - 0.1f;
-    private float maxGravity = Constants.MAX_GRAVITY;
     private boolean touched;
 
     public Platform(float x, float y, float width, float height, PlatformType platformType) {
@@ -48,6 +46,9 @@ public class Platform  extends Actor{
     @Override
     public void render(float dt, Batch batch) {
         if (platformType == PlatformType.FALLING && touched) {
+            float gravity = Constants.GRAVITY - 0.1f;
+            float maxGravity = Constants.MAX_GRAVITY / 2;
+
             if (getBody().getVelocity().y > maxGravity) {
                 getBody().getVelocity().y -= gravity;
             }
