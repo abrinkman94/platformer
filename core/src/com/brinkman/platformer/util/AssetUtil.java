@@ -38,25 +38,13 @@ public final class AssetUtil
 		loadAsset("map/Object/life.png", Texture.class);
 		loadAsset("map/Object/key.png", Texture.class);
 		loadAsset("map/Object/HUD key.png", Texture.class);
-		loadAsset("hud/startscreen/button.png", Texture.class);
-		loadAsset("hud/startscreen/button2.png", Texture.class);
-		loadAsset("hud/startscreen/button3.png", Texture.class);
-		loadAsset("hud/startscreen/clouds.png", Texture.class);
 
 		ASSET_MANAGER.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
-		loadAsset("map/level1.tmx", TiledMap.class);
-		loadAsset("map/level2.tmx", TiledMap.class);
-		loadAsset("map/level3.tmx", TiledMap.class);
-		loadAsset("map/level4.tmx", TiledMap.class);
 
 		for (int i = 1; i <= Constants.NUM_OF_LEVELS; i++) {
 			loadAsset("map/World 1/level" + i + ".tmx", TiledMap.class);
 		}
-
-		loadAsset("audio/Eclipse.mp3", Music.class);
-		loadAsset("audio/heavy_throw_switch.mp3", Sound.class);
-		loadAsset("audio/5-5-14(brinkybeats@gmail.com).mp3", Music.class);
 
 		finishLoading();
 	}
