@@ -15,6 +15,7 @@ import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
+import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.input.ControllerProcessor;
@@ -73,7 +74,10 @@ public class GameScreen implements Screen {
             float width = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("width", float.class) * TO_WORLD_UNITS;
             float height = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-            boolean render = !player.getInventory().values().contains(ItemType.KEY);
+            boolean render = false;
+            for (Item item : player.getInventory()) {
+                render = item.getItemType() == ItemType.KEY;
+            }
 
             if (render) {
                 ShapeRenderer renderer = new ShapeRenderer();

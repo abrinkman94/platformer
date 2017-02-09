@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.AssetUtil;
@@ -82,8 +83,10 @@ public class HUD {
 
         //Update key image
         if (world.getLevel().hasKey()) {
-            if (player.getInventory().values().contains(ItemType.KEY) && !keyImage.isVisible()) {
+            for (Item item : player.getInventory()) {
+                if (item.getItemType() == ItemType.KEY && !keyImage.isVisible()) {
                     keyImage.setVisible(true);
+                }
             }
         } else {
             keyImage.setVisible(false);

@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.physics.Collidable;
 
@@ -41,7 +42,12 @@ public class Exit implements Entity
 	public boolean shouldCollideWith(Collidable other) {
 		if (other instanceof Player) {
 			if (gameWorld.getNumberOfCoins() <= 0) {
-				if (!gameWorld.getLevel().hasKey() || ((Player)other).getInventory().values().contains(ItemType.KEY)) {
+				boolean playerHasKey = false;
+				for (Item item : ((Player)other).getInventory()) {
+					playerHasKey = item.getItemType() == ItemType.KEY;
+				}
+
+				if (!gameWorld.getLevel().hasKey() || playerHasKey) {
 					return true;
 				}
 			}

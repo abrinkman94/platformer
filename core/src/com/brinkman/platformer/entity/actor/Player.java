@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.item.Item;
@@ -43,7 +44,7 @@ public class Player extends Actor {
     private TextureAtlas jumpLeftAtlas;
     private Animation animation;
     private final InputFlags inputFlags;
-    private final ConcurrentMap<Item, ItemType> inventory;
+    private final Array<Item> inventory;
     private final Vector2 tempVector1 = new Vector2();
     private final Vector2 tempVector2 = new Vector2();
 
@@ -79,7 +80,7 @@ public class Player extends Actor {
         Vector2 originPosition = getBody().getOriginPosition();
         getBody().getPosition().set(originPosition);
         orientation = "right";
-        inventory = new ConcurrentHashMap<>(8);
+        inventory = new Array<>();
 
         initializeTextureAtlas();
 
@@ -103,11 +104,7 @@ public class Player extends Actor {
             handleDeath();
         } else if(other instanceof Item) {
             Item item = (Item) other;
-            if (ItemType.LIFE == item.getItemType()) {
-                setLives(getLives() + 1);
-            } else if (ItemType.KEY == item.getItemType()) {
-                getInventory().put(item, ItemType.KEY);
-            }
+            inventory.add(item);
         } else if (other instanceof StaticEntity || other instanceof Platform) {
             handleStaticCollisions(other);
         }
@@ -226,7 +223,7 @@ public class Player extends Actor {
      * life inventory.
      * @return HashMap Item, ItemType
      */
-    public Map<Item, ItemType> getInventory() { return inventory; }
+    public Array<Item> getInventory() { return inventory; }
 
     /**
      * Handles the switching of animations.
