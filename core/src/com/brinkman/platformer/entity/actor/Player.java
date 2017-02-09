@@ -229,7 +229,7 @@ public class Player extends Actor {
      * Handles the switching of animations.
      */
     private void handleAnimationSwitching() {
-        float animationTime = run ? 0.05f : 0.08f;
+        float animationTime = run ? 0.05f : 0.1f;
 
         switch(currentAnimation) {
             case IDLE_RIGHT_FRAMES:
@@ -278,8 +278,8 @@ public class Player extends Actor {
         setKeyFlags();
 
         //Run conditionals
-        float moveSpeed1 = run ? 10 : 6;
-        getBody().setMoveSpeed(moveSpeed1);
+        float moveSpeed = run ? 10 : 5;
+        getBody().setMoveSpeed(moveSpeed);
 
         //X-axis movement
         float maxSpeed = getBody().getMoveSpeed();

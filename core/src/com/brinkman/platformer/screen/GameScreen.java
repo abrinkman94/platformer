@@ -76,7 +76,7 @@ public class GameScreen implements Screen {
 
             boolean render = false;
             for (Item item : player.getInventory()) {
-                render = item.getItemType() == ItemType.KEY;
+                render = !(item.getItemType() == ItemType.KEY);
             }
 
             if (render) {
