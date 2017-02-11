@@ -1,9 +1,9 @@
 package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Shape2D;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Collidable;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 /**
  * Created by Austin on 9/29/2016.
@@ -20,4 +20,6 @@ public interface Entity extends Collidable {
      * Handles the disposing of textures, etc...
      */
     void dispose();
+
+    ImmutableClassToInstanceMap<RootComponent> getComponents();
 }

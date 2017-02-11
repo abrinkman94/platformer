@@ -7,9 +7,11 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -23,6 +25,7 @@ public class Saw extends Actor {
 	private static final float SAW_WIDTH = 128;
 	private static final float SAW_HEIGHT = 128;
 
+	private final ImmutableClassToInstanceMap<RootComponent> components;
 
 	/**
 	 * Constructs the Saw object.
@@ -40,6 +43,9 @@ public class Saw extends Actor {
 		sprite.setSize(getBody().getWidth(), getBody().getHeight());
 		sprite.setPosition(x, y);
 		sprite.setOriginCenter();
+
+		components = ImmutableClassToInstanceMap.<RootComponent>builder()
+				.build();
 	}
 
 	@Override
@@ -71,4 +77,7 @@ public class Saw extends Actor {
 		texture.dispose();
 	//	LOGGER.info("Disposed");
 	}
+
+	@Override
+	public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }

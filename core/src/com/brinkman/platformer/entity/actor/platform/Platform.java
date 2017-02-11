@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.Constants;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 /**
  * Created by Austin on 2/3/2017.
@@ -17,11 +19,16 @@ public class Platform  extends Actor{
 
     private boolean touched;
 
+    private final ImmutableClassToInstanceMap<RootComponent> components;
+
     public Platform(float x, float y, float width, float height, PlatformType platformType) {
         getBody().getPosition().set(x, y);
         getBody().setWidth(width);
         getBody().setHeight(height);
         this.platformType = platformType;
+
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .build();
     }
 
     @Override
@@ -60,4 +67,7 @@ public class Platform  extends Actor{
     public void dispose() {
 
     }
+
+    @Override
+    public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }

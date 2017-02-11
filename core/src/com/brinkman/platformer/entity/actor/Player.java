@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
@@ -21,6 +22,7 @@ import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.Constants;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,6 +71,8 @@ public class Player extends Actor {
     private boolean touchingLeftWall;
     private boolean justJumped;
 
+    private final ImmutableClassToInstanceMap<RootComponent> components;
+
     /**
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
      * @param inputFlags InputFlags
@@ -83,6 +87,9 @@ public class Player extends Actor {
         inventory = new Array<>();
 
         initializeTextureAtlas();
+
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .build();
 
         LOGGER.info("Initialized");
     }
@@ -431,4 +438,7 @@ public class Player extends Actor {
 
         LOGGER.info("Disposed");
     }
+
+    @Override
+    public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }

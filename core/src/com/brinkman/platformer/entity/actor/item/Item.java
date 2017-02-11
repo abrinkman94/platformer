@@ -7,10 +7,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -22,6 +24,8 @@ public class Item extends Actor {
     private static final Logger LOGGER = new Logger(Item.class.getName(), Logger.DEBUG);
 
     private final ItemType itemType;
+
+    private final ImmutableClassToInstanceMap<RootComponent> components;
 
     /**
      * Constructs new Item with given parameters.
@@ -43,6 +47,9 @@ public class Item extends Actor {
         sprite.setSize(getBody().getWidth(), getBody().getHeight());
         Vector2 position = getBody().getPosition();
         sprite.setPosition(position.x, position.y);
+
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .build();
     }
 
     @Override
@@ -75,5 +82,8 @@ public class Item extends Actor {
     }
 
     public ItemType getItemType() { return itemType; }
+
+    @Override
+    public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }
 

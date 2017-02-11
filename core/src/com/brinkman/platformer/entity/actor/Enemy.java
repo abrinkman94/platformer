@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.Constants;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 /**
  * @author Austin Brinkman.
  */
 public class Enemy extends Actor
 {
+	private final ImmutableClassToInstanceMap<RootComponent> components;
 	private boolean isDead;
 
 	public Enemy() {
@@ -28,6 +31,9 @@ public class Enemy extends Actor
 		Vector2 position = getBody().getPosition();
 		sprite.setPosition(position.x, position.y);
 		sprite.setSize(getBody().getWidth(), getBody().getHeight());
+
+		components = ImmutableClassToInstanceMap.<RootComponent>builder()
+				.build();
 	}
 
 	@Override
@@ -61,4 +67,7 @@ public class Enemy extends Actor
 	public void dispose() {
 
 	}
+
+	@Override
+	public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }

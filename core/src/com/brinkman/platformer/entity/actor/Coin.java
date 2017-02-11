@@ -8,9 +8,11 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -26,6 +28,8 @@ public class Coin extends Actor {
 
     private static final float ANIMATION_TIME = 0.025f;
     private static final int COIN_SIZE = 64;
+
+    private final ImmutableClassToInstanceMap<RootComponent> components;
 
     /**
      * Constructs the Coin object.
@@ -51,6 +55,9 @@ public class Coin extends Actor {
         }
 
         animations = new Animation(ANIMATION_TIME, textureRegions);
+
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .build();
     }
 
     @Override
@@ -110,4 +117,7 @@ public class Coin extends Actor {
             textureRegions[i].getTexture().dispose();
         }
     }
+
+    @Override
+    public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }

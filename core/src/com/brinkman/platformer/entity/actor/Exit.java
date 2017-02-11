@@ -5,10 +5,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.physics.Collidable;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 /**
  * @author Austin Brinkman.
@@ -20,9 +22,14 @@ public class Exit implements Entity
 	private final Rectangle bounds;
 	private final GameWorld gameWorld;
 
+	private final ImmutableClassToInstanceMap<RootComponent> components;
+
 	public Exit(GameWorld gameWorld, float x, float y, float width, float height) {
 		this.gameWorld = gameWorld;
 		bounds = new Rectangle(x, y, width, height);
+
+		components = ImmutableClassToInstanceMap.<RootComponent>builder()
+				.build();
 	}
 
 	@Override
@@ -64,4 +71,7 @@ public class Exit implements Entity
 	public void handleCollisionEvent(Collidable other) {
 
 	}
+
+	@Override
+	public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }
