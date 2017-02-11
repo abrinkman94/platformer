@@ -2,9 +2,13 @@ package com.brinkman.platformer.physics;
 
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.*;
+import java.util.Map.Entry;
+
 public class PhysicsBody implements Body {
     private static final float DEFAULT_MOVE_SPEED = 5.0f;
 
+    private final Map<Class<?>, CollisionListener<?>> collisionListeners = new HashMap<>(4);
     private final Vector2 originPosition = new Vector2(2, 6);
     private final Vector2 position = new Vector2();
     private final Vector2 velocity = new Vector2();
@@ -12,6 +16,7 @@ public class PhysicsBody implements Body {
     private float height;
     private float moveSpeed = DEFAULT_MOVE_SPEED;
     private boolean grounded;
+    private boolean removedOnCollision;
 
     @Override
     public boolean isGrounded() { return grounded; }
@@ -45,4 +50,47 @@ public class PhysicsBody implements Body {
 
     @Override
     public Vector2 getOriginPosition() { return originPosition; }
+
+    @Override
+    public boolean isRemovedOnCollision() { return removedOnCollision; }
+
+    @Override
+    public void setRemovedOnCollision(boolean removedOnCollision) { this.removedOnCollision = removedOnCollision; }
+
+    @Override
+    public <T> void setCollisionListener(Class<T> otherType, CollisionListener<T> listener) {
+        collisionListeners.put(otherType, listener);
+    }
+
+    @Override
+    public <T> boolean shouldCollideWith(T otherObject) {
+        Class<?> otherClass = otherObject.getClass();
+        boolean shouldCollide = false;
+
+        Iterator<Class<?>> iterator = collisionListeners.keySet().iterator();
+        while (iterator.hasNext() && !shouldCollide) {
+            Class<?> keyClass = iterator.next();
+            shouldCollide = otherClass.isAssignableFrom(keyClass);
+        }
+
+        return shouldCollide;
+    }
+
+    @Override
+    public <T> void triggerCollisionListeners(T otherObject, Body otherBody) {
+        Class<?> otherClass = otherObject.getClass();
+
+        for (Entry<Class<?>, CollisionListener<?>> entry : collisionListeners.entrySet()) {
+            Class<?> key = entry.getKey();
+            if (otherClass.isAssignableFrom(key)) {
+                // Have to suppress this inspection because of type erasure;
+                // Basically, because of the way setCollisionListener works, *we* know that the collision listener
+                // will have the correct type, but Java doesn't know that.
+                // FIXME I'm currently unsure of whether this will work with subclasses
+                // noinspection unchecked
+                CollisionListener<T> listener = (CollisionListener<T>) entry.getValue();
+                listener.onCollision(otherObject);
+            }
+        }
+    }
 }
