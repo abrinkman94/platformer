@@ -2,6 +2,7 @@ package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.Collidable;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
@@ -22,4 +23,6 @@ public interface Entity extends Collidable {
     void dispose();
 
     ImmutableClassToInstanceMap<RootComponent> getComponents();
+
+    Body getBody();
 }

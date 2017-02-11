@@ -9,7 +9,9 @@ import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.Collidable;
+import com.brinkman.platformer.physics.PhysicsBody;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
 /**
@@ -19,6 +21,7 @@ public class Exit implements Entity
 {
 	private static final Logger LOGGER = new Logger(Exit.class.getName(), Logger.DEBUG);
 
+	private final Body body;
 	private final Rectangle bounds;
 	private final GameWorld gameWorld;
 
@@ -26,6 +29,12 @@ public class Exit implements Entity
 
 	public Exit(GameWorld gameWorld, float x, float y, float width, float height) {
 		this.gameWorld = gameWorld;
+
+		body = new PhysicsBody();
+		body.getPosition().set(x, y);
+		body.setWidth(width);
+		body.setHeight(height);
+
 		bounds = new Rectangle(x, y, width, height);
 
 		components = ImmutableClassToInstanceMap.<RootComponent>builder()
@@ -74,4 +83,7 @@ public class Exit implements Entity
 
 	@Override
 	public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
+
+	@Override
+	public Body getBody() { return body; }
 }
