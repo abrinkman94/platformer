@@ -77,8 +77,8 @@ public class Player extends Actor {
         this.inputFlags = inputFlags;
         getBody().setWidth(PLAYER_WIDTH * TO_WORLD_UNITS);
         getBody().setHeight(PLAYER_HEIGHT * TO_WORLD_UNITS);
-        Vector2 originPosition = getBody().getOriginPosition();
-        getBody().getPosition().set(originPosition);
+        getBody().getPosition().set(2, 6);
+        getBody().getOriginPosition().set(getBody().getPosition());
         orientation = "right";
         inventory = new Array<>();
 
@@ -368,8 +368,7 @@ public class Player extends Actor {
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */
     public void reset() {
-        Vector2 originPosition = getBody().getOriginPosition();
-        getBody().getPosition().set(originPosition);
+        getBody().getPosition().set(getBody().getOriginPosition());
         getBody().getVelocity().set(0.0f, 0.0f);
         orientation = "right";
         canJump = false;

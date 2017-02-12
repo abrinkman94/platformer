@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 public class PhysicsBody implements Body {
     private static final float DEFAULT_MOVE_SPEED = 5.0f;
 
-    private final Vector2 originPosition = new Vector2(2, 6);
+    private final Vector2 originPosition = new Vector2();
     private final Vector2 position = new Vector2();
     private final Vector2 velocity = new Vector2();
     private float width;
