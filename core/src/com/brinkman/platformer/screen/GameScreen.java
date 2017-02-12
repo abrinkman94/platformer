@@ -17,12 +17,12 @@ import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
-import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TMXMap;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.Collidable;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
     public GameScreen() {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
-        gameWorld = new GameWorld(new Level(1, spriteBatch));
+        gameWorld = new GameWorld(new Level(1));
         InputFlags inputFlags = new InputFlags();
         player = new Player(inputFlags);
         hud = new HUD(gameWorld);
@@ -96,7 +96,9 @@ public class GameScreen implements Screen {
         Collection<Collidable> toBeRemoved = new LinkedList<>();
         for (Entity root : gameWorld.getEntities()) {
             for(Entity other : gameWorld.getEntities()) {
-                if(root.shouldCollideWith(other) && root.intersects(other)) {
+                Body body = root.getBody();
+                Body otherBody = other.getBody();
+                if(body.shouldCollideWith(other) && body.intersects(otherBody)) {
                     root.handleCollisionEvent(other);
                     if(root.shouldBeRemovedOnCollision()) {
                         toBeRemoved.add(root);
@@ -125,7 +127,7 @@ public class GameScreen implements Screen {
 
 				if (gameWorld.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
 					levelNumber++;
-					gameWorld.setLevel(new Level(levelNumber, spriteBatch));
+					gameWorld.setLevel(new Level(levelNumber));
 
                     player.reset();
                     clearWorld();

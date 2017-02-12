@@ -180,7 +180,7 @@ public class GameWorld {
      * @param batch SpriteBatch
      */
     public void render(OrthographicCamera camera, float delta, Batch batch) {
-        level.getTmxMap().render(camera, backgroundLayers);
+        level.getTmxMap().render(camera, backgroundLayers, batch);
         if (textureMapObjectRenderer == null) {
             textureMapObjectRenderer = new TextureMapObjectRenderer(level.getTmxMap(), batch);
         }
@@ -200,7 +200,7 @@ public class GameWorld {
             entity.render(delta, batch);
         }
 
-        level.getTmxMap().render(camera, foregroundLayers);
+        level.getTmxMap().render(camera, foregroundLayers, batch);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.brinkman.platformer.map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -15,19 +15,17 @@ import static com.brinkman.platformer.util.Constants.*;
  */
 public class TMXMap extends TiledMap {
     private final TiledMap map;
-    private final OrthogonalTiledMapRenderer renderer;
 
+    private OrthogonalTiledMapRenderer renderer;
     public static float mapWidth;
     public static float mapHeight;
 
     /**
      * Constructs the TMXMap Object.
-     * @param batch SpriteBatch
      * @param tmxFilePath String url
      */
-    public TMXMap(SpriteBatch batch, String tmxFilePath) {
+    public TMXMap(String tmxFilePath) {
         map = (TiledMap) AssetUtil.getAsset(tmxFilePath, TiledMap.class);
-        renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
 
         MapProperties mapProperties = map.getProperties();
         int width = mapProperties.get("width", Integer.class);
@@ -61,7 +59,10 @@ public class TMXMap extends TiledMap {
      * @param cam OrthographicCamera
      * @param layers int[]
      */
-    public void render(OrthographicCamera cam, int[] layers) {
+    public void render(OrthographicCamera cam, int[] layers, Batch batch) {
+        if(renderer == null) {
+            renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
+        }
         renderer.setView(cam);
         renderer.render(layers);
     }
