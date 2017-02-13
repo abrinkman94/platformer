@@ -31,11 +31,6 @@ public class StaticEntity implements Entity
 	}
 
 	@Override
-	public void render(float dt, Batch batch) {
-
-	}
-
-	@Override
 	public void dispose() {
 
 	}

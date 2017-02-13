@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.Constants;
@@ -20,6 +21,7 @@ public class Enemy extends Actor
 
 	public Enemy() {
 		components = ImmutableClassToInstanceMap.<RootComponent>builder()
+				.put(RenderComponent.class, this::render)
                 .put(PhysicsComponent.class, new PhysicsComponent())
 				.build();
 
@@ -44,8 +46,7 @@ public class Enemy extends Actor
 
 	private void handleSawCollision(Saw saw) { handleDeath(); }
 
-	@Override
-	public void render(float dt, Batch batch) {
+	private void render(float dt, Batch batch) {
 		if (!isDead) {
 			batch.begin();
 			sprite.draw(batch);

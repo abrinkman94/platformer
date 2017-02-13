@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
@@ -78,6 +79,7 @@ public class Player extends Actor {
         inventory = new Array<>();
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, this::render)
                 .put(PhysicsComponent.class, new PhysicsComponent())
                 .build();
 
@@ -408,8 +410,7 @@ public class Player extends Actor {
         }
     }
 
-    @Override
-    public void render(float dt, Batch batch) {
+    private void render(float dt, Batch batch) {
         Body body = components.getInstance(PhysicsComponent.class);
         assert body != null;
 

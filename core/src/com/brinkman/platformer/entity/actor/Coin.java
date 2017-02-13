@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
@@ -39,6 +40,7 @@ public class Coin extends Actor {
         elapsedTime = 0;
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, this::render)
                 .put(PhysicsComponent.class, new PhysicsComponent())
                 .build();
 
@@ -84,8 +86,7 @@ public class Coin extends Actor {
         body.setHeight(height + increment);
     }
 
-    @Override
-    public void render(float dt, Batch batch) {
+    private void render(float dt, Batch batch) {
         elapsedTime += dt;
         TextureRegion currentFrame = (TextureRegion) animations.getKeyFrame(elapsedTime, true);
         batch.begin();

@@ -2,6 +2,7 @@ package com.brinkman.platformer.entity.actor.platform;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
@@ -21,6 +22,7 @@ public class Platform  extends Actor{
 
     public Platform(float x, float y, float width, float height, PlatformType platformType) {
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, this::render)
                 .put(PhysicsComponent.class, new PhysicsComponent())
                 .build();
 
@@ -34,8 +36,7 @@ public class Platform  extends Actor{
         this.platformType = platformType;
     }
 
-    @Override
-    public void render(float dt, Batch batch) {
+    private void render(float dt, Batch batch) {
         if (platformType == PlatformType.FALLING && touched) {
             Body body = components.getInstance(PhysicsComponent.class);
             assert body != null;

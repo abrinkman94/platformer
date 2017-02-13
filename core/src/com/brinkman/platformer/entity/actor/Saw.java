@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
@@ -32,6 +33,7 @@ public class Saw extends Actor {
 	 */
 	public Saw(float x, float y) {
 		components = ImmutableClassToInstanceMap.<RootComponent>builder()
+				.put(RenderComponent.class, this::render)
                 .put(PhysicsComponent.class, new PhysicsComponent())
 				.build();
 
@@ -52,8 +54,7 @@ public class Saw extends Actor {
 		sprite.setOriginCenter();
 	}
 
-    @Override
-	public void render(float dt, Batch batch) {
+	private void render(float dt, Batch batch) {
 		float rotationStep = sprite.getRotation() + SAW_SPEED;
 
 		batch.begin();

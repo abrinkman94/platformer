@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.physics.Body;
@@ -35,6 +36,7 @@ public class Item extends Actor {
     public Item(String texturePath, ItemType itemType, float x, float y) {
         this.itemType = itemType;
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, this::render)
                 .put(PhysicsComponent.class, new PhysicsComponent())
                 .build();
 
@@ -56,8 +58,7 @@ public class Item extends Actor {
         sprite.setPosition(position.x, position.y);
     }
 
-    @Override
-    public void render(float dt, Batch batch) {
+    private void render(float dt, Batch batch) {
         batch.begin();
         sprite.draw(batch);
         batch.end();

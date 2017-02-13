@@ -15,6 +15,7 @@ import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.component.Operator;
 import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.PhysicsOperator;
+import com.brinkman.platformer.component.RenderOperator;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
@@ -31,7 +32,6 @@ import com.brinkman.platformer.util.CameraUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.brinkman.platformer.util.Constants.*;
@@ -43,6 +43,7 @@ public class GameScreen implements Screen {
     private static final Logger LOGGER = new Logger(GameScreen.class.getName(), Logger.DEBUG);
 
     private final Operator physicsSubsystem;
+    private final Operator renderSubsystem;
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
     private final Player player;
@@ -70,6 +71,7 @@ public class GameScreen implements Screen {
 
         LOGGER.info("Initialized");
         physicsSubsystem = new PhysicsOperator();
+        renderSubsystem = new RenderOperator(spriteBatch);
     }
 
     private void placeholderKeyHandler() {
@@ -147,8 +149,23 @@ public class GameScreen implements Screen {
         // Update the SpriteBatch projection matrix
         spriteBatch.setProjectionMatrix(camera.combined);
 
-        //Renders GameWorld (Entities, Level)
-        gameWorld.render(camera, delta, spriteBatch);
+        // TODO Prooooobably should do this more efficiently
+        Collection<Entity> entitiesCopy = new ArrayList<>(gameWorld.getEntities());
+
+        //Renders GameWorld background
+        gameWorld.renderBackground(camera, delta, spriteBatch);
+
+        // Do physics, yo.
+        entitiesCopy.stream()
+                    .filter(it -> it.getComponents().keySet().containsAll(physicsSubsystem.getRequiredComponents()))
+                    .forEach(it -> physicsSubsystem.operate(delta, it, gameWorld));
+        // Render Entities
+        entitiesCopy.stream()
+                    .filter(it -> it.getComponents().keySet().containsAll(renderSubsystem.getRequiredComponents()))
+                    .forEach(it -> renderSubsystem.operate(delta, it, gameWorld));
+
+        // Render gameworld foreground
+        gameWorld.renderForeground(camera, spriteBatch);
 
         //Camera utility methods
         CameraUtil.lerpCameraToActor(player, camera);
@@ -157,11 +174,6 @@ public class GameScreen implements Screen {
 
         //Collision checks
         keepEntitiesInMap();
-
-        // Do physics, yo.
-        // TODO Prooooobably should do this more efficiently
-        Iterable<Entity> entitiesCopy = new ArrayList<>(gameWorld.getEntities());
-        entitiesCopy.forEach(entity -> physicsSubsystem.operate(0.0f, entity, gameWorld));
 
         //Placeholder for locked door
         placeholderKeyHandler();

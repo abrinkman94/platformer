@@ -9,13 +9,6 @@ import com.google.common.collect.ImmutableClassToInstanceMap;
  */
 public interface Entity {
     /**
-     * Handles the updating and rendering of the Entity object.
-     * @param dt float delta time
-     * @param batch SpriteBatch
-     */
-    void render(float dt, Batch batch);
-
-    /**
      * Handles the disposing of textures, etc...
      */
     void dispose();
