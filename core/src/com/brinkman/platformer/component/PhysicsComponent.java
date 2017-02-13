@@ -1,11 +1,18 @@
-package com.brinkman.platformer.physics;
+package com.brinkman.platformer.component;
 
 import com.badlogic.gdx.math.Vector2;
+import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.physics.CollisionListener;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
-public class PhysicsBody implements Body {
+/**
+ * @author Caleb Brinkman
+ */
+public class PhysicsComponent implements RootComponent, Body {
     private static final float DEFAULT_MOVE_SPEED = 5.0f;
 
     private final Map<Class<?>, CollisionListener<?>> collisionListeners = new HashMap<>(4);
@@ -49,13 +56,13 @@ public class PhysicsBody implements Body {
     public void setWidth(float width) { this.width = width; }
 
     @Override
-    public Vector2 getOriginPosition() { return originPosition; }
-
-    @Override
     public boolean isRemovedOnCollision() { return removedOnCollision; }
 
     @Override
     public void setRemovedOnCollision(boolean removedOnCollision) { this.removedOnCollision = removedOnCollision; }
+
+    @Override
+    public Vector2 getOriginPosition() { return originPosition; }
 
     @Override
     public <T> void setCollisionListener(Class<T> otherType, CollisionListener<T> listener) {

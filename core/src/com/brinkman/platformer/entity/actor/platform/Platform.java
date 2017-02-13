@@ -1,13 +1,11 @@
 package com.brinkman.platformer.entity.actor.platform;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Shape2D;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
-import com.brinkman.platformer.physics.Collidable;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.Constants;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
@@ -22,44 +20,33 @@ public class Platform  extends Actor{
     private final ImmutableClassToInstanceMap<RootComponent> components;
 
     public Platform(float x, float y, float width, float height, PlatformType platformType) {
-        getBody().getPosition().set(x, y);
-        getBody().setWidth(width);
-        getBody().setHeight(height);
-        this.platformType = platformType;
-
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(PhysicsComponent.class, new PhysicsComponent())
                 .build();
+
+        Body body = components.getInstance(PhysicsComponent.class);
+        assert body != null;
+
+        body.getPosition().set(x, y);
+        body.setWidth(width);
+        body.setHeight(height);
+        body.setCollisionListener(Player.class, player -> touched = true);
+        this.platformType = platformType;
     }
-
-    @Override
-    public Shape2D getBounds() {
-        return new Rectangle(getBody().getPosition().x, getBody().getPosition().y,
-                getBody().getWidth(), getBody().getHeight());
-    }
-
-    @Override
-    public void handleCollisionEvent(Collidable other) {
-        if (other instanceof Player) {
-            touched = true;
-        }
-    }
-
-    @Override
-    public boolean shouldBeRemovedOnCollision() { return getBody().getPosition().y < (0 - getBody().getHeight()); }
-
-    @Override
-    public boolean shouldCollideWith(Collidable other) { return other instanceof Player; }
 
     @Override
     public void render(float dt, Batch batch) {
         if (platformType == PlatformType.FALLING && touched) {
+            Body body = components.getInstance(PhysicsComponent.class);
+            assert body != null;
+
             float gravity = Constants.GRAVITY - 0.1f;
             float maxGravity = Constants.MAX_GRAVITY / 2;
 
-            if (getBody().getVelocity().y > maxGravity) {
-                getBody().getVelocity().y -= gravity;
+            if (body.getVelocity().y > maxGravity) {
+                body.getVelocity().y -= gravity;
             }
-            getBody().getPosition().y += getBody().getVelocity().y * dt;
+            body.getPosition().y += body.getVelocity().y * dt;
         }
     }
 

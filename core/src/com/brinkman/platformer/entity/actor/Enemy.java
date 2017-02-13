@@ -3,11 +3,10 @@ package com.brinkman.platformer.entity.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.RootComponent;
-import com.brinkman.platformer.physics.Collidable;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.Constants;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
@@ -20,34 +19,30 @@ public class Enemy extends Actor
 	private boolean isDead;
 
 	public Enemy() {
-		getBody().getPosition().set(4, 2);
-		getBody().setWidth(32 * Constants.TO_WORLD_UNITS);
-		getBody().setHeight(64 * Constants.TO_WORLD_UNITS);
-		getBody().getVelocity().set(4 * Constants.TO_WORLD_UNITS, 0);
+		components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(PhysicsComponent.class, new PhysicsComponent())
+				.build();
+
+		Body body = components.getInstance(PhysicsComponent.class);
+
+		assert body != null;
+		body.getPosition().set(4, 2);
+		body.setWidth(32 * Constants.TO_WORLD_UNITS);
+		body.setHeight(64 * Constants.TO_WORLD_UNITS);
+		body.getVelocity().set(4 * Constants.TO_WORLD_UNITS, 0);
+		body.setCollisionListener(Saw.class, this::handleSawCollision);
 
 		texture = new Texture("sprites/idle/frame-1-right.png");
 		sprite = new Sprite(texture);
 
-		Vector2 position = getBody().getPosition();
+		Vector2 position = body.getPosition();
+		float width = body.getWidth();
+		float height = body.getHeight();
 		sprite.setPosition(position.x, position.y);
-		sprite.setSize(getBody().getWidth(), getBody().getHeight());
-
-		components = ImmutableClassToInstanceMap.<RootComponent>builder()
-				.build();
+		sprite.setSize(width, height);
 	}
 
-	@Override
-	public Shape2D getBounds() {
-		Vector2 position = getBody().getPosition();
-		return new Rectangle(position.x, position.y, getBody().getWidth(), getBody().getHeight());
-	}
-
-	@Override
-	public void handleCollisionEvent(Collidable other) {
-		if(other instanceof Saw) {
-			handleDeath();
-		}
-	}
+	private void handleSawCollision(Saw saw) { handleDeath(); }
 
 	@Override
 	public void render(float dt, Batch batch) {
@@ -56,8 +51,11 @@ public class Enemy extends Actor
 			sprite.draw(batch);
 			batch.end();
 
-			Vector2 position = getBody().getPosition();
-			Vector2 velocity = getBody().getVelocity();
+			Body body = components.getInstance(PhysicsComponent.class);
+
+			assert body != null;
+			Vector2 position = body.getPosition();
+			Vector2 velocity = body.getVelocity();
 			position.x += velocity.x;
 			sprite.setPosition(position.x, position.y);
 		}

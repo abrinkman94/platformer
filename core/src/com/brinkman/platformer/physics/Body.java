@@ -69,17 +69,19 @@ public interface Body {
 
     default boolean intersects(Body other) {
         boolean intersects = false;
-        if (getBounds() instanceof Circle) {
-            if (other.getBounds() instanceof Circle) {
-                intersects = Intersector.overlaps((Circle) getBounds(), (Circle) other.getBounds());
-            } else if (other.getBounds() instanceof Rectangle) {
-                intersects = Intersector.overlaps((Circle) getBounds(), (Rectangle) other.getBounds());
+        Shape2D bounds = getBounds();
+        Shape2D otherBounds = other.getBounds();
+        if (bounds instanceof Circle) {
+            if (otherBounds instanceof Circle) {
+                intersects = Intersector.overlaps((Circle) bounds, (Circle) otherBounds);
+            } else if (otherBounds instanceof Rectangle) {
+                intersects = Intersector.overlaps((Circle) bounds, (Rectangle) otherBounds);
             }
-        } else if (getBounds() instanceof Rectangle) {
-            if (other.getBounds() instanceof Circle) {
-                intersects = Intersector.overlaps((Circle) other.getBounds(), (Rectangle) getBounds());
-            } else if (other.getBounds() instanceof Rectangle) {
-                intersects = Intersector.overlaps((Rectangle) getBounds(), (Rectangle) other.getBounds());
+        } else if (bounds instanceof Rectangle) {
+            if (otherBounds instanceof Circle) {
+                intersects = Intersector.overlaps((Circle) otherBounds, (Rectangle) bounds);
+            } else if (otherBounds instanceof Rectangle) {
+                intersects = Intersector.overlaps((Rectangle) bounds, (Rectangle) otherBounds);
             }
         }
         return intersects;

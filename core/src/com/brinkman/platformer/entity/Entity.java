@@ -2,14 +2,12 @@ package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.brinkman.platformer.component.RootComponent;
-import com.brinkman.platformer.physics.Body;
-import com.brinkman.platformer.physics.Collidable;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
 /**
  * Created by Austin on 9/29/2016.
  */
-public interface Entity extends Collidable {
+public interface Entity {
     /**
      * Handles the updating and rendering of the Entity object.
      * @param dt float delta time
@@ -24,5 +22,4 @@ public interface Entity extends Collidable {
 
     ImmutableClassToInstanceMap<RootComponent> getComponents();
 
-    Body getBody();
 }

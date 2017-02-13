@@ -3,14 +3,11 @@ package com.brinkman.platformer.entity.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.physics.Body;
-import com.brinkman.platformer.physics.PhysicsBody;
 
 /**
  * Created by Austin on 9/29/2016.
  */
 public abstract class Actor implements Entity {
-    private final Body body = new PhysicsBody();
     /**
      * The Actor's Sprite.
      */
@@ -86,8 +83,5 @@ public abstract class Actor implements Entity {
      * @param orientation String
      */
     public void setOrientation(String orientation) { this.orientation = orientation; }
-
-    @Override
-    public Body getBody() { return body; }
 
 }

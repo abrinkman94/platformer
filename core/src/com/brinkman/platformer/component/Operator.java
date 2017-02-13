@@ -1,5 +1,6 @@
 package com.brinkman.platformer.component;
 
+import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
 
 import java.util.Collection;
@@ -18,7 +19,7 @@ public interface Operator {
      *
      * @param deltaT The amount of time (in seconds) in order to operate on.
      * @param entity The {@link Entity} on which to operate.
-     * @param allEntities The collection of all entities in the game world.
+     * @param world The game world.
      */
-    void operate(float deltaT, Entity entity, Collection<Entity> allEntities);
+    void operate(float deltaT, Entity entity, GameWorld world);
 }

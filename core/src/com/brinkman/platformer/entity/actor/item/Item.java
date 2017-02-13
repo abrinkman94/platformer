@@ -3,14 +3,12 @@ package com.brinkman.platformer.entity.actor.item;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.actor.Actor;
-import com.brinkman.platformer.entity.actor.Player;
-import com.brinkman.platformer.physics.Collidable;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
@@ -36,36 +34,27 @@ public class Item extends Actor {
      */
     public Item(String texturePath, ItemType itemType, float x, float y) {
         this.itemType = itemType;
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(PhysicsComponent.class, new PhysicsComponent())
+                .build();
 
-        getBody().setHeight(32 * TO_WORLD_UNITS);
-        getBody().setWidth(32 * TO_WORLD_UNITS);
-        getBody().getPosition().set(x, y);
+        Body body = components.getInstance(PhysicsComponent.class);
+        assert body != null;
+
+        body.setRemovedOnCollision(true);
+        body.setHeight(32 * TO_WORLD_UNITS);
+        body.setWidth(32 * TO_WORLD_UNITS);
+        body.getPosition().set(x, y);
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
 
+        float width = body.getWidth();
+        float height = body.getHeight();
         sprite = new Sprite(texture);
-        sprite.setSize(getBody().getWidth(), getBody().getHeight());
-        Vector2 position = getBody().getPosition();
+        sprite.setSize(width, height);
+        Vector2 position = body.getPosition();
         sprite.setPosition(position.x, position.y);
-
-        components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .build();
     }
-
-    @Override
-    public Shape2D getBounds() {
-        Vector2 position = getBody().getPosition();
-        return new Rectangle(position.x, position.y, getBody().getWidth() * TO_WORLD_UNITS, getBody().getHeight() * TO_WORLD_UNITS);
-    }
-
-    @Override
-    public void handleCollisionEvent(Collidable other) { }
-
-    @Override
-    public boolean shouldCollideWith(Collidable other) { return other instanceof Player; }
-
-    @Override
-    public boolean shouldBeRemovedOnCollision() { return true; }
 
     @Override
     public void render(float dt, Batch batch) {
