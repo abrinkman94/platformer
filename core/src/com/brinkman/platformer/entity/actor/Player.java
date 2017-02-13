@@ -34,6 +34,10 @@ import static com.brinkman.platformer.util.TexturePaths.*;
  */
 public class Player extends Actor {
     private static final Logger LOGGER = new Logger(Player.class.getName(), Logger.DEBUG);
+    /**
+     * The Actor's boolean canJump field.
+     */
+    protected boolean canJump;
 
     private TextureAtlas walkRightAtlas;
     private TextureAtlas walkLeftAtlas;

@@ -29,10 +29,6 @@ public abstract class Actor implements Entity {
      */
     protected int currentAnimation;
     /**
-     * The Actor's boolean canJump field.
-     */
-    protected boolean canJump;
-    /**
      * The Actor's String orientation.
      */
     protected String orientation;
@@ -41,12 +37,6 @@ public abstract class Actor implements Entity {
      * Optional method to handle death of Actor.
      */
     public void handleDeath() {};
-
-    /**
-     * .
-     * @return Sprite
-     */
-    public Sprite getSprite() { return sprite; }
 
     /**
      * Returns the int lives.
@@ -59,18 +49,6 @@ public abstract class Actor implements Entity {
      * @param lives int
      */
     public void setLives(int lives) { this.lives = lives; }
-
-    /**
-     * Returns the value of boolean canJump.
-     * @return boolean
-     */
-    public boolean canJump() { return canJump; }
-
-    /**
-     * Sets the value of boolean canJump.
-     * @param canJump boolean
-     */
-    public void setCanJump(boolean canJump) { this.canJump = canJump; }
 
     /**
      * Returns the value of String orientation.
