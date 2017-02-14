@@ -32,6 +32,18 @@ public interface Body {
 
     void setRemovedOnCollision(boolean removedOnCollision);
 
+    float getMaxFallSpeed();
+
+    void setMaxFallSpeed(float maxFallSpeed);
+
+    boolean isAffectedByGravity();
+
+    void setAffectedByGravity(boolean affectedByGravity);
+
+    float getGravityAcceleration();
+
+    void setGravityAcceleration(float gravityAcceleration);
+
     /**
      * Add a collision listener to this Body, which will listen to and respond to collision events with the given type
      * of object.

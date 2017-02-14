@@ -3,6 +3,7 @@ package com.brinkman.platformer.component;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.CollisionListener;
+import com.brinkman.platformer.util.Constants;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +25,9 @@ public class PhysicsComponent implements RootComponent, Body {
     private float moveSpeed = DEFAULT_MOVE_SPEED;
     private boolean grounded;
     private boolean removedOnCollision;
+    private float maxFallSpeed = Constants.MAX_GRAVITY;
+    private float gravityAcceleration = Constants.GRAVITY;
+    private boolean affectedByGravity;
 
     @Override
     public boolean isGrounded() { return grounded; }
@@ -60,6 +64,24 @@ public class PhysicsComponent implements RootComponent, Body {
 
     @Override
     public void setRemovedOnCollision(boolean removedOnCollision) { this.removedOnCollision = removedOnCollision; }
+
+    @Override
+    public float getMaxFallSpeed() { return maxFallSpeed; }
+
+    @Override
+    public void setMaxFallSpeed(float maxFallSpeed) { this.maxFallSpeed = maxFallSpeed; }
+
+    @Override
+    public boolean isAffectedByGravity() { return affectedByGravity;}
+
+    @Override
+    public void setAffectedByGravity(boolean affectedByGravity) { this.affectedByGravity = affectedByGravity; }
+
+    @Override
+    public float getGravityAcceleration() { return gravityAcceleration; }
+
+    @Override
+    public void setGravityAcceleration(float gravityAcceleration) { this.gravityAcceleration = gravityAcceleration; }
 
     @Override
     public Vector2 getOriginPosition() { return originPosition; }

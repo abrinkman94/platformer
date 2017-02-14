@@ -21,32 +21,26 @@ public class Platform  extends Actor{
     private final ImmutableClassToInstanceMap<RootComponent> components;
 
     public Platform(float x, float y, float width, float height, PlatformType platformType) {
-        components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(RenderComponent.class, this::render)
-                .put(PhysicsComponent.class, new PhysicsComponent())
-                .build();
+        this.platformType = platformType;
 
-        Body body = components.getInstance(PhysicsComponent.class);
-        assert body != null;
+        PhysicsComponent body = new PhysicsComponent();
 
+        body.setAffectedByGravity(platformType == PlatformType.FALLING);
+        body.setGrounded(true);
+        body.setMaxFallSpeed(Constants.MAX_GRAVITY / 2);
+        body.setGravityAcceleration(Constants.GRAVITY - 0.1f);
         body.getPosition().set(x, y);
         body.setWidth(width);
         body.setHeight(height);
-        body.setCollisionListener(Player.class, player -> touched = true);
-        this.platformType = platformType;
+        body.setCollisionListener(Player.class, player -> body.setGrounded(false));
+
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, this::render)
+                .put(PhysicsComponent.class, body)
+                .build();
     }
 
     private void render(float dt, Batch batch, Body body) {
-        // TODO This should be moved into PhysicsComponent somehow
-        if (platformType == PlatformType.FALLING && touched) {
-            float gravity = Constants.GRAVITY - 0.1f;
-            float maxGravity = Constants.MAX_GRAVITY / 2;
-
-            if (body.getVelocity().y > maxGravity) {
-                body.getVelocity().y -= gravity;
-            }
-            body.getPosition().y += body.getVelocity().y * dt;
-        }
     }
 
     @Override

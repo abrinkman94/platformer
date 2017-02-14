@@ -82,13 +82,9 @@ public class Player extends Actor {
         this.inputFlags = inputFlags;
         inventory = new Array<>();
 
-        components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(RenderComponent.class, this::render)
-                .put(PhysicsComponent.class, new PhysicsComponent())
-                .build();
 
-        Body body = components.getInstance(PhysicsComponent.class);
-        assert body != null;
+        PhysicsComponent body = new PhysicsComponent();
+        body.setAffectedByGravity(true);
         body.setWidth(PLAYER_WIDTH * TO_WORLD_UNITS);
         body.setHeight(PLAYER_HEIGHT * TO_WORLD_UNITS);
         Vector2 originPosition = body.getOriginPosition();
@@ -103,6 +99,10 @@ public class Player extends Actor {
 
         initializeTextureAtlas();
 
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, this::render)
+                .put(PhysicsComponent.class, body)
+                .build();
 
         LOGGER.info("Initialized");
     }
@@ -323,14 +323,15 @@ public class Player extends Actor {
         }
 
         //Jump
+        // TODO Definitely a candidate for ControlComponent
         xSpeed = handleJump(xSpeed);
 
         //Update position and velocity
+        // TODO This should *probably* be handled in PhysicsComponent
         Vector2 velocity = body.getVelocity();
         Vector2 position = body.getPosition();
         velocity.x = xSpeed;
         position.x += velocity.x * Gdx.graphics.getDeltaTime();
-        position.y += velocity.y * Gdx.graphics.getDeltaTime();
     }
 
     /**
@@ -415,7 +416,9 @@ public class Player extends Actor {
     }
 
     private void render(float dt, Batch batch, Body body) {
+        // TODO Move to render... somehow.  Maybe render needs a control component as well?
         handleAnimationSwitching();
+        // TODO Move to... multiple places, probably
         handleMovement();
 
         elapsedTime += Gdx.graphics.getDeltaTime();
@@ -428,10 +431,6 @@ public class Player extends Actor {
         batch.begin();
         batch.draw(frame, position.x, position.y, width, height);
         batch.end();
-
-        //Checks if player is on the ground
-        // TODO Move to PhysicsComponent
-        handleGravity();
 
         //Handle player falling off map
         // TODO Move to... maybe MechanicsComponent? Some sort of component to handle game rules, anyway...

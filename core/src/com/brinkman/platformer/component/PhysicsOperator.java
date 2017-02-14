@@ -1,16 +1,19 @@
 package com.brinkman.platformer.component;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Exit;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.util.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.brinkman.platformer.util.Constants.GRAVITY;
 import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;
 
 /**
@@ -37,11 +40,29 @@ public class PhysicsOperator implements Operator {
                              .findFirst()
                              .get();
 
+        Body body = entity.getComponents().getInstance(PhysicsComponent.class);
+        assert body != null;
+
+        // Handle existing velocity
+        body.getPosition().y += body.getVelocity().y * deltaT;
+
+        // Handle gravity
+        if(body.isAffectedByGravity()) {
+            Vector2 velocity = body.getVelocity();
+            if (body.isGrounded()) {
+                velocity.y = 0;
+            } else {
+                if (velocity.y > body.getMaxFallSpeed()) {
+                    velocity.y -= body.getGravityAcceleration();
+                }
+            }
+        }
+
+        // Handle Collisions
         Collection<Entity> colliders = findCollidingEntities(entity, world);
         colliders.forEach(collider -> {
-            Body body = entity.getComponents().getInstance(PhysicsComponent.class);
             Body otherBody = collider.getComponents().getInstance(PhysicsComponent.class);
-            if ((body != null) && (otherBody != null)) {
+            if (otherBody != null) {
                 body.triggerCollisionListeners(collider, otherBody);
                 if (body.isRemovedOnCollision()) {
                     handleRemoval(entity, player, world);
