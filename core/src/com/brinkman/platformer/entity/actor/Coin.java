@@ -42,7 +42,6 @@ public class Coin extends Actor {
 
         PhysicsComponent body = new PhysicsComponent();
         body.getPosition().set(x, y);
-        body.setRemovedOnCollision(true);
         body.setWidth(COIN_SIZE * TO_WORLD_UNITS);
         body.setHeight(COIN_SIZE  * TO_WORLD_UNITS);
         body.setCollisionListener(Player.class, this::handlePlayerCollision);
@@ -72,8 +71,10 @@ public class Coin extends Actor {
 
         Body body = components.getInstance(PhysicsComponent.class);
         assert body != null;
-        if (body.getWidth() > 0.1f) {
-            animateCollect(-0.05f);
+        if (body.getWidth() > 0.5f) {
+            animateCollect(-0.25f);
+        } else {
+            body.setRemovedOnCollision(true);
         }
     }
 
