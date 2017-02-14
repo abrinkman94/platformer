@@ -123,15 +123,9 @@ public class GameScreen implements Screen {
                 Vector2 velocity = body.getVelocity();
                 if (position.x <= mapLeft) {
                     position.x = mapLeft;
-                    if (actor instanceof Enemy) {
-                        velocity.x = -velocity.x;
-                    }
                 }
                 if (position.x >= (mapRight - (body.getWidth() * TO_WORLD_UNITS))) {
                     position.x = mapRight - (body.getWidth() * TO_WORLD_UNITS);
-                    if (actor instanceof Enemy) {
-                        velocity.x = -velocity.x;
-                    }
                 }
             }
         }
