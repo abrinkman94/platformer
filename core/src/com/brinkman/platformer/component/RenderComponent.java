@@ -1,6 +1,7 @@
 package com.brinkman.platformer.component;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.brinkman.platformer.physics.Body;
 
 /**
  * Represents a component which can be rendered to the screen.
@@ -9,5 +10,5 @@ import com.badlogic.gdx.graphics.g2d.Batch;
  */
 @FunctionalInterface
 public interface RenderComponent extends RootComponent {
-    void render(float dt, Batch batch);
+    void render(float dt, Batch batch, Body body);
 }

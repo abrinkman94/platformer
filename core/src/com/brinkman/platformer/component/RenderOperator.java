@@ -35,7 +35,7 @@ public class RenderOperator implements Operator {
 
         assert (body != null) && (renderComponent != null);
 
-        renderComponent.render(deltaT, batch);
+        renderComponent.render(deltaT, batch, body);
     }
 
 }

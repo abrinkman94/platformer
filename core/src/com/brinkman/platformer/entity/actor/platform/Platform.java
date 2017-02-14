@@ -36,11 +36,9 @@ public class Platform  extends Actor{
         this.platformType = platformType;
     }
 
-    private void render(float dt, Batch batch) {
+    private void render(float dt, Batch batch, Body body) {
+        // TODO This should be moved into PhysicsComponent somehow
         if (platformType == PlatformType.FALLING && touched) {
-            Body body = components.getInstance(PhysicsComponent.class);
-            assert body != null;
-
             float gravity = Constants.GRAVITY - 0.1f;
             float maxGravity = Constants.MAX_GRAVITY / 2;
 

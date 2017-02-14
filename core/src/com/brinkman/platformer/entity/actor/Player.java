@@ -414,10 +414,7 @@ public class Player extends Actor {
         }
     }
 
-    private void render(float dt, Batch batch) {
-        Body body = components.getInstance(PhysicsComponent.class);
-        assert body != null;
-
+    private void render(float dt, Batch batch, Body body) {
         handleAnimationSwitching();
         handleMovement();
 
@@ -433,13 +430,16 @@ public class Player extends Actor {
         batch.end();
 
         //Checks if player is on the ground
+        // TODO Move to PhysicsComponent
         handleGravity();
 
         //Handle player falling off map
+        // TODO Move to... maybe MechanicsComponent? Some sort of component to handle game rules, anyway...
         if ((position.x < 0) || ((position.y + body.getHeight()) < 0)){
             handleDeath();
         }
 
+        // TODO Probably move to PhysicsComponent, but unsure; maybe need to check in ControlComponent or something.
         body.setGrounded(false);
         canJump = false;
         touchingLeftWall = false;

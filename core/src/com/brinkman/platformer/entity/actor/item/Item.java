@@ -8,8 +8,8 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.component.SpriteRenderComponent;
 import com.brinkman.platformer.entity.actor.Actor;
-import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
@@ -35,14 +35,8 @@ public class Item extends Actor {
      */
     public Item(String texturePath, ItemType itemType, float x, float y) {
         this.itemType = itemType;
-        components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(RenderComponent.class, this::render)
-                .put(PhysicsComponent.class, new PhysicsComponent())
-                .build();
 
-        Body body = components.getInstance(PhysicsComponent.class);
-        assert body != null;
-
+        PhysicsComponent body = new PhysicsComponent();
         body.setRemovedOnCollision(true);
         body.setHeight(32 * TO_WORLD_UNITS);
         body.setWidth(32 * TO_WORLD_UNITS);
@@ -56,6 +50,11 @@ public class Item extends Actor {
         sprite.setSize(width, height);
         Vector2 position = body.getPosition();
         sprite.setPosition(position.x, position.y);
+
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, new SpriteRenderComponent(sprite))
+                .put(PhysicsComponent.class, body)
+                .build();
     }
 
     private void render(float dt, Batch batch) {

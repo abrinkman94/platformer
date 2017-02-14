@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.AnimationRenderComponent;
 import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
@@ -39,13 +40,7 @@ public class Coin extends Actor {
     public Coin(float x, float y) {
         elapsedTime = 0;
 
-        components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(RenderComponent.class, this::render)
-                .put(PhysicsComponent.class, new PhysicsComponent())
-                .build();
-
-        Body body = components.getInstance(PhysicsComponent.class);
-        assert body != null;
+        PhysicsComponent body = new PhysicsComponent();
         body.getPosition().set(x, y);
         body.setRemovedOnCollision(true);
         body.setWidth(COIN_SIZE * TO_WORLD_UNITS);
@@ -65,6 +60,11 @@ public class Coin extends Actor {
         }
 
         animations = new Animation(ANIMATION_TIME, textureRegions);
+
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, new AnimationRenderComponent(animations))
+                .put(PhysicsComponent.class, body)
+                .build();
     }
 
     private void handlePlayerCollision(Player player) {
@@ -84,19 +84,6 @@ public class Coin extends Actor {
         float height = body.getHeight();
         body.setWidth(width + increment);
         body.setHeight(height + increment);
-    }
-
-    private void render(float dt, Batch batch) {
-        elapsedTime += dt;
-        TextureRegion currentFrame = (TextureRegion) animations.getKeyFrame(elapsedTime, true);
-        batch.begin();
-        Body body = components.getInstance(PhysicsComponent.class);
-        assert body != null;
-        Vector2 position = body.getPosition();
-        float width = body.getWidth();
-        float height = body.getHeight();
-        batch.draw(currentFrame, position.x, position.y, width, height);
-        batch.end();
     }
 
     @Override

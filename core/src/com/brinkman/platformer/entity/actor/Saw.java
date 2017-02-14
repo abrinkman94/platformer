@@ -54,7 +54,7 @@ public class Saw extends Actor {
 		sprite.setOriginCenter();
 	}
 
-	private void render(float dt, Batch batch) {
+	private void render(float dt, Batch batch, Body body) {
 		float rotationStep = sprite.getRotation() + SAW_SPEED;
 
 		batch.begin();

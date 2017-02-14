@@ -46,15 +46,13 @@ public class Enemy extends Actor
 
 	private void handleSawCollision(Saw saw) { handleDeath(); }
 
-	private void render(float dt, Batch batch) {
+	private void render(float dt, Batch batch, Body body) {
+		// FIXME why !isDead?  Should enemies be removed if dead?
 		if (!isDead) {
 			batch.begin();
 			sprite.draw(batch);
 			batch.end();
 
-			Body body = components.getInstance(PhysicsComponent.class);
-
-			assert body != null;
 			Vector2 position = body.getPosition();
 			Vector2 velocity = body.getVelocity();
 			position.x += velocity.x;
