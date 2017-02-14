@@ -9,7 +9,10 @@ import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.Body;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;
@@ -18,6 +21,9 @@ import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;
  * @author Caleb Brinkman
  */
 public class PhysicsOperator implements Operator {
+    private static final float FRICTION_DECELARATION = 0.8f;
+    private static final float AIR_DECELARATION = 0.25f;
+
     private final Collection<Class<? extends RootComponent>> requiredComponents;
 
     public PhysicsOperator() {
@@ -50,6 +56,18 @@ public class PhysicsOperator implements Operator {
     }
 
     private void handleInertia(float deltaT, Body body) {
+        float xVelocity = body.getVelocity().x;
+        float xVelSign = Math.signum(xVelocity);
+        xVelocity = Math.abs(xVelocity);
+        if (body.isGrounded()) {
+            xVelocity -= (xVelocity == 0.0f) ? 0.0f : FRICTION_DECELARATION;
+        } else {
+            xVelocity -= (xVelocity == 0.0f) ? 0.0f : AIR_DECELARATION;
+        }
+
+        xVelocity = (xVelocity < AIR_DECELARATION) ? 0.0f : xVelocity;
+
+        body.getVelocity().x = xVelSign * xVelocity;
         body.getPosition().y += body.getVelocity().y * deltaT;
     }
 

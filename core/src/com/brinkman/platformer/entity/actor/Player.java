@@ -299,28 +299,23 @@ public class Player extends Actor {
 		boolean movingLeft = xSpeed > -maxSpeed;
 		boolean movingRight = xSpeed < maxSpeed;
 
-		if (left && movingLeft) {
-			xSpeed = xSpeed - ACCELERATION;
-			orientation = "left";
-			currentAnimation = (jump && !body.isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
-		} else if (right && movingRight) {
-			xSpeed = xSpeed + ACCELERATION;
-			orientation = "right";
-			currentAnimation = (jump && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
-		} else {
-			if(xSpeed > DECELERATION) {
-				xSpeed -= body.isGrounded() ? DECELERATION : (DECELERATION / 3);
-			} else if(xSpeed < -DECELERATION) {
-				xSpeed += body.isGrounded() ? DECELERATION : (DECELERATION / 3);
-			} else {
-				if ("right".equalsIgnoreCase(orientation)) {
-					currentAnimation = (jump && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
-				} else {
-					currentAnimation = (jump && !body.isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
-				}
-				xSpeed = 0;
-			}
-		}
+        if (left && movingLeft) {
+            xSpeed = xSpeed - ACCELERATION;
+            orientation = "left";
+            currentAnimation = (jump && !body.isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
+        } else if (right && movingRight) {
+            xSpeed = xSpeed + ACCELERATION;
+            orientation = "right";
+            currentAnimation = (jump && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
+        } else {
+            if(xSpeed == 0.0f) {
+                if ("right".equalsIgnoreCase(orientation)) {
+                    currentAnimation = (jump && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+                } else {
+                    currentAnimation = (jump && !body.isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
+                }
+            }
+        }
 
 		//Jump
 		// TODO Definitely a candidate for ControlComponent
