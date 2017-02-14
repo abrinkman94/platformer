@@ -41,10 +41,19 @@ public class PhysicsOperator implements Operator {
         Body body = entity.getComponents().getInstance(PhysicsComponent.class);
         assert body != null;
 
-        // Handle existing velocity
-        body.getPosition().y += body.getVelocity().y * deltaT;
+        // Handle inertia
+        handleInertia(deltaT, body);
 
-        // Handle gravity
+        handleGravity(body);
+
+        handleCollisions(entity, world, player, body);
+    }
+
+    private void handleInertia(float deltaT, Body body) {
+        body.getPosition().y += body.getVelocity().y * deltaT;
+    }
+
+    private void handleGravity(Body body) {
         if(body.isAffectedByGravity()) {
             Vector2 velocity = body.getVelocity();
             if (body.isGrounded()) {
@@ -55,8 +64,9 @@ public class PhysicsOperator implements Operator {
                 }
             }
         }
+    }
 
-        // Handle Collisions
+    private void handleCollisions(Entity entity, GameWorld world, Player player, Body body) {
         Collection<Entity> colliders = findCollidingEntities(entity, world);
         colliders.forEach(collider -> {
             Body otherBody = collider.getComponents().getInstance(PhysicsComponent.class);
@@ -67,7 +77,6 @@ public class PhysicsOperator implements Operator {
                 }
             }
         });
-
     }
 
     private static void handleRemoval(Entity entity, Player player, GameWorld world) {
