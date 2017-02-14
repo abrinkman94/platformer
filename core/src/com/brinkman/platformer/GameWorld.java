@@ -170,7 +170,8 @@ public class GameWorld {
                 float width = fallingPlatformObject.getProperties().get("width", float.class) * TO_WORLD_UNITS;
                 float height = fallingPlatformObject.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-                Entity platform = new Platform(x, y, width, height, PlatformType.FALLING);
+                TextureRegion texture = ((TextureMapObject)fallingPlatformObject).getTextureRegion();
+                Entity platform = new Platform(texture, x, y, width, height, PlatformType.FALLING);
                 addEntity(platform);
             }
         }
@@ -187,22 +188,6 @@ public class GameWorld {
         if (textureMapObjectRenderer == null) {
             textureMapObjectRenderer = new TextureMapObjectRenderer(level.getTmxMap(), batch);
         }
-
-        for (Entity entity : entities) {
-            if (entity instanceof Platform) {
-                for (MapObject object : level.getTmxMap().getMapObjects("falling platform")) {
-                    Platform platform = (Platform) entity;
-                    Body platformBody = platform.getComponents().getInstance(PhysicsComponent.class);
-                    assert platformBody != null;
-                    Vector2 position = platformBody.getPosition();
-                    float width = platformBody.getWidth();
-                    float height = platformBody.getHeight();
-                    textureMapObjectRenderer.renderObject(object, position.x, position.y, width, height);
-                }
-            }
-        }
-
-        renderForeground(camera, batch);
     }
 
     public void renderForeground(OrthographicCamera camera, Batch batch) {
