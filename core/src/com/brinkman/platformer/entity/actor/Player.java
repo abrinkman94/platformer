@@ -359,27 +359,11 @@ public class Player extends Actor {
 		return xSpeed;
 	}
 
-	/**
-	 * Sets player's y velocity based on 'grounded' and 'GRAVITY'.
-	 */
-	private void handleGravity() {
-		Body body = components.getInstance(PhysicsComponent.class);
-		assert body != null;
-		Vector2 velocity = body.getVelocity();
-		if (body.isGrounded()) {
-			velocity.y = 0;
-		} else {
-			if (velocity.y > Constants.MAX_GRAVITY) {
-				velocity.y -= GRAVITY;
-			}
-		}
-	}
-
-	/**
-	 * Sets boolean justJumped.  True if the player just jumped, else false.
-	 * @param justJumped boolean
-	 */
-	public void setJustJumped(boolean justJumped) { this.justJumped = justJumped; }
+    /**
+     * Sets boolean justJumped.  True if the player just jumped, else false.
+     * @param justJumped boolean
+     */
+    public void setJustJumped(boolean justJumped) { this.justJumped = justJumped; }
 
 	/**
 	 * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
