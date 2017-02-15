@@ -13,9 +13,9 @@ import static com.brinkman.platformer.util.Constants.GRAVITY;
 public class StaticCollisionListener<T extends Entity> implements CollisionListener<T>{
     private static final Vector2 TEMP_VECTOR_1 = new Vector2();
     private static final Vector2 TEMP_VECTOR_2 = new Vector2();
-    private final MotileBody body;
+    private final ControlledBody body;
 
-    public StaticCollisionListener(MotileBody body) { this.body = body; }
+    public StaticCollisionListener(ControlledBody body) { this.body = body; }
 
     @Override
     public void onCollision(T other) {

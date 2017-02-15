@@ -8,6 +8,7 @@ import com.brinkman.platformer.entity.actor.Exit;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.physics.ControlledBody;
 import com.brinkman.platformer.physics.MotileBody;
 
 import java.util.Collection;
@@ -49,7 +50,7 @@ public class PhysicsOperator implements Operator {
                              .findFirst()
                              .get();
 
-        MotileBody body = entity.getComponents().getInstance(PhysicsComponent.class);
+        ControlledBody body = entity.getComponents().getInstance(PhysicsComponent.class);
         assert body != null;
 
         // Do some storing and preparation
@@ -67,7 +68,7 @@ public class PhysicsOperator implements Operator {
         body.setGrounded(TEMP_POSITION.y == body.getPosition().y);
     }
 
-    private void handleAcceleration(float deltaT, MotileBody body) {
+    private void handleAcceleration(float deltaT, ControlledBody body) {
         float xVelocity = body.getVelocity().x;
         // TODO Floating point errors?
         if(body.getAcceleration().x == 0) {
@@ -87,7 +88,7 @@ public class PhysicsOperator implements Operator {
         body.getAcceleration().x = 0.0f;
     }
 
-    private float handleJump(MotileBody body, float xVelocity) {
+    private float handleJump(ControlledBody body, float xVelocity) {
         boolean canJump = body.isGrounded() || body.isTouchingLeftWall() || body.isTouchingRightWall();
         if (body.isJumping() && canJump && !body.justJumped()) {
             Vector2 velocity = body.getVelocity();
@@ -131,7 +132,7 @@ public class PhysicsOperator implements Operator {
         }
     }
 
-    private void handleCollisions(Entity entity, GameWorld world, Player player, MotileBody body) {
+    private void handleCollisions(Entity entity, GameWorld world, Player player, ControlledBody body) {
         body.setTouchingLeftWall(false);
         body.setTouchingRightWall(false);
         Collection<Entity> colliders = findCollidingEntities(entity, world);

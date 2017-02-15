@@ -20,6 +20,8 @@ public interface Body {
 
     void setRemovedOnCollision(boolean removedOnCollision);
 
+    Vector2 getOriginPosition();
+
     /**
      * Add a collision listener to this Body, which will listen to and respond to collision events with the given type
      * of object.

@@ -203,7 +203,7 @@ public class Player extends Actor {
      * Handles the player's movement logic.
      */
     private void handleMovement() {
-        MotileBody body = components.getInstance(PhysicsComponent.class);
+        ControlledBody body = components.getInstance(PhysicsComponent.class);
         assert body != null;
 
 		setKeyFlags();
@@ -241,7 +241,7 @@ public class Player extends Actor {
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */
     public void reset() {
-        MotileBody body = components.getInstance(PhysicsComponent.class);
+        ControlledBody body = components.getInstance(PhysicsComponent.class);
         assert body != null;
 
         Vector2 originPosition = body.getOriginPosition();

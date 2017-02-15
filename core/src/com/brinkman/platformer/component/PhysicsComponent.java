@@ -3,7 +3,7 @@ package com.brinkman.platformer.component;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.CollisionListener;
-import com.brinkman.platformer.physics.MotileBody;
+import com.brinkman.platformer.physics.ControlledBody;
 import com.brinkman.platformer.util.Constants;
 
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import java.util.Map.Entry;
 /**
  * @author Caleb Brinkman
  */
-public class PhysicsComponent implements RootComponent, MotileBody {
+public class PhysicsComponent implements RootComponent, ControlledBody {
     private static final float DEFAULT_MOVE_SPEED = 5.0f;
 
     private final Map<Class<?>, CollisionListener<?>> collisionListeners = new HashMap<>(4);

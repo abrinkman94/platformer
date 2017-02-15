@@ -1,6 +1,6 @@
 package com.brinkman.platformer.physics;
 
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author Caleb Brinkman
@@ -16,8 +16,6 @@ public interface MotileBody extends Body {
 
     Vector2 getVelocity();
 
-    Vector2 getOriginPosition();
-
     float getMaxFallSpeed();
 
     void setMaxFallSpeed(float maxFallSpeed);
@@ -31,25 +29,4 @@ public interface MotileBody extends Body {
     Vector2 getAcceleration();
 
     void setGravityAcceleration(float gravityAcceleration);
-
-    boolean isJumping();
-
-    void setJumping(boolean jumping);
-
-    boolean justJumped();
-
-    void setJustJumped(boolean justJumped);
-
-    float getJumpVelocity();
-
-    void setJumpVelocity(float jumpVelocity);
-
-    boolean isTouchingRightWall();
-
-    void setTouchingRightWall(boolean touchingRightWall);
-
-    boolean isTouchingLeftWall();
-
-    void setTouchingLeftWall(boolean touchingLeftWall);
-
 }
