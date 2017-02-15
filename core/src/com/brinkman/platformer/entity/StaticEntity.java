@@ -1,8 +1,7 @@
 package com.brinkman.platformer.entity;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
-import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Body;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -17,10 +16,10 @@ public class StaticEntity implements Entity
 
 	public StaticEntity(float x, float y, float width, float height) {
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(PhysicsComponent.class, new PhysicsComponent())
+                .put(ControlledPhysicsComponent.class, new ControlledPhysicsComponent())
                 .build();
 
-        Body body = components.getInstance(PhysicsComponent.class);
+        Body body = components.getInstance(ControlledPhysicsComponent.class);
         assert body != null;
         body.getPosition().set(x, y);
 	    body.setWidth(width);

@@ -12,10 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.component.Operator;
-import com.brinkman.platformer.component.PhysicsComponent;
-import com.brinkman.platformer.component.PhysicsOperator;
-import com.brinkman.platformer.component.RenderOperator;
+import com.brinkman.platformer.component.*;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
@@ -116,7 +113,7 @@ public class GameScreen implements Screen {
             if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
                 Actor actor = (Actor) entity;
 
-                MotileBody body = actor.getComponents().getInstance(PhysicsComponent.class);
+                MotileBody body = actor.getComponents().getInstance(ControlledPhysicsComponent.class);
                 assert body != null;
 
                 Vector2 position = body.getPosition();

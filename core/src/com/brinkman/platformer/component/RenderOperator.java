@@ -20,7 +20,7 @@ public class RenderOperator implements Operator {
         this.batch = batch;
         requiredComponents = new LinkedList<>();
         requiredComponents.add(RenderComponent.class);
-        requiredComponents.add(PhysicsComponent.class);
+        requiredComponents.add(ControlledPhysicsComponent.class);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class RenderOperator implements Operator {
 
     @Override
     public void operate(float deltaT, Entity entity, GameWorld world) {
-        MotileBody body = entity.getComponents().getInstance(PhysicsComponent.class);
+        MotileBody body = entity.getComponents().getInstance(ControlledPhysicsComponent.class);
         RenderComponent renderComponent = entity.getComponents().getInstance(RenderComponent.class);
 
         assert (body != null) && (renderComponent != null);

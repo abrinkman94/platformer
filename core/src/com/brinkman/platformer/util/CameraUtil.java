@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.ControlledPhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
@@ -70,7 +70,7 @@ public final class CameraUtil
         for (Entity entity : world.getEntities()) {
             if (entity instanceof Player) {
                 player = (Player) entity;
-                body = player.getComponents().getInstance(PhysicsComponent.class);
+                body = player.getComponents().getInstance(ControlledPhysicsComponent.class);
                 if (body != null) {
                     bounds = (Rectangle) body.getBounds();
                 }
@@ -103,7 +103,7 @@ public final class CameraUtil
      * @param cam OrthographicCamera
      */
     public static void lerpCameraToActor(Actor actor, OrthographicCamera cam) {
-        Body body = actor.getComponents().getInstance(PhysicsComponent.class);
+        Body body = actor.getComponents().getInstance(ControlledPhysicsComponent.class);
         assert body != null;
         Vector2 position = body.getPosition();
         float width = body.getWidth() * 0.5f;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Body;
@@ -34,10 +34,10 @@ public class Saw extends Actor {
 	public Saw(float x, float y) {
 		components = ImmutableClassToInstanceMap.<RootComponent>builder()
 				.put(RenderComponent.class, this::render)
-                .put(PhysicsComponent.class, new PhysicsComponent())
+                .put(ControlledPhysicsComponent.class, new ControlledPhysicsComponent())
 				.build();
 
-		Body body = components.getInstance(PhysicsComponent.class);
+		Body body = components.getInstance(ControlledPhysicsComponent.class);
 		assert body != null;
 
 		body.getPosition().set(x, y);

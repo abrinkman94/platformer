@@ -2,14 +2,9 @@ package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.component.AnimationRenderComponent;
-import com.brinkman.platformer.component.PhysicsComponent;
-import com.brinkman.platformer.component.RenderComponent;
-import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.component.*;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
@@ -40,7 +35,7 @@ public class Coin extends Actor {
     public Coin(float x, float y) {
         elapsedTime = 0;
 
-        PhysicsComponent body = new PhysicsComponent();
+        ControlledPhysicsComponent body = new ControlledPhysicsComponent();
         body.getPosition().set(x, y);
         body.setWidth(COIN_SIZE * TO_WORLD_UNITS);
         body.setHeight(COIN_SIZE  * TO_WORLD_UNITS);
@@ -62,14 +57,14 @@ public class Coin extends Actor {
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, new AnimationRenderComponent(animations))
-                .put(PhysicsComponent.class, body)
+                .put(ControlledPhysicsComponent.class, body)
                 .build();
     }
 
     private void handlePlayerCollision(Player player) {
         animations.setFrameDuration(0.002f);
 
-        Body body = components.getInstance(PhysicsComponent.class);
+        Body body = components.getInstance(ControlledPhysicsComponent.class);
         assert body != null;
         if (body.getWidth() > 0.5f) {
             animateCollect(-0.25f);
@@ -79,7 +74,7 @@ public class Coin extends Actor {
     }
 
     private void animateCollect(float increment) {
-        Body body = components.getInstance(PhysicsComponent.class);
+        Body body = components.getInstance(ControlledPhysicsComponent.class);
         assert body != null;
         float width = body.getWidth();
         float height = body.getHeight();

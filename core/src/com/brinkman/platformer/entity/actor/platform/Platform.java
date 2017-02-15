@@ -1,10 +1,7 @@
 package com.brinkman.platformer.entity.actor.platform;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.brinkman.platformer.component.PhysicsComponent;
-import com.brinkman.platformer.component.RenderComponent;
-import com.brinkman.platformer.component.RootComponent;
-import com.brinkman.platformer.component.TextureRenderComponent;
+import com.brinkman.platformer.component.*;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.Constants;
@@ -19,7 +16,7 @@ public class Platform  extends Actor{
 
     public Platform(TextureRegion texture, float x, float y, float width, float height, PlatformType platformType) {
 
-        PhysicsComponent body = new PhysicsComponent();
+        ControlledPhysicsComponent body = new ControlledPhysicsComponent();
 
         body.setAffectedByGravity(platformType == PlatformType.FALLING);
         body.setMaxFallSpeed(Constants.MAX_GRAVITY / 2);
@@ -33,7 +30,7 @@ public class Platform  extends Actor{
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, new TextureRenderComponent(texture))
-                .put(PhysicsComponent.class, body)
+                .put(ControlledPhysicsComponent.class, body)
                 .build();
     }
 
