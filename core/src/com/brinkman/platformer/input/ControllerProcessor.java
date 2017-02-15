@@ -6,6 +6,7 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.ControllerMappings;
 
@@ -39,11 +40,11 @@ public class ControllerProcessor implements ControllerListener {
     public boolean buttonDown(Controller controller, int buttonCode) {
         if (controller.getName().contains("Xbox")) {
             if (buttonCode == ControllerMappings.BUTTON_A) {
-                inputFlags.setJump(true);
+                player.getComponents().getInstance(PhysicsComponent.class).setJumping(true);
             }
         } else {
             if (buttonCode == ControllerMappings.PS4_BUTTON_X) {
-                inputFlags.setJump(true);
+                player.getComponents().getInstance(PhysicsComponent.class).setJumping(true);
             }
         }
         return false;
@@ -51,8 +52,8 @@ public class ControllerProcessor implements ControllerListener {
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        inputFlags.setJump(false);
-        player.setJustJumped(false);
+        player.getComponents().getInstance(PhysicsComponent.class).setJumping(false);
+        player.getComponents().getInstance(PhysicsComponent.class).setJustJumped(false);
         return false;
     }
 

@@ -8,24 +8,20 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
-import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.input.InputFlags;
-import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.physics.*;
 import com.brinkman.platformer.util.AssetUtil;
-import com.brinkman.platformer.util.Constants;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
-import static com.brinkman.platformer.util.Constants.GRAVITY;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 import static com.brinkman.platformer.util.TexturePaths.*;
 
@@ -33,44 +29,32 @@ import static com.brinkman.platformer.util.TexturePaths.*;
  * Created by Austin on 9/29/2016.
  */
 public class Player extends Actor {
-	private static final Logger LOGGER = new Logger(Player.class.getName(), Logger.DEBUG);
-	/**
-	 * The Actor's boolean canJump field.
-	 */
-	protected boolean canJump;
+    private static final Logger LOGGER = new Logger(Player.class.getName(), Logger.DEBUG);
 
-	private TextureAtlas walkRightAtlas;
-	private TextureAtlas walkLeftAtlas;
-	private TextureAtlas idleRightAtlas;
-	private TextureAtlas idleLeftAtlas;
-	private TextureAtlas jumpRightAtlas;
-	private TextureAtlas jumpLeftAtlas;
-	private Animation animation;
-	private final InputFlags inputFlags;
-	private final Array<Item> inventory;
-	private final Vector2 tempVector1 = new Vector2();
-	private final Vector2 tempVector2 = new Vector2();
+    private TextureAtlas walkRightAtlas;
+    private TextureAtlas walkLeftAtlas;
+    private TextureAtlas idleRightAtlas;
+    private TextureAtlas idleLeftAtlas;
+    private TextureAtlas jumpRightAtlas;
+    private TextureAtlas jumpLeftAtlas;
+    private Animation animation;
+    private final InputFlags inputFlags;
+    private final Array<Item> inventory;
 
-	private static final int PLAYER_WIDTH = 32;
-	private static final int PLAYER_HEIGHT = 64;
-	private static final int IDLE_RIGHT_FRAMES = 0;
-	private static final int IDLE_LEFT_FRAMES = 1;
-	private static final int WALK_RIGHT_FRAMES = 2;
-	private static final int WALK_LEFT_FRAMES = 3;
-	private static final int JUMP_RIGHT_FRAMES = 4;
-	private static final int JUMP_LEFT_FRAMES = 5;
-	private static final int JUMP_VEL = 12;
-	private static final int WALL_BOUNCE = 6;
-	private static final float ACCELERATION = 0.8f;
-	private static final float DECELERATION = 0.8f;
+    private static final int PLAYER_WIDTH = 32;
+    private static final int PLAYER_HEIGHT = 64;
+    private static final int IDLE_RIGHT_FRAMES = 0;
+    private static final int IDLE_LEFT_FRAMES = 1;
+    private static final int WALK_RIGHT_FRAMES = 2;
+    private static final int WALK_LEFT_FRAMES = 3;
+    private static final int JUMP_RIGHT_FRAMES = 4;
+    private static final int JUMP_LEFT_FRAMES = 5;
+    private static final int JUMP_VEL = 12;
+    private static final float ACCELERATION = 0.8f;
 
-	private boolean left;
-	private boolean right;
-	private boolean jump;
-	private boolean run;
-	private boolean touchingRightWall;
-	private boolean touchingLeftWall;
-	private boolean justJumped;
+    private boolean left;
+    private boolean right;
+    private boolean run;
 
 	private final ImmutableClassToInstanceMap<RootComponent> components;
 
@@ -83,17 +67,21 @@ public class Player extends Actor {
 		inventory = new Array<>();
 
 
-		PhysicsComponent body = new PhysicsComponent();
-		body.setAffectedByGravity(true);
-		body.setWidth(PLAYER_WIDTH * TO_WORLD_UNITS);
-		body.setHeight(PLAYER_HEIGHT * TO_WORLD_UNITS);
-		Vector2 originPosition = body.getOriginPosition();
-		body.getPosition().set(originPosition);
+        PhysicsComponent body = new PhysicsComponent();
+        body.setAffectedByGravity(true);
+        body.setJumpVelocity(JUMP_VEL);
+        body.setWidth(PLAYER_WIDTH * TO_WORLD_UNITS);
+        body.setHeight(PLAYER_HEIGHT * TO_WORLD_UNITS);
+        Vector2 originPosition = body.getOriginPosition();
+        body.getPosition().set(originPosition);
 
-		body.setCollisionListener(Saw.class, this::handleSawCollision);
-		body.setCollisionListener(Item.class, this::handleItemCollision);
-		body.setCollisionListener(Platform.class, this::handlePlatformCollision);
-		body.setCollisionListener(StaticEntity.class, this::handleStaticCollision);
+        CollisionListener<Platform> platformListener = new StaticCollisionListener<>(body);
+        CollisionListener<StaticEntity> staticListener = new StaticCollisionListener<>(body);
+        // TODO Need to move this out of constructor if possible; leaking potentially uninitialized references
+        body.setCollisionListener(Saw.class, new SawCollisionListener(this));
+        body.setCollisionListener(Item.class, this::handleItemCollision);
+        body.setCollisionListener(Platform.class, platformListener);
+        body.setCollisionListener(StaticEntity.class, staticListener);
 
 		orientation = "right";
 
@@ -107,93 +95,25 @@ public class Player extends Actor {
 		LOGGER.info("Initialized");
 	}
 
-	private void handleSawCollision(Saw saw) { handleDeath(); }
+    private void handleItemCollision(Item item) { inventory.add(item); }
 
-	private void handleItemCollision(Item item) { inventory.add(item); }
-
-	private void handleStaticCollision(StaticEntity staticEntity) { handleStaticCollisions(staticEntity); }
-
-	private void handlePlatformCollision(Platform platform) { handleStaticCollisions(platform); }
-
-	/**
-	 * Handles collisions with StaticEntity(s) in the Level.
-	 * @param other Collidable
-	 */
-	private void handleStaticCollisions(Entity other) {
-		// Get the centers of the Entity AABB and map AABB; place in tempVector1 and tempVector2 respectively
-		Body body = components.getInstance(PhysicsComponent.class);
-		Body otherBody = other.getComponents().getInstance(PhysicsComponent.class);
-		if ((body != null) && (otherBody != null)) {
-			((Rectangle) body.getBounds()).getCenter(tempVector1);
-			((Rectangle) otherBody.getBounds()).getCenter(tempVector2);
-			// Get the absolute value of horizontal overlap between the entity and map tile
-			// Save signed value of distance for later
-			float horizontalDistance = tempVector2.x - tempVector1.x;
-			float entityHalfWidth = ((Rectangle) body.getBounds()).width / 2;
-			float mapHalfWidth = ((Rectangle) otherBody.getBounds()).width / 2;
-			float horizontalOverlap = (entityHalfWidth + mapHalfWidth) - Math.abs(horizontalDistance);
-
-			// Get the absolute value of the vertical overlap between the entity and the map time
-			// Save signed value of distance for later
-			float verticalDistance = tempVector2.y - tempVector1.y;
-			float entityHalfHeight = ((Rectangle) body.getBounds()).height / 2;
-			float mapHalfHeight = ((Rectangle) otherBody.getBounds()).height / 2;
-			float verticalOverlap = (entityHalfHeight + mapHalfHeight) - Math.abs(verticalDistance);
-
-			// Move the entity on the axis which has the least overlap.
-			// The direction that the entity will move is determined by the sign of the distance between the centers
-			Vector2 position = body.getPosition();
-			Vector2 velocity = body.getVelocity();
-
-			// Might be temporary solution.  Basically adjusting the overlap so that the Collidable actually overlaps
-			// to trigger collision event.
-			if (other instanceof Platform) {
-				horizontalOverlap = horizontalOverlap * 0.995f;
-				verticalOverlap = verticalOverlap * 0.995f;
-			}
-			if (horizontalOverlap < verticalOverlap) {
-				if (horizontalDistance > 0) {
-					touchingRightWall = true;
-					position.x -= horizontalOverlap;
-					velocity.x = 0;
-				} else {
-					touchingLeftWall = true;
-					position.x += horizontalOverlap;
-					velocity.x = 0;
-				}
-				canJump = true;
-			} else {
-				if (verticalDistance > 0) {
-					position.y -= verticalOverlap;
-					velocity.y -= GRAVITY * 3;
-					canJump = false;
-				} else {
-					position.y += verticalOverlap;
-					velocity.y = 0;
-					body.setGrounded(true);
-					canJump = true;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Initializes TextureAtlas's using Textures from the AssetUtil.ASSET_MANAGER
-	 */
-	private void initializeTextureAtlas() {
-		walkRightAtlas = new TextureAtlas();
-		walkRightAtlas.addRegion("frame1",
-			  new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_RIGHT, Texture.class)));
-		walkRightAtlas.addRegion("frame2",
-			  new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_RIGHT, Texture.class)));
-		walkRightAtlas.addRegion("frame3",
-			  new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_RIGHT, Texture.class)));
-		walkRightAtlas.addRegion("frame4",
-			  new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_RIGHT, Texture.class)));
-		walkRightAtlas.addRegion("frame5",
-			  new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_RIGHT, Texture.class)));
-		walkRightAtlas.addRegion("frame6",
-			  new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
+    /**
+     * Initializes TextureAtlas's using Textures from the AssetUtil.ASSET_MANAGER
+     */
+    private void initializeTextureAtlas() {
+        walkRightAtlas = new TextureAtlas();
+        walkRightAtlas.addRegion("frame1",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame2",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame3",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame4",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame5",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_RIGHT, Texture.class)));
+        walkRightAtlas.addRegion("frame6",
+                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
 
 		walkLeftAtlas = new TextureAtlas();
 		for (AtlasRegion region : walkRightAtlas.getRegions()) {
@@ -269,23 +189,22 @@ public class Player extends Actor {
 		}
 	}
 
-	/**
-	 * Sets boolean values for input from InputFlags.
-	 */
-	private void setKeyFlags() {
-		left = inputFlags.left();
-		right = inputFlags.right();
-		jump = inputFlags.jump();
-		run = inputFlags.run();
-	}
+    /**
+     * Sets boolean values for input from InputFlags.
+     */
+    private void setKeyFlags() {
+        left = inputFlags.left();
+        right = inputFlags.right();
+        run = inputFlags.run();
+    }
 
-	//TODO Figure out a way to simplify.
-	/**
-	 * Handles the player's movement logic.
-	 */
-	private void handleMovement() {
-		Body body = components.getInstance(PhysicsComponent.class);
-		assert body != null;
+    //TODO Figure out a way to simplify.
+    /**
+     * Handles the player's movement logic.
+     */
+    private void handleMovement() {
+        MotileBody body = components.getInstance(PhysicsComponent.class);
+        assert body != null;
 
 		setKeyFlags();
 
@@ -300,91 +219,48 @@ public class Player extends Actor {
 		boolean movingRight = xSpeed < maxSpeed;
 
         if (left && movingLeft) {
-            xSpeed = xSpeed - ACCELERATION;
+            body.getAcceleration().x = -ACCELERATION;
             orientation = "left";
-            currentAnimation = (jump && !body.isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
+            currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
         } else if (right && movingRight) {
-            xSpeed = xSpeed + ACCELERATION;
+            body.getAcceleration().x = ACCELERATION;
             orientation = "right";
-            currentAnimation = (jump && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
+            currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
         } else {
             if(xSpeed == 0.0f) {
                 if ("right".equalsIgnoreCase(orientation)) {
-                    currentAnimation = (jump && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+                    currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
                 } else {
-                    currentAnimation = (jump && !body.isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
+                    currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
                 }
             }
         }
-
-		//Jump
-		// TODO Definitely a candidate for ControlComponent
-		xSpeed = handleJump(xSpeed);
-
-		//Update position and velocity
-		// TODO This should *probably* be handled in PhysicsComponent
-		Vector2 velocity = body.getVelocity();
-		Vector2 position = body.getPosition();
-		velocity.x = xSpeed;
-		position.x += velocity.x * Gdx.graphics.getDeltaTime();
-	}
-
-	/**
-	 * Handles the player's jump logic.
-	 */
-	private float handleJump(float xSpeed) {
-		if (jump && canJump && !justJumped) {
-			Body body = components.getInstance(PhysicsComponent.class);
-			assert body != null;
-			Vector2 velocity = body.getVelocity();
-			velocity.y = JUMP_VEL;
-
-			//Wall bounce
-			if (!body.isGrounded()) {
-				if (touchingRightWall) {
-					xSpeed = run ? (velocity.x - (WALL_BOUNCE + 2)) : (velocity.x - WALL_BOUNCE);
-				} else if (touchingLeftWall) {
-					xSpeed = run ? (velocity.x + (WALL_BOUNCE + 2)) : (velocity.x + WALL_BOUNCE);
-				}
-			}
-			body.setGrounded(false);
-			canJump = false;
-			justJumped = true;
-		}
-		return xSpeed;
-	}
+    }
 
     /**
-     * Sets boolean justJumped.  True if the player just jumped, else false.
-     * @param justJumped boolean
+     * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */
-    public void setJustJumped(boolean justJumped) { this.justJumped = justJumped; }
+    public void reset() {
+        MotileBody body = components.getInstance(PhysicsComponent.class);
+        assert body != null;
 
-	/**
-	 * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
-	 */
-	public void reset() {
-		Body body = components.getInstance(PhysicsComponent.class);
-		assert body != null;
+        Vector2 originPosition = body.getOriginPosition();
+        body.getPosition().set(originPosition);
+        body.getVelocity().set(0.0f, 0.0f);
+        orientation = "right";
+        body.setGrounded(false);
+        body.setTouchingLeftWall(false);
+        body.setTouchingRightWall(false);
+    }
 
-		Vector2 originPosition = body.getOriginPosition();
-		body.getPosition().set(originPosition);
-		body.getVelocity().set(0.0f, 0.0f);
-		orientation = "right";
-		canJump = false;
-		body.setGrounded(false);
-		touchingLeftWall = false;
-		touchingRightWall = false;
-	}
-
-	/**
-	 * Handles the decrementing, and logic, of player's lives.
-	 */
-	@Override
-	public void handleDeath() {
-		if (lives > 0) {
-			Body body = components.getInstance(PhysicsComponent.class);
-			assert body != null;
+    /**
+     * Handles the decrementing, and logic, of player's lives.
+     */
+    @Override
+    public void handleDeath() {
+        if (lives > 0) {
+            MotileBody body = components.getInstance(PhysicsComponent.class);
+            assert body != null;
 
 			Vector2 originPosition = body.getOriginPosition();
 			body.getPosition().set(originPosition);
@@ -417,12 +293,8 @@ public class Player extends Actor {
 			handleDeath();
 		}
 
-		// TODO Probably move to PhysicsComponent, but unsure; maybe need to check in ControlComponent or something.
-		body.setGrounded(false);
-		canJump = false;
-		touchingLeftWall = false;
-		touchingRightWall = false;
-	}
+        // TODO Probably move to PhysicsComponent, but unsure; maybe need to check in ControlComponent or something.
+    }
 
 	@Override
 	public void dispose() {

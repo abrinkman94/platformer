@@ -22,13 +22,14 @@ public class Platform  extends Actor{
         PhysicsComponent body = new PhysicsComponent();
 
         body.setAffectedByGravity(platformType == PlatformType.FALLING);
-        body.setGrounded(true);
         body.setMaxFallSpeed(Constants.MAX_GRAVITY / 2);
-        body.setGravityAcceleration(Constants.GRAVITY - 0.1f);
+        body.setGravityAcceleration(0.0f);
         body.getPosition().set(x, y);
         body.setWidth(width);
         body.setHeight(height);
-        body.setCollisionListener(Player.class, player -> body.setGrounded(false));
+        body.setCollisionListener(Player.class, player -> {
+            body.setGravityAcceleration(Constants.GRAVITY - 0.1f);
+        });
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, new TextureRenderComponent(texture))

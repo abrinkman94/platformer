@@ -3,7 +3,7 @@ package com.brinkman.platformer.component;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.physics.MotileBody;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +30,7 @@ public class RenderOperator implements Operator {
 
     @Override
     public void operate(float deltaT, Entity entity, GameWorld world) {
-        Body body = entity.getComponents().getInstance(PhysicsComponent.class);
+        MotileBody body = entity.getComponents().getInstance(PhysicsComponent.class);
         RenderComponent renderComponent = entity.getComponents().getInstance(RenderComponent.class);
 
         assert (body != null) && (renderComponent != null);

@@ -3,7 +3,7 @@ package com.brinkman.platformer.component;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.physics.MotileBody;
 
 /**
  * @author Caleb Brinkman
@@ -16,7 +16,7 @@ public class TextureRenderComponent implements RenderComponent {
     }
 
     @Override
-    public void render(float dt, Batch batch, Body body) {
+    public void render(float dt, Batch batch, MotileBody body) {
         batch.begin();
         float height = body.getHeight();
         float width = body.getWidth();

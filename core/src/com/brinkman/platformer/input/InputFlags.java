@@ -21,7 +21,4 @@ public class InputFlags {
 
     public boolean run() { return run; }
 
-    public void setJump(boolean jump) { this.jump = jump; }
-
-    public boolean jump() { return jump; }
 }

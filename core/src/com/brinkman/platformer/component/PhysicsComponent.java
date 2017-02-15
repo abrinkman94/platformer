@@ -3,6 +3,7 @@ package com.brinkman.platformer.component;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.CollisionListener;
+import com.brinkman.platformer.physics.MotileBody;
 import com.brinkman.platformer.util.Constants;
 
 import java.util.HashMap;
@@ -13,11 +14,12 @@ import java.util.Map.Entry;
 /**
  * @author Caleb Brinkman
  */
-public class PhysicsComponent implements RootComponent, Body {
+public class PhysicsComponent implements RootComponent, MotileBody {
     private static final float DEFAULT_MOVE_SPEED = 5.0f;
 
     private final Map<Class<?>, CollisionListener<?>> collisionListeners = new HashMap<>(4);
     private final Vector2 originPosition = new Vector2(2, 6);
+    private final Vector2 acceleration = new Vector2();
     private final Vector2 position = new Vector2();
     private final Vector2 velocity = new Vector2();
     private float width;
@@ -28,6 +30,12 @@ public class PhysicsComponent implements RootComponent, Body {
     private float maxFallSpeed = Constants.MAX_GRAVITY;
     private float gravityAcceleration = Constants.GRAVITY;
     private boolean affectedByGravity;
+    private boolean jumping;
+    private boolean justJumped;
+    private boolean canJump;
+    private float jumpVelocity;
+    private boolean touchingRightWall;
+    private boolean touchingLeftWall;
 
     @Override
     public boolean isGrounded() { return grounded; }
@@ -81,7 +89,40 @@ public class PhysicsComponent implements RootComponent, Body {
     public float getGravityAcceleration() { return gravityAcceleration; }
 
     @Override
+    public Vector2 getAcceleration() { return acceleration; }
+
+    @Override
     public void setGravityAcceleration(float gravityAcceleration) { this.gravityAcceleration = gravityAcceleration; }
+
+    @Override
+    public boolean isJumping() { return jumping; }
+
+    @Override
+    public void setJumping(boolean jumping) { this.jumping = jumping; }
+
+    @Override
+    public boolean justJumped() { return justJumped; }
+
+    @Override
+    public void setJustJumped(boolean justJumped) { this.justJumped = justJumped; }
+
+    @Override
+    public float getJumpVelocity() { return jumpVelocity; }
+
+    @Override
+    public void setJumpVelocity(float jumpVelocity) { this.jumpVelocity = jumpVelocity; }
+
+    @Override
+    public boolean isTouchingRightWall() { return touchingRightWall; }
+
+    @Override
+    public void setTouchingRightWall(boolean touchingRightWall) { this.touchingRightWall = touchingRightWall; }
+
+    @Override
+    public boolean isTouchingLeftWall() { return touchingLeftWall; }
+
+    @Override
+    public void setTouchingLeftWall(boolean touchingLeftWall) { this.touchingLeftWall = touchingLeftWall; }
 
     @Override
     public Vector2 getOriginPosition() { return originPosition; }

@@ -8,6 +8,7 @@ import com.brinkman.platformer.entity.actor.Exit;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.physics.MotileBody;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,6 +22,10 @@ import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;
  * @author Caleb Brinkman
  */
 public class PhysicsOperator implements Operator {
+    private static final Vector2 TEMP_POSITION = new Vector2();
+    private static final Vector2 TEMP_VELOCITY = new Vector2();
+    private static final int WALL_BOUNCE = 6;
+    private static final float JERK_RATE = 0.1f;
     private static final float FRICTION_DECELARATION = 0.8f;
     private static final float AIR_DECELARATION = 0.25f;
 
@@ -44,18 +49,65 @@ public class PhysicsOperator implements Operator {
                              .findFirst()
                              .get();
 
-        Body body = entity.getComponents().getInstance(PhysicsComponent.class);
+        MotileBody body = entity.getComponents().getInstance(PhysicsComponent.class);
         assert body != null;
 
-        // Handle inertia
-        handleInertia(deltaT, body);
+        // Do some storing and preparation
+        TEMP_POSITION.set(body.getPosition());
+        TEMP_VELOCITY.set(body.getVelocity());
 
         handleGravity(body);
 
+        handleAcceleration(deltaT, body);
+
         handleCollisions(entity, world, player, body);
+
+        // Do some resetting
+        // If the y-position hasn't changed, we're grounded.
+        body.setGrounded(TEMP_POSITION.y == body.getPosition().y);
     }
 
-    private void handleInertia(float deltaT, Body body) {
+    private void handleAcceleration(float deltaT, MotileBody body) {
+        float xVelocity = body.getVelocity().x;
+        // TODO Floating point errors?
+        if(body.getAcceleration().x == 0) {
+            xVelocity = getInertialVelocity(body);
+        } else {
+            xVelocity += body.getAcceleration().x;
+            xVelocity = Math.signum(xVelocity) * Math.min(body.getMoveSpeed(), Math.abs(xVelocity));
+        }
+
+        xVelocity = handleJump(body, xVelocity);
+
+        body.getVelocity().x = xVelocity;
+        body.getPosition().x += body.getVelocity().x * deltaT;
+        body.getPosition().y += body.getVelocity().y * deltaT;
+
+        // Zero out acceleration
+        body.getAcceleration().x = 0.0f;
+    }
+
+    private float handleJump(MotileBody body, float xVelocity) {
+        boolean canJump = body.isGrounded() || body.isTouchingLeftWall() || body.isTouchingRightWall();
+        if (body.isJumping() && canJump && !body.justJumped()) {
+            Vector2 velocity = body.getVelocity();
+            velocity.y = body.getJumpVelocity();
+
+            //Wall bounce
+            if (!body.isGrounded()) {
+                if (body.isTouchingRightWall()) {
+                    xVelocity = velocity.x - (WALL_BOUNCE + 2);
+                } else if (body.isTouchingLeftWall()) {
+                    xVelocity = velocity.x + (WALL_BOUNCE + 2);
+                }
+            }
+            body.setGrounded(false);
+            body.setJustJumped(true);
+        }
+        return xVelocity;
+    }
+
+    private float getInertialVelocity(MotileBody body) {
         float xVelocity = body.getVelocity().x;
         float xVelSign = Math.signum(xVelocity);
         xVelocity = Math.abs(xVelocity);
@@ -66,25 +118,22 @@ public class PhysicsOperator implements Operator {
         }
 
         xVelocity = (xVelocity < AIR_DECELARATION) ? 0.0f : xVelocity;
-
-        body.getVelocity().x = xVelSign * xVelocity;
-        body.getPosition().y += body.getVelocity().y * deltaT;
+        xVelocity *= xVelSign;
+        return xVelocity;
     }
 
-    private void handleGravity(Body body) {
+    private void handleGravity(MotileBody body) {
         if(body.isAffectedByGravity()) {
             Vector2 velocity = body.getVelocity();
-            if (body.isGrounded()) {
-                velocity.y = 0;
-            } else {
-                if (velocity.y > body.getMaxFallSpeed()) {
-                    velocity.y -= body.getGravityAcceleration();
-                }
+            if (velocity.y > body.getMaxFallSpeed()) {
+                velocity.y -= body.getGravityAcceleration();
             }
         }
     }
 
-    private void handleCollisions(Entity entity, GameWorld world, Player player, Body body) {
+    private void handleCollisions(Entity entity, GameWorld world, Player player, MotileBody body) {
+        body.setTouchingLeftWall(false);
+        body.setTouchingRightWall(false);
         Collection<Entity> colliders = findCollidingEntities(entity, world);
         colliders.forEach(collider -> {
             Body otherBody = collider.getComponents().getInstance(PhysicsComponent.class);
@@ -92,6 +141,13 @@ public class PhysicsOperator implements Operator {
                 body.triggerCollisionListeners(collider, otherBody);
                 if (body.isRemovedOnCollision()) {
                     handleRemoval(entity, player, world);
+                }
+                if(otherBody.shouldCollideWith(entity)) {
+                    otherBody.triggerCollisionListeners(entity, body);
+
+                    if(otherBody.isRemovedOnCollision()) {
+                        handleRemoval(collider, player, world);
+                    }
                 }
             }
         });
