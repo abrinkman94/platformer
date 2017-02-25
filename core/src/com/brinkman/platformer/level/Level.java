@@ -18,17 +18,16 @@ public class Level {
     /**
      * Constructs the Level Object.  The Level object holds the TMXMap data.
      * @param levelNumber int
-     * @param batch SpriteBatch
      */
-    public Level(int levelNumber, SpriteBatch batch) {
+    public Level(int levelNumber) {
         this.levelNumber = levelNumber;
 
-        map = new TMXMap(batch, "map/World 1/level" + levelNumber + ".tmx");
+        map = new TMXMap("map/World 1/level" + levelNumber + ".tmx");
         hasKey = map.getMapObjects("key").getCount() > 0;
     }
 
-    public Level(String levelPath, SpriteBatch batch) {
-        map = new TMXMap(batch, levelPath);
+    public Level(String levelPath) {
+        map = new TMXMap(levelPath);
     }
 
     /**

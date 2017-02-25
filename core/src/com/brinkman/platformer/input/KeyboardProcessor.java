@@ -1,6 +1,5 @@
 package com.brinkman.platformer.input;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.brinkman.platformer.entity.actor.Player;

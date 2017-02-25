@@ -12,23 +12,26 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.Operator;
+import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.PhysicsOperator;
+import com.brinkman.platformer.component.RenderOperator;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
-import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TMXMap;
-import com.brinkman.platformer.physics.Collidable;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 import static com.brinkman.platformer.util.Constants.*;
@@ -39,6 +42,8 @@ import static com.brinkman.platformer.util.Constants.*;
 public class GameScreen implements Screen {
     private static final Logger LOGGER = new Logger(GameScreen.class.getName(), Logger.DEBUG);
 
+    private final Operator physicsSubsystem;
+    private final Operator renderSubsystem;
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
     private final Player player;
@@ -50,7 +55,7 @@ public class GameScreen implements Screen {
     public GameScreen() {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
-        gameWorld = new GameWorld(new Level(1, spriteBatch));
+        gameWorld = new GameWorld(new Level(1));
         InputFlags inputFlags = new InputFlags();
         player = new Player(inputFlags);
         hud = new HUD(gameWorld);
@@ -65,6 +70,8 @@ public class GameScreen implements Screen {
         }
 
         LOGGER.info("Initialized");
+        physicsSubsystem = new PhysicsOperator();
+        renderSubsystem = new RenderOperator(spriteBatch);
     }
 
     private void placeholderKeyHandler() {
@@ -90,55 +97,6 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void handleCollisions() {
-        keepEntitiesInMap();
-
-        Collection<Collidable> toBeRemoved = new LinkedList<>();
-        for (Entity root : gameWorld.getEntities()) {
-            for(Entity other : gameWorld.getEntities()) {
-                if(root.shouldCollideWith(other) && root.intersects(other)) {
-                    root.handleCollisionEvent(other);
-                    if(root.shouldBeRemovedOnCollision()) {
-                        toBeRemoved.add(root);
-                    }
-                }
-            }
-        }
-
-        Entity exit = null;
-        for (Entity entity : gameWorld.getEntities()) {
-            if (entity instanceof Exit) {
-                exit = entity;
-            }
-        }
-
-        toBeRemoved.stream()
-                   .filter(Entity.class::isInstance)
-                   .map(Entity.class::cast)
-                   .forEach(gameWorld::removeEntity);
-
-        if(toBeRemoved.contains(player)) {
-            // TODO Handle game over.
-        } else {
-            if (toBeRemoved.contains(exit)) {
-				int levelNumber = gameWorld.getLevel().getLevelNumber();
-
-				if (gameWorld.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
-					levelNumber++;
-					gameWorld.setLevel(new Level(levelNumber, spriteBatch));
-
-                    player.reset();
-                    clearWorld();
-
-					gameWorld.initializeMapObjects();
-				} else {
-					LOGGER.info("No more levels");
-					Gdx.app.exit();
-				}
-			}
-        }
-    }
-
     private void clearWorld() {
         Collection<Entity> entitiesToRemove = gameWorld.getEntities()
               .stream()
@@ -158,16 +116,19 @@ public class GameScreen implements Screen {
             if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
                 Actor actor = (Actor) entity;
 
-                Vector2 position = actor.getBody().getPosition();
-                Vector2 velocity = actor.getBody().getVelocity();
+                Body body = actor.getComponents().getInstance(PhysicsComponent.class);
+                assert body != null;
+
+                Vector2 position = body.getPosition();
+                Vector2 velocity = body.getVelocity();
                 if (position.x <= mapLeft) {
                     position.x = mapLeft;
                     if (actor instanceof Enemy) {
                         velocity.x = -velocity.x;
                     }
                 }
-                if (position.x >= (mapRight - (actor.getBody().getWidth() * TO_WORLD_UNITS))) {
-                    position.x = mapRight - (actor.getBody().getWidth() * TO_WORLD_UNITS);
+                if (position.x >= (mapRight - (body.getWidth() * TO_WORLD_UNITS))) {
+                    position.x = mapRight - (body.getWidth() * TO_WORLD_UNITS);
                     if (actor instanceof Enemy) {
                         velocity.x = -velocity.x;
                     }
@@ -188,8 +149,23 @@ public class GameScreen implements Screen {
         // Update the SpriteBatch projection matrix
         spriteBatch.setProjectionMatrix(camera.combined);
 
-        //Renders GameWorld (Entities, Level)
-        gameWorld.render(camera, delta, spriteBatch);
+        // TODO Prooooobably should do this more efficiently
+        Collection<Entity> entitiesCopy = new ArrayList<>(gameWorld.getEntities());
+
+        //Renders GameWorld background
+        gameWorld.renderBackground(camera, delta, spriteBatch);
+
+        // Do physics, yo.
+        entitiesCopy.stream()
+                    .filter(it -> it.getComponents().keySet().containsAll(physicsSubsystem.getRequiredComponents()))
+                    .forEach(it -> physicsSubsystem.operate(delta, it, gameWorld));
+        // Render Entities
+        entitiesCopy.stream()
+                    .filter(it -> it.getComponents().keySet().containsAll(renderSubsystem.getRequiredComponents()))
+                    .forEach(it -> renderSubsystem.operate(delta, it, gameWorld));
+
+        // Render gameworld foreground
+        gameWorld.renderForeground(camera, spriteBatch);
 
         //Camera utility methods
         CameraUtil.lerpCameraToActor(player, camera);
@@ -197,7 +173,7 @@ public class GameScreen implements Screen {
         CameraUtil.keepCameraInMap(camera);
 
         //Collision checks
-        handleCollisions();
+        keepEntitiesInMap();
 
         //Placeholder for locked door
         placeholderKeyHandler();

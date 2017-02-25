@@ -3,13 +3,14 @@ package com.brinkman.platformer.entity.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Shape2D;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.physics.Collidable;
+import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.RenderComponent;
+import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -23,6 +24,7 @@ public class Saw extends Actor {
 	private static final float SAW_WIDTH = 128;
 	private static final float SAW_HEIGHT = 128;
 
+	private final ImmutableClassToInstanceMap<RootComponent> components;
 
 	/**
 	 * Constructs the Saw object.
@@ -30,33 +32,29 @@ public class Saw extends Actor {
 	 * @param y float y position
 	 */
 	public Saw(float x, float y) {
-		getBody().getPosition().set(x, y);
-		getBody().setWidth(SAW_WIDTH * TO_WORLD_UNITS);
-		getBody().setHeight(SAW_HEIGHT * TO_WORLD_UNITS);
+		components = ImmutableClassToInstanceMap.<RootComponent>builder()
+				.put(RenderComponent.class, this::render)
+                .put(PhysicsComponent.class, new PhysicsComponent())
+				.build();
+
+		Body body = components.getInstance(PhysicsComponent.class);
+		assert body != null;
+
+		body.getPosition().set(x, y);
+		body.setWidth(SAW_WIDTH * TO_WORLD_UNITS);
+		body.setHeight(SAW_HEIGHT * TO_WORLD_UNITS);
 
 		texture = (Texture) AssetUtil.getAsset(TexturePaths.SAW_TEXTURE, Texture.class);
 
+		float width = body.getWidth();
+		float height = body.getHeight();
 		sprite = new Sprite(texture);
-		sprite.setSize(getBody().getWidth(), getBody().getHeight());
+		sprite.setSize(width, height);
 		sprite.setPosition(x, y);
 		sprite.setOriginCenter();
 	}
 
-	@Override
-	public Shape2D getBounds() {
-		Vector2 position = getBody().getPosition();
-		return new Circle(position.x + (getBody().getWidth() / 2), position.y + (getBody().getHeight() / 2), getBody().getWidth() * 0.5f);
-	}
-
-	@Override
-	public void handleCollisionEvent(Collidable other) {
-	}
-
-	@Override
-	public boolean shouldCollideWith(Collidable other) { return false; }
-
-	@Override
-	public void render(float dt, Batch batch) {
+	private void render(float dt, Batch batch, Body body) {
 		float rotationStep = sprite.getRotation() + SAW_SPEED;
 
 		batch.begin();
@@ -71,4 +69,7 @@ public class Saw extends Actor {
 		texture.dispose();
 	//	LOGGER.info("Disposed");
 	}
+
+	@Override
+	public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }

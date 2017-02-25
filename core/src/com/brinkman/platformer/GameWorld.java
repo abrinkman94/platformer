@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
@@ -16,6 +18,7 @@ import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.entity.actor.platform.PlatformType;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TextureMapObjectRenderer;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.TexturePaths;
 
 import java.util.Collections;
@@ -167,7 +170,8 @@ public class GameWorld {
                 float width = fallingPlatformObject.getProperties().get("width", float.class) * TO_WORLD_UNITS;
                 float height = fallingPlatformObject.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-                Entity platform = new Platform(x, y, width, height, PlatformType.FALLING);
+                TextureRegion texture = ((TextureMapObject)fallingPlatformObject).getTextureRegion();
+                Entity platform = new Platform(texture, x, y, width, height, PlatformType.FALLING);
                 addEntity(platform);
             }
         }
@@ -179,28 +183,15 @@ public class GameWorld {
      * @param delta float
      * @param batch SpriteBatch
      */
-    public void render(OrthographicCamera camera, float delta, Batch batch) {
-        level.getTmxMap().render(camera, backgroundLayers);
+    public void renderBackground(OrthographicCamera camera, float delta, Batch batch) {
+        level.getTmxMap().render(camera, backgroundLayers, batch);
         if (textureMapObjectRenderer == null) {
             textureMapObjectRenderer = new TextureMapObjectRenderer(level.getTmxMap(), batch);
         }
+    }
 
-        for (Entity entity : entities) {
-            if (entity instanceof Platform) {
-                for (MapObject object : level.getTmxMap().getMapObjects("falling platform")) {
-                    Platform platform = (Platform) entity;
-                    textureMapObjectRenderer.renderObject(
-                            object,
-                            platform.getBody().getPosition().x,
-                            platform.getBody().getPosition().y,
-                            platform.getBody().getWidth(),
-                            platform.getBody().getHeight());
-                }
-            }
-            entity.render(delta, batch);
-        }
-
-        level.getTmxMap().render(camera, foregroundLayers);
+    public void renderForeground(OrthographicCamera camera, Batch batch) {
+        level.getTmxMap().render(camera, foregroundLayers, batch);
     }
 
     /**

@@ -6,9 +6,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.physics.Body;
 
 import static com.brinkman.platformer.map.TMXMap.mapHeight;
 import static com.brinkman.platformer.map.TMXMap.mapWidth;
@@ -62,30 +64,37 @@ public final class CameraUtil
     public static void handleZoom(GameWorld world, OrthographicCamera camera) {
         float zoomStep = 0;
 
-        Player player = null;
+        Player player;
+        Body body = null;
         Rectangle bounds = null;
         for (Entity entity : world.getEntities()) {
             if (entity instanceof Player) {
                 player = (Player) entity;
-                bounds = (Rectangle) player.getBounds();
+                body = player.getComponents().getInstance(PhysicsComponent.class);
+                if (body != null) {
+                    bounds = (Rectangle) body.getBounds();
+                }
             }
         }
 
-        boolean reachedHeightToZoom = (player.getBody().getPosition().y - (bounds.height * 0.5f)) >= 8f;
-        boolean isAwayFromMapEdge = (bounds.x > 10) && (bounds.x < (mapWidth - 10));
-        boolean zoomOut = reachedHeightToZoom && isAwayFromMapEdge;
+        if (body != null) {
+            Vector2 position = body.getPosition();
+            boolean reachedHeightToZoom = (position.y - (bounds.height * 0.5f)) >= 8f;
+            boolean isAwayFromMapEdge = (bounds.x > 10) && (bounds.x < (mapWidth - 10));
+            boolean zoomOut = reachedHeightToZoom && isAwayFromMapEdge;
 
-        if (zoomOut) {
-            if (camera.zoom < 1.3f) {
-                zoomStep = 0.01f;
+            if (zoomOut) {
+                if (camera.zoom < 1.3f) {
+                    zoomStep = 0.01f;
+                }
+            } else {
+                if (camera.zoom > 1) {
+                    zoomStep = -0.01f;
+                }
             }
-        } else {
-            if (camera.zoom > 1) {
-                zoomStep = -0.01f;
-            }
+
+            camera.zoom += zoomStep;
         }
-
-        camera.zoom += zoomStep;
     }
 
     /**
@@ -94,8 +103,12 @@ public final class CameraUtil
      * @param cam OrthographicCamera
      */
     public static void lerpCameraToActor(Actor actor, OrthographicCamera cam) {
-        Vector2 position = actor.getBody().getPosition();
-        cam.position.lerp(new Vector3(position.x + ((actor.getBody().getWidth() * 0.5f) * TO_WORLD_UNITS),
-                                      position.y + ((actor.getBody().getHeight() * 0.5f) * TO_WORLD_UNITS), 0), 0.06f);
+        Body body = actor.getComponents().getInstance(PhysicsComponent.class);
+        assert body != null;
+        Vector2 position = body.getPosition();
+        float width = body.getWidth() * 0.5f;
+        float height = body.getHeight() * 0.5f;
+        cam.position.lerp(new Vector3(position.x + (width * TO_WORLD_UNITS),
+                                      position.y + (height * TO_WORLD_UNITS), 0), 0.06f);
     }
 }

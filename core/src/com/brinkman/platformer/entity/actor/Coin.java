@@ -4,13 +4,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.physics.Collidable;
+import com.brinkman.platformer.component.AnimationRenderComponent;
+import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.RenderComponent;
+import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
@@ -27,6 +30,8 @@ public class Coin extends Actor {
     private static final float ANIMATION_TIME = 0.025f;
     private static final int COIN_SIZE = 64;
 
+    private final ImmutableClassToInstanceMap<RootComponent> components;
+
     /**
      * Constructs the Coin object.
      * @param x float x position
@@ -34,9 +39,12 @@ public class Coin extends Actor {
      */
     public Coin(float x, float y) {
         elapsedTime = 0;
-        getBody().getPosition().set(x, y);
-        getBody().setWidth(COIN_SIZE * TO_WORLD_UNITS);
-        getBody().setHeight(COIN_SIZE  * TO_WORLD_UNITS);
+
+        PhysicsComponent body = new PhysicsComponent();
+        body.getPosition().set(x, y);
+        body.setWidth(COIN_SIZE * TO_WORLD_UNITS);
+        body.setHeight(COIN_SIZE  * TO_WORLD_UNITS);
+        body.setCollisionListener(Player.class, this::handlePlayerCollision);
 
         texture = (Texture) AssetUtil.getAsset(TexturePaths.COIN_SPRITESHEET, Texture.class);
 
@@ -51,49 +59,32 @@ public class Coin extends Actor {
         }
 
         animations = new Animation(ANIMATION_TIME, textureRegions);
+
+        components = ImmutableClassToInstanceMap.<RootComponent>builder()
+                .put(RenderComponent.class, new AnimationRenderComponent(animations))
+                .put(PhysicsComponent.class, body)
+                .build();
     }
 
-    @Override
-    public Shape2D getBounds() {
-        Vector2 position = getBody().getPosition();
-        float x = position.x + (getBody().getWidth() / 2);
-        float y = position.y;
-        float radius = getBody().getWidth() * 0.5f;
-        return new Circle(x, y, radius);
-    }
+    private void handlePlayerCollision(Player player) {
+        animations.setFrameDuration(0.002f);
 
-    @Override
-    public boolean shouldCollideWith(Collidable other) {
-        return other instanceof Player;
-    }
-
-    @Override
-    public void handleCollisionEvent(Collidable other) {
-        if (other instanceof Player) {
-            animations.setFrameDuration(0.002f);
-
-            if (getBody().getWidth() > 0.1f) {
-                animateCollect(-0.05f);
-            }
+        Body body = components.getInstance(PhysicsComponent.class);
+        assert body != null;
+        if (body.getWidth() > 0.5f) {
+            animateCollect(-0.25f);
+        } else {
+            body.setRemovedOnCollision(true);
         }
     }
 
-    @Override
-    public boolean shouldBeRemovedOnCollision() { return true; }
-
     private void animateCollect(float increment) {
-        getBody().setWidth(getBody().getWidth() + increment);
-        getBody().setHeight(getBody().getHeight() + increment);
-    }
-
-    @Override
-    public void render(float dt, Batch batch) {
-        elapsedTime += dt;
-        TextureRegion currentFrame = (TextureRegion) animations.getKeyFrame(elapsedTime, true);
-        batch.begin();
-        Vector2 position = getBody().getPosition();
-        batch.draw(currentFrame, position.x, position.y, getBody().getWidth(), getBody().getHeight());
-        batch.end();
+        Body body = components.getInstance(PhysicsComponent.class);
+        assert body != null;
+        float width = body.getWidth();
+        float height = body.getHeight();
+        body.setWidth(width + increment);
+        body.setHeight(height + increment);
     }
 
     @Override
@@ -110,4 +101,7 @@ public class Coin extends Actor {
             textureRegions[i].getTexture().dispose();
         }
     }
+
+    @Override
+    public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }
