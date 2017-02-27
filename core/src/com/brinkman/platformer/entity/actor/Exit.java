@@ -3,6 +3,7 @@ package com.brinkman.platformer.entity.actor;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.component.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.item.Item;
@@ -42,7 +43,7 @@ public class Exit implements Entity
 		body.setHeight(height);
 
 		components = ImmutableClassToInstanceMap.<RootComponent>builder()
-				.put(ControlledPhysicsComponent.class, body)
+				.put(PhysicsComponent.class, body)
 				.build();
 	}
 

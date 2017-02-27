@@ -7,7 +7,9 @@ import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.physics.ControlledBody;
 import com.brinkman.platformer.util.ControllerMappings;
 
 /**
@@ -40,11 +42,11 @@ public class ControllerProcessor implements ControllerListener {
     public boolean buttonDown(Controller controller, int buttonCode) {
         if (controller.getName().contains("Xbox")) {
             if (buttonCode == ControllerMappings.BUTTON_A) {
-                player.getComponents().getInstance(ControlledPhysicsComponent.class).setJumping(true);
+                ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
             }
         } else {
             if (buttonCode == ControllerMappings.PS4_BUTTON_X) {
-                player.getComponents().getInstance(ControlledPhysicsComponent.class).setJumping(true);
+                ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
             }
         }
         return false;
@@ -52,8 +54,8 @@ public class ControllerProcessor implements ControllerListener {
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        player.getComponents().getInstance(ControlledPhysicsComponent.class).setJumping(false);
-        player.getComponents().getInstance(ControlledPhysicsComponent.class).setJustJumped(false);
+        ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJumping(false);
+        ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJustJumped(false);
         return false;
     }
 

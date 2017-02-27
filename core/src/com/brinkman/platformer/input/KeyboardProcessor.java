@@ -3,7 +3,9 @@ package com.brinkman.platformer.input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.brinkman.platformer.component.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.physics.ControlledBody;
 
 /**
  * Created by Austin on 11/23/2016.
@@ -30,7 +32,7 @@ public class KeyboardProcessor implements InputProcessor {
         }
 
         if (keycode == Keys.SPACE) {
-            player.getComponents().getInstance(ControlledPhysicsComponent.class).setJumping(true);
+            ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
         }
         return false;
     }
@@ -47,8 +49,8 @@ public class KeyboardProcessor implements InputProcessor {
             inputFlags.setRun(false);
         }
         if (keycode == Keys.SPACE) {
-            player.getComponents().getInstance(ControlledPhysicsComponent.class).setJumping(false);
-            player.getComponents().getInstance(ControlledPhysicsComponent.class).setJustJumped(false);
+            ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJumping(false);
+            ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJustJumped(false);
         }
         return false;
     }

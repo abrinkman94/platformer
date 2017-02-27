@@ -57,14 +57,14 @@ public class Coin extends Actor {
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, new AnimationRenderComponent(animations))
-                .put(ControlledPhysicsComponent.class, body)
+                .put(PhysicsComponent.class, body)
                 .build();
     }
 
     private void handlePlayerCollision(Player player) {
         animations.setFrameDuration(0.002f);
 
-        Body body = components.getInstance(ControlledPhysicsComponent.class);
+        Body body = components.getInstance(PhysicsComponent.class);
         assert body != null;
         if (body.getWidth() > 0.5f) {
             animateCollect(-0.25f);
@@ -74,7 +74,7 @@ public class Coin extends Actor {
     }
 
     private void animateCollect(float increment) {
-        Body body = components.getInstance(ControlledPhysicsComponent.class);
+        Body body = components.getInstance(PhysicsComponent.class);
         assert body != null;
         float width = body.getWidth();
         float height = body.getHeight();

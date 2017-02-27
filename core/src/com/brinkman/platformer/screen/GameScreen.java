@@ -113,7 +113,7 @@ public class GameScreen implements Screen {
             if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
                 Actor actor = (Actor) entity;
 
-                MotileBody body = actor.getComponents().getInstance(ControlledPhysicsComponent.class);
+                MotileBody body = (MotileBody)actor.getComponents().getInstance(PhysicsComponent.class);
                 assert body != null;
 
                 Vector2 position = body.getPosition();

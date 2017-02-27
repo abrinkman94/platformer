@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.StaticEntity;
@@ -89,7 +90,7 @@ public class Player extends Actor {
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, this::render)
-                .put(ControlledPhysicsComponent.class, body)
+                .put(PhysicsComponent.class, body)
                 .build();
 
 		LOGGER.info("Initialized");
@@ -203,7 +204,7 @@ public class Player extends Actor {
      * Handles the player's movement logic.
      */
     private void handleMovement() {
-        ControlledBody body = components.getInstance(ControlledPhysicsComponent.class);
+        ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
         assert body != null;
 
 		setKeyFlags();
@@ -241,7 +242,7 @@ public class Player extends Actor {
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */
     public void reset() {
-        ControlledBody body = components.getInstance(ControlledPhysicsComponent.class);
+        ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
         assert body != null;
 
         Vector2 originPosition = body.getOriginPosition();
@@ -259,7 +260,7 @@ public class Player extends Actor {
     @Override
     public void handleDeath() {
         if (lives > 0) {
-            MotileBody body = components.getInstance(ControlledPhysicsComponent.class);
+            MotileBody body = (MotileBody) components.getInstance(PhysicsComponent.class);
             assert body != null;
 
 			Vector2 originPosition = body.getOriginPosition();

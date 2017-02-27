@@ -34,7 +34,7 @@ public class PhysicsOperator implements Operator {
 
     public PhysicsOperator() {
         requiredComponents = new LinkedList<>();
-        requiredComponents.add(ControlledPhysicsComponent.class);
+        requiredComponents.add(PhysicsComponent.class);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class PhysicsOperator implements Operator {
                              .findFirst()
                              .get();
 
-        ControlledBody body = entity.getComponents().getInstance(ControlledPhysicsComponent.class);
+        ControlledBody body = (ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class);
         assert body != null;
 
         // Do some storing and preparation
@@ -137,7 +137,7 @@ public class PhysicsOperator implements Operator {
         body.setTouchingRightWall(false);
         Collection<Entity> colliders = findCollidingEntities(entity, world);
         colliders.forEach(collider -> {
-            Body otherBody = collider.getComponents().getInstance(ControlledPhysicsComponent.class);
+            Body otherBody = collider.getComponents().getInstance(PhysicsComponent.class);
             if (otherBody != null) {
                 body.triggerCollisionListeners(collider, otherBody);
                 if (body.isRemovedOnCollision()) {
@@ -198,8 +198,8 @@ public class PhysicsOperator implements Operator {
     }
 
     private static boolean areColliding(Entity entity, Entity otherEntity) {
-        Body body = entity.getComponents().getInstance(ControlledPhysicsComponent.class);
-        Body otherBody = otherEntity.getComponents().getInstance(ControlledPhysicsComponent.class);
+        Body body = entity.getComponents().getInstance(PhysicsComponent.class);
+        Body otherBody = otherEntity.getComponents().getInstance(PhysicsComponent.class);
 
         if (Objects.equals(entity, otherEntity) || (body == null) || (otherBody == null)) {
             return false;

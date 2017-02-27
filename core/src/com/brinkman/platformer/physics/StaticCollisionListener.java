@@ -3,6 +3,7 @@ package com.brinkman.platformer.physics;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.component.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 
 import static com.brinkman.platformer.util.Constants.GRAVITY;
@@ -19,7 +20,7 @@ public class StaticCollisionListener<T extends Entity> implements CollisionListe
 
     @Override
     public void onCollision(T other) {
-        Body otherBody = other.getComponents().getInstance(ControlledPhysicsComponent.class);
+        Body otherBody = other.getComponents().getInstance(PhysicsComponent.class);
         if ((body != null) && (otherBody != null)) {
             ((Rectangle) body.getBounds()).getCenter(TEMP_VECTOR_1);
             ((Rectangle) otherBody.getBounds()).getCenter(TEMP_VECTOR_2);

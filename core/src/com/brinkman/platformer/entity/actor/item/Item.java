@@ -50,7 +50,7 @@ public class Item extends Actor {
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, new SpriteRenderComponent(sprite))
-                .put(ControlledPhysicsComponent.class, body)
+                .put(PhysicsComponent.class, body)
                 .build();
     }
 

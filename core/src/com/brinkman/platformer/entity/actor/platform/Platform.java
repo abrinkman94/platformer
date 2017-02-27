@@ -30,7 +30,7 @@ public class Platform  extends Actor{
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, new TextureRenderComponent(texture))
-                .put(ControlledPhysicsComponent.class, body)
+                .put(PhysicsComponent.class, body)
                 .build();
     }
 
