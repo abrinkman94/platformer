@@ -162,27 +162,27 @@ public class Player extends Actor {
 
 		switch(currentAnimation) {
 			case IDLE_RIGHT_FRAMES:
-				animation = new Animation(animationTime, idleRightAtlas.getRegions());
+				animation = new Animation<>(animationTime, idleRightAtlas.getRegions());
 				animation.setPlayMode(PlayMode.LOOP);
 				break;
 			case IDLE_LEFT_FRAMES:
-				animation = new Animation(animationTime, idleLeftAtlas.getRegions());
+				animation = new Animation<>(animationTime, idleLeftAtlas.getRegions());
 				animation.setPlayMode(PlayMode.LOOP);
 				break;
 			case WALK_RIGHT_FRAMES:
-				animation = new Animation(animationTime, walkRightAtlas.getRegions());
+				animation = new Animation<>(animationTime, walkRightAtlas.getRegions());
 				animation.setPlayMode(PlayMode.LOOP);
 				break;
 			case WALK_LEFT_FRAMES:
-				animation = new Animation(animationTime, walkLeftAtlas.getRegions());
+				animation = new Animation<>(animationTime, walkLeftAtlas.getRegions());
 				animation.setPlayMode(PlayMode.LOOP);
 				break;
 			case JUMP_RIGHT_FRAMES:
-				animation = new Animation(1, jumpRightAtlas.getRegions());
+				animation = new Animation<>(1, jumpRightAtlas.getRegions());
 				animation.setPlayMode(PlayMode.LOOP);
 				break;
 			case JUMP_LEFT_FRAMES:
-				animation = new Animation(1, jumpLeftAtlas.getRegions());
+				animation = new Animation<>(1, jumpLeftAtlas.getRegions());
 				animation.setPlayMode(PlayMode.LOOP);
 				break;
 			default:
