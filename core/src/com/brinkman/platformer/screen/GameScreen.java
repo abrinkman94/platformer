@@ -25,6 +25,7 @@ import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TMXMap;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.MotileBody;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
@@ -115,11 +116,10 @@ public class GameScreen implements Screen {
             if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
                 Actor actor = (Actor) entity;
 
-                MotileBody body = (MotileBody)actor.getComponents().getInstance(PhysicsComponent.class);
+                Body body = actor.getComponents().getInstance(PhysicsComponent.class);
                 assert body != null;
 
                 Vector2 position = body.getPosition();
-                Vector2 velocity = body.getVelocity();
                 if (position.x <= mapLeft) {
                     position.x = mapLeft;
                 }

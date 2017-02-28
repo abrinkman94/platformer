@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.*;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -35,7 +36,7 @@ public class Item extends Actor {
     public Item(String texturePath, ItemType itemType, float x, float y) {
         this.itemType = itemType;
 
-        ControlledPhysicsComponent body = new ControlledPhysicsComponent();
+        StaticPhysicsComponent body = new StaticPhysicsComponent();
         body.setRemovedOnCollision(true);
         body.setHeight(32 * TO_WORLD_UNITS);
         body.setWidth(32 * TO_WORLD_UNITS);

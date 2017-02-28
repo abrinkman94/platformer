@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.*;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
@@ -37,7 +38,7 @@ public class Coin extends Actor {
     public Coin(float x, float y) {
         elapsedTime = 0;
 
-        ControlledPhysicsComponent body = new ControlledPhysicsComponent();
+        StaticPhysicsComponent body = new StaticPhysicsComponent();
         body.getPosition().set(x, y);
         body.setWidth(COIN_SIZE * TO_WORLD_UNITS);
         body.setHeight(COIN_SIZE  * TO_WORLD_UNITS);

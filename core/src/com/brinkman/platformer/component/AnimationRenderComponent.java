@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.MotileBody;
 
 /**
@@ -16,7 +17,7 @@ public class AnimationRenderComponent implements RenderComponent {
     public AnimationRenderComponent(Animation animation) {this.animation = animation;}
 
     @Override
-    public void render(float dt, Batch batch, MotileBody body) {
+    public void render(float dt, Batch batch, Body body) {
         elapsedTime += dt;
 
         TextureRegion currentFrame = (TextureRegion) animation.getKeyFrame(elapsedTime, true);

@@ -3,6 +3,7 @@ package com.brinkman.platformer.entity.actor.platform;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.brinkman.platformer.component.*;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.physics.MotilePhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
@@ -18,7 +19,7 @@ public class Platform  extends Actor{
 
     public Platform(TextureRegion texture, float x, float y, float width, float height, PlatformType platformType) {
 
-        ControlledPhysicsComponent body = new ControlledPhysicsComponent();
+        MotilePhysicsComponent body = new MotilePhysicsComponent();
 
         body.setAffectedByGravity(platformType == PlatformType.FALLING);
         body.setMaxFallSpeed(Constants.MAX_GRAVITY / 2);

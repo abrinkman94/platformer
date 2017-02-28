@@ -8,6 +8,7 @@ import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
@@ -35,7 +36,7 @@ public class Saw extends Actor {
 	public Saw(float x, float y) {
 		components = ImmutableClassToInstanceMap.<RootComponent>builder()
 				.put(RenderComponent.class, this::render)
-                .put(PhysicsComponent.class, new ControlledPhysicsComponent())
+                .put(PhysicsComponent.class, new StaticPhysicsComponent())
 				.build();
 
 		Body body = components.getInstance(PhysicsComponent.class);

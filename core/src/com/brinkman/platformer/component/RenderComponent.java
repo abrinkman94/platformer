@@ -1,6 +1,7 @@
 package com.brinkman.platformer.component;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.MotileBody;
 
 /**
@@ -10,5 +11,5 @@ import com.brinkman.platformer.physics.MotileBody;
  */
 @FunctionalInterface
 public interface RenderComponent extends RootComponent {
-    void render(float dt, Batch batch, MotileBody body);
+    void render(float dt, Batch batch, Body body);
 }
