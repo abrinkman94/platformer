@@ -2,8 +2,7 @@ package com.brinkman.platformer.physics;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.brinkman.platformer.component.ControlledPhysicsComponent;
-import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 
 import static com.brinkman.platformer.util.Constants.GRAVITY;

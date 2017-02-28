@@ -1,8 +1,8 @@
 package com.brinkman.platformer.entity;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.brinkman.platformer.component.ControlledPhysicsComponent;
-import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Body;
 import com.google.common.collect.ImmutableClassToInstanceMap;

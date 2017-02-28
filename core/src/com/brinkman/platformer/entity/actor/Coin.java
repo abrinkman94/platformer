@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.*;
+import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;

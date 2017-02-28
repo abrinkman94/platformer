@@ -2,8 +2,7 @@ package com.brinkman.platformer.input;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.brinkman.platformer.component.ControlledPhysicsComponent;
-import com.brinkman.platformer.component.PhysicsComponent;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.physics.ControlledBody;
 

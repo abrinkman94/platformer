@@ -2,13 +2,10 @@ package com.brinkman.platformer;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.component.PhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
@@ -18,7 +15,6 @@ import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.entity.actor.platform.PlatformType;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TextureMapObjectRenderer;
-import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.TexturePaths;
 
 import java.util.Collections;

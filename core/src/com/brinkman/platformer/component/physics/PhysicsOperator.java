@@ -1,8 +1,10 @@
-package com.brinkman.platformer.component;
+package com.brinkman.platformer.component.physics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.Operator;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Exit;
 import com.brinkman.platformer.entity.actor.Player;

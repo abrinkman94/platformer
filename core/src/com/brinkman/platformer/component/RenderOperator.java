@@ -2,6 +2,7 @@ package com.brinkman.platformer.component;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.physics.MotileBody;
 
