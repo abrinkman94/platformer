@@ -1,6 +1,8 @@
 package com.brinkman.platformer.component.physics;
 
 import com.badlogic.gdx.math.Vector2;
+import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.physics.ControlledBody;
 
@@ -8,6 +10,13 @@ final class ControlledOperator extends AbstractMotileOperator<ControlledBody> {
     private static final int WALL_BOUNCE = 6;
 
     ControlledOperator(Player player) { super(player); }
+
+    @Override
+    public void handleCollisions(Entity entity, GameWorld world, Player player, ControlledBody body) {
+        body.setTouchingLeftWall(false);
+        body.setTouchingRightWall(false);
+        super.handleCollisions(entity, world, player, body);
+    }
 
     @Override
     public float handleJump(ControlledBody body, float xVelocity) {
