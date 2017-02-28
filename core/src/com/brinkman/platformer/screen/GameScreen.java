@@ -12,12 +12,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.component.*;
+import com.brinkman.platformer.component.Operator;
+import com.brinkman.platformer.component.RenderOperator;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsOperator;
 import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.entity.StaticEntity;
-import com.brinkman.platformer.entity.actor.*;
+import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.input.ControllerProcessor;
@@ -26,7 +27,6 @@ import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TMXMap;
 import com.brinkman.platformer.physics.Body;
-import com.brinkman.platformer.physics.MotileBody;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
 
@@ -113,19 +113,15 @@ public class GameScreen implements Screen {
         float mapRight = TMXMap.mapWidth;
 
         for (Entity entity : gameWorld.getEntities()) {
-            if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
-                Actor actor = (Actor) entity;
+            Body body = entity.getComponents().getInstance(PhysicsComponent.class);
+            assert body != null;
 
-                Body body = actor.getComponents().getInstance(PhysicsComponent.class);
-                assert body != null;
-
-                Vector2 position = body.getPosition();
-                if (position.x <= mapLeft) {
-                    position.x = mapLeft;
-                }
-                if (position.x >= (mapRight - (body.getWidth() * TO_WORLD_UNITS))) {
-                    position.x = mapRight - (body.getWidth() * TO_WORLD_UNITS);
-                }
+            Vector2 position = body.getPosition();
+            if (position.x <= mapLeft) {
+                position.x = mapLeft;
+            }
+            if (position.x >= (mapRight - (body.getWidth() * TO_WORLD_UNITS))) {
+                position.x = mapRight - (body.getWidth() * TO_WORLD_UNITS);
             }
         }
     }
