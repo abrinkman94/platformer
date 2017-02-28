@@ -69,7 +69,7 @@ public class GameScreen implements Screen {
         }
 
         LOGGER.info("Initialized");
-        physicsSubsystem = new PhysicsOperator();
+        physicsSubsystem = new PhysicsOperator(player);
         renderSubsystem = new RenderOperator(spriteBatch);
     }
 
