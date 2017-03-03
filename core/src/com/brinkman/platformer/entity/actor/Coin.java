@@ -86,19 +86,7 @@ public class Coin extends Actor {
     }
 
     @Override
-    public void dispose() {
-        texture.dispose();
-
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                tmp[i][j].getTexture().dispose();
-            }
-        }
-
-        for (int i = 0; i < 64; i++) {
-            textureRegions[i].getTexture().dispose();
-        }
-    }
+    public void dispose() { texture.dispose(); }
 
     @Override
     public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
