@@ -9,10 +9,6 @@ import com.brinkman.platformer.entity.Entity;
  */
 public abstract class Actor implements Entity {
     /**
-     * The Actor's Sprite.
-     */
-    protected Sprite sprite;
-    /**
      * The Actor's Texture.
      */
     protected Texture texture;
