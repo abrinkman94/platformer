@@ -54,7 +54,7 @@ public class Coin extends Actor {
             }
         }
 
-        animations = new Animation(ANIMATION_TIME, textureRegions);
+        animations = new Animation<>(ANIMATION_TIME, textureRegions);
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, new AnimationRenderComponent(animations))
