@@ -46,7 +46,7 @@ public class Item extends Actor {
 
         float width = body.getWidth();
         float height = body.getHeight();
-        sprite = new Sprite(texture);
+        Sprite sprite = new Sprite(texture);
         sprite.setSize(width, height);
         Vector2 position = body.getPosition();
         sprite.setPosition(position.x, position.y);
@@ -55,12 +55,6 @@ public class Item extends Actor {
                 .put(RenderComponent.class, new SpriteRenderComponent(sprite))
                 .put(PhysicsComponent.class, body)
                 .build();
-    }
-
-    private void render(float dt, Batch batch) {
-        batch.begin();
-        sprite.draw(batch);
-        batch.end();
     }
 
     @Override
