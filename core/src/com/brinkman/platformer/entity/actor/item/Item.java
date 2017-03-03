@@ -10,6 +10,7 @@ import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
 import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.component.render.SpriteRenderComponent;
 import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
@@ -41,6 +42,7 @@ public class Item extends Actor {
         body.setHeight(32 * TO_WORLD_UNITS);
         body.setWidth(32 * TO_WORLD_UNITS);
         body.getPosition().set(x, y);
+        body.setCollisionListener(Player.class, player -> body.setRemovedOnCollision(true));
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
 
