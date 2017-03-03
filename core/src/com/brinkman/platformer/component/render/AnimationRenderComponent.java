@@ -10,16 +10,16 @@ import com.brinkman.platformer.physics.Body;
  * @author Caleb Brinkman
  */
 public class AnimationRenderComponent implements RenderComponent {
-    private final Animation animation;
+    private final Animation<TextureRegion> animation;
     private float elapsedTime;
 
-    public AnimationRenderComponent(Animation animation) {this.animation = animation;}
+    public AnimationRenderComponent(Animation<TextureRegion> animation) {this.animation = animation;}
 
     @Override
     public void render(float dt, Batch batch, Body body) {
         elapsedTime += dt;
 
-        TextureRegion currentFrame = (TextureRegion) animation.getKeyFrame(elapsedTime, true);
+        TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         Vector2 position = body.getPosition();
         float width = body.getWidth();
         float height = body.getHeight();
