@@ -1,14 +1,13 @@
 package com.brinkman.platformer.entity.actor.item;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.component.*;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
 import com.brinkman.platformer.component.render.RenderComponent;
-import com.brinkman.platformer.component.render.SpriteRenderComponent;
+import com.brinkman.platformer.component.render.TextureRenderComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.AssetUtil;
@@ -46,15 +45,10 @@ public class Item extends Actor {
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
 
-        float width = body.getWidth();
-        float height = body.getHeight();
-        Sprite sprite = new Sprite(texture);
-        sprite.setSize(width, height);
-        Vector2 position = body.getPosition();
-        sprite.setPosition(position.x, position.y);
+        TextureRegion sprite = new TextureRegion(texture);
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(RenderComponent.class, new SpriteRenderComponent(sprite))
+                .put(RenderComponent.class, new TextureRenderComponent(sprite))
                 .put(PhysicsComponent.class, body)
                 .build();
     }
