@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.InputComponent;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
-import com.brinkman.platformer.component.RenderComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.item.Item;

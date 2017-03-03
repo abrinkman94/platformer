@@ -1,11 +1,12 @@
-package com.brinkman.platformer.component;
+package com.brinkman.platformer.component.render;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.Operator;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.physics.Body;
-import com.brinkman.platformer.physics.MotileBody;
 
 import java.util.Collection;
 import java.util.Collections;

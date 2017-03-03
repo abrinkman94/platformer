@@ -2,6 +2,7 @@ package com.brinkman.platformer.component;
 
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.KeyboardProcessor;

@@ -3,7 +3,7 @@ package com.brinkman.platformer.entity.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.component.RenderComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.physics.StaticPhysicsComponent;

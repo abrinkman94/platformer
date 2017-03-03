@@ -1,6 +1,7 @@
-package com.brinkman.platformer.component;
+package com.brinkman.platformer.component.render;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.MotileBody;
 

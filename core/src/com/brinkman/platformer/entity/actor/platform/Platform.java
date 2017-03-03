@@ -2,9 +2,10 @@ package com.brinkman.platformer.entity.actor.platform;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.brinkman.platformer.component.*;
-import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.MotilePhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
+import com.brinkman.platformer.component.render.TextureRenderComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.Constants;

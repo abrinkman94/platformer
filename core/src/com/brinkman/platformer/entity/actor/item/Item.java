@@ -1,14 +1,14 @@
 package com.brinkman.platformer.entity.actor.item;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.*;
-import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
+import com.brinkman.platformer.component.render.SpriteRenderComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
