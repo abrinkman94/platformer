@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.component.InputComponent;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.RenderComponent;
@@ -18,7 +19,6 @@ import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.platform.Platform;
-import com.brinkman.platformer.input.InputFlags;
 import com.brinkman.platformer.physics.*;
 import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -39,7 +39,6 @@ public class Player extends Actor {
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
     private Animation animation;
-    private final InputFlags inputFlags;
     private final Array<Item> inventory;
 
     private static final int PLAYER_WIDTH = 32;
@@ -61,12 +60,9 @@ public class Player extends Actor {
 
 	/**
 	 * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
-	 * @param inputFlags InputFlags
 	 */
-	public Player(InputFlags inputFlags) {
-		this.inputFlags = inputFlags;
+	public Player() {
 		inventory = new Array<>();
-
 
         ControlledPhysicsComponent body = new ControlledPhysicsComponent();
         body.setAffectedByGravity(true);
@@ -91,6 +87,7 @@ public class Player extends Actor {
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, this::render)
                 .put(PhysicsComponent.class, body)
+			  	.put(InputComponent.class, this::setKeyFlags)
                 .build();
 
 		LOGGER.info("Initialized");
@@ -193,10 +190,10 @@ public class Player extends Actor {
     /**
      * Sets boolean values for input from InputFlags.
      */
-    private void setKeyFlags() {
-        left = inputFlags.left();
-        right = inputFlags.right();
-        run = inputFlags.run();
+    private void setKeyFlags(boolean left, boolean right, boolean run) {
+        this.left = left;
+        this.right = right;
+        this.run = run;
     }
 
     //TODO Figure out a way to simplify.
@@ -206,8 +203,6 @@ public class Player extends Actor {
     private void handleMovement() {
         ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
         assert body != null;
-
-		setKeyFlags();
 
 		//Run conditionals
 		float moveSpeed = run ? 10 : 5;

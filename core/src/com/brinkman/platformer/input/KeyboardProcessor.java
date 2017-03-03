@@ -3,35 +3,33 @@ package com.brinkman.platformer.input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
-import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.physics.ControlledBody;
 
 /**
  * Created by Austin on 11/23/2016.
  */
-public class KeyboardProcessor implements InputProcessor {
-    private final InputFlags inputFlags;
-    private final Player player;
+public class KeyboardProcessor extends AbstractInputMappings implements InputProcessor {
+    private final Entity entity;
 
-    public KeyboardProcessor(InputFlags inputFlags, Player player) {
-        this.inputFlags = inputFlags;
-        this.player = player;
+    public KeyboardProcessor(Entity entity) {
+        this.entity = entity;
     }
 
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Keys.LEFT) {
-            inputFlags.setLeft(true);
+            left = true;
         } else if (keycode == Keys.RIGHT) {
-            inputFlags.setRight(true);
+            right = true;
         }
 
         if (keycode == Keys.SHIFT_LEFT) {
-            inputFlags.setRun(true);
+            run = true;
         }
 
         if (keycode == Keys.SPACE) {
-            ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
+            ((ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
         }
         return false;
     }
@@ -39,17 +37,17 @@ public class KeyboardProcessor implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Keys.LEFT) {
-            inputFlags.setLeft(false);
+            left = false;
         }
         if (keycode == Keys.RIGHT) {
-            inputFlags.setRight(false);
+            right = false;
         }
         if (keycode == Keys.SHIFT_LEFT) {
-            inputFlags.setRun(false);
+            run = false;
         }
         if (keycode == Keys.SPACE) {
-            ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJumping(false);
-            ((ControlledBody)player.getComponents().getInstance(PhysicsComponent.class)).setJustJumped(false);
+            ((ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(false);
+            ((ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class)).setJustJumped(false);
         }
         return false;
     }
