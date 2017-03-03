@@ -1,12 +1,13 @@
 package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
+import com.brinkman.platformer.component.render.TextureRenderComponent;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -39,26 +40,10 @@ public class Saw extends Actor {
 
 		texture = (Texture) AssetUtil.getAsset(TexturePaths.SAW_TEXTURE, Texture.class);
 
-		float width = body.getWidth();
-		float height = body.getHeight();
-		Sprite sprite = new Sprite(texture);
-		sprite.setSize(width, height);
-		sprite.setPosition(x, y);
-		sprite.setOriginCenter();
-
-
-		RenderComponent render = (dt, batch, body1) -> {
-			float rotationStep = sprite.getRotation() + SAW_SPEED;
-
-			batch.begin();
-			sprite.draw(batch);
-			batch.end();
-
-			sprite.setRotation(rotationStep);
-		};
+		TextureRegion sprite = new TextureRegion(texture);
 
 		components = ImmutableClassToInstanceMap.<RootComponent>builder()
-				.put(RenderComponent.class, render)
+				.put(RenderComponent.class, new TextureRenderComponent(sprite))
 				.put(PhysicsComponent.class, body)
 				.build();
 	}
