@@ -22,8 +22,6 @@ public class Coin extends Actor {
     private static final Logger LOGGER = new Logger("Coin", Logger.DEBUG);
 
     private final Animation animations;
-    private final TextureRegion[][] tmp;
-    private final TextureRegion[] textureRegions;
 
     private static final float ANIMATION_TIME = 0.025f;
     private static final int COIN_SIZE = 64;
@@ -46,9 +44,9 @@ public class Coin extends Actor {
 
         texture = (Texture) AssetUtil.getAsset(TexturePaths.COIN_SPRITESHEET, Texture.class);
 
-        tmp = TextureRegion.split(texture, texture.getWidth()/8, texture.getHeight()/8);
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 8, texture.getHeight() / 8);
 
-        textureRegions = new TextureRegion[8 * 8];
+        TextureRegion[] textureRegions = new TextureRegion[8 * 8];
         int index = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
