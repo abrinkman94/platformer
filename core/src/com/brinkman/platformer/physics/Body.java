@@ -6,18 +6,6 @@ import com.badlogic.gdx.math.*;
  * @author Caleb Brinkman
  */
 public interface Body {
-    boolean isGrounded();
-
-    void setGrounded(boolean grounded);
-
-    float getMoveSpeed();
-
-    void setMoveSpeed(float moveSpeed);
-
-    Vector2 getVelocity();
-
-    Vector2 getOriginPosition();
-
     Vector2 getPosition();
 
     float getHeight();
@@ -32,17 +20,7 @@ public interface Body {
 
     void setRemovedOnCollision(boolean removedOnCollision);
 
-    float getMaxFallSpeed();
-
-    void setMaxFallSpeed(float maxFallSpeed);
-
-    boolean isAffectedByGravity();
-
-    void setAffectedByGravity(boolean affectedByGravity);
-
-    float getGravityAcceleration();
-
-    void setGravityAcceleration(float gravityAcceleration);
+    Vector2 getOriginPosition();
 
     /**
      * Add a collision listener to this Body, which will listen to and respond to collision events with the given type

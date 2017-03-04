@@ -1,13 +1,13 @@
 package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.component.PhysicsComponent;
-import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
-import com.brinkman.platformer.physics.Body;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
+import com.brinkman.platformer.component.render.TextureRenderComponent;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.TexturePaths;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -32,13 +32,7 @@ public class Saw extends Actor {
 	 * @param y float y position
 	 */
 	public Saw(float x, float y) {
-		components = ImmutableClassToInstanceMap.<RootComponent>builder()
-				.put(RenderComponent.class, this::render)
-                .put(PhysicsComponent.class, new PhysicsComponent())
-				.build();
-
-		Body body = components.getInstance(PhysicsComponent.class);
-		assert body != null;
+		PhysicsComponent body = new StaticPhysicsComponent();
 
 		body.getPosition().set(x, y);
 		body.setWidth(SAW_WIDTH * TO_WORLD_UNITS);
@@ -46,29 +40,16 @@ public class Saw extends Actor {
 
 		texture = (Texture) AssetUtil.getAsset(TexturePaths.SAW_TEXTURE, Texture.class);
 
-		float width = body.getWidth();
-		float height = body.getHeight();
-		sprite = new Sprite(texture);
-		sprite.setSize(width, height);
-		sprite.setPosition(x, y);
-		sprite.setOriginCenter();
-	}
+		TextureRegion sprite = new TextureRegion(texture);
 
-	private void render(float dt, Batch batch, Body body) {
-		float rotationStep = sprite.getRotation() + SAW_SPEED;
-
-		batch.begin();
-		sprite.draw(batch);
-		batch.end();
-
-		sprite.setRotation(rotationStep);
+		components = ImmutableClassToInstanceMap.<RootComponent>builder()
+				.put(RenderComponent.class, new TextureRenderComponent(sprite))
+				.put(PhysicsComponent.class, body)
+				.build();
 	}
 
 	@Override
-	public void dispose() {
-		texture.dispose();
-	//	LOGGER.info("Disposed");
-	}
+	public void dispose() { texture.dispose(); }
 
 	@Override
 	public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }

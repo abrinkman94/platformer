@@ -1,10 +1,11 @@
 package com.brinkman.platformer.entity.actor.platform;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.brinkman.platformer.component.PhysicsComponent;
-import com.brinkman.platformer.component.RenderComponent;
-import com.brinkman.platformer.component.RootComponent;
-import com.brinkman.platformer.component.TextureRenderComponent;
+import com.brinkman.platformer.component.*;
+import com.brinkman.platformer.component.physics.MotilePhysicsComponent;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
+import com.brinkman.platformer.component.render.TextureRenderComponent;
 import com.brinkman.platformer.entity.actor.Actor;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.Constants;
@@ -19,16 +20,17 @@ public class Platform  extends Actor{
 
     public Platform(TextureRegion texture, float x, float y, float width, float height, PlatformType platformType) {
 
-        PhysicsComponent body = new PhysicsComponent();
+        MotilePhysicsComponent body = new MotilePhysicsComponent();
 
         body.setAffectedByGravity(platformType == PlatformType.FALLING);
-        body.setGrounded(true);
         body.setMaxFallSpeed(Constants.MAX_GRAVITY / 2);
-        body.setGravityAcceleration(Constants.GRAVITY - 0.1f);
+        body.setGravityAcceleration(0.0f);
         body.getPosition().set(x, y);
         body.setWidth(width);
         body.setHeight(height);
-        body.setCollisionListener(Player.class, player -> body.setGrounded(false));
+        body.setCollisionListener(Player.class, player -> {
+            body.setGravityAcceleration(Constants.GRAVITY - 0.1f);
+        });
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
                 .put(RenderComponent.class, new TextureRenderComponent(texture))

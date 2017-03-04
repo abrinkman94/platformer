@@ -1,11 +1,11 @@
 package com.brinkman.platformer.entity.actor;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.component.PhysicsComponent;
-import com.brinkman.platformer.component.RenderComponent;
+import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
@@ -26,7 +26,7 @@ public class Exit implements Entity
 		this.gameWorld = gameWorld;
 
 		// HACK Currently overriding shouldCollideWith in body; there's probably a better solution.
-		PhysicsComponent body = new PhysicsComponent() {
+		StaticPhysicsComponent body = new StaticPhysicsComponent() {
 			@Override
 			public <T> boolean shouldCollideWith(T otherObject) {
 				if (otherObject instanceof Player) {

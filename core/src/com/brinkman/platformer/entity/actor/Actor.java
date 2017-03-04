@@ -1,17 +1,13 @@
 package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.brinkman.platformer.component.render.AnimationType;
 import com.brinkman.platformer.entity.Entity;
 
 /**
  * Created by Austin on 9/29/2016.
  */
 public abstract class Actor implements Entity {
-    /**
-     * The Actor's Sprite.
-     */
-    protected Sprite sprite;
     /**
      * The Actor's Texture.
      */
@@ -27,11 +23,7 @@ public abstract class Actor implements Entity {
     /**
      * The Actor's int currentAnimation, used for animations.
      */
-    protected int currentAnimation;
-    /**
-     * The Actor's String orientation.
-     */
-    protected String orientation;
+    protected AnimationType currentAnimation = AnimationType.IDLE_RIGHT;
 
     /**
      * Optional method to handle death of Actor.
@@ -50,16 +42,5 @@ public abstract class Actor implements Entity {
      */
     public void setLives(int lives) { this.lives = lives; }
 
-    /**
-     * Returns the value of String orientation.
-     * @return String
-     */
-    public String getOrientation() { return orientation; }
-
-    /**
-     * Sets the value of String orientation.
-     * @param orientation String
-     */
-    public void setOrientation(String orientation) { this.orientation = orientation; }
 
 }

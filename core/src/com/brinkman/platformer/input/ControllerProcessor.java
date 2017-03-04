@@ -6,21 +6,21 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.entity.Entity;
+import com.brinkman.platformer.physics.ControlledBody;
 import com.brinkman.platformer.util.ControllerMappings;
 
 /**
  * Created by Austin on 11/22/2016.
  */
-public class ControllerProcessor implements ControllerListener {
+public class ControllerProcessor extends AbstractInputMappings implements ControllerListener {
     private static final Logger LOGGER = new Logger(ControllerProcessor.class.getName(), Logger.DEBUG);
 
-    private final InputFlags inputFlags;
-    private final Player player;
+    private final Entity entity;
 
-    public ControllerProcessor(InputFlags inputFlags, Player player) {
-        this.inputFlags = inputFlags;
-        this.player = player;
+    public ControllerProcessor(Entity entity) {
+        this.entity = entity;
 
         LOGGER.info(Controllers.getControllers().first().getName());
     }
@@ -39,11 +39,11 @@ public class ControllerProcessor implements ControllerListener {
     public boolean buttonDown(Controller controller, int buttonCode) {
         if (controller.getName().contains("Xbox")) {
             if (buttonCode == ControllerMappings.BUTTON_A) {
-                inputFlags.setJump(true);
+                ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
             }
         } else {
             if (buttonCode == ControllerMappings.PS4_BUTTON_X) {
-                inputFlags.setJump(true);
+                ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
             }
         }
         return false;
@@ -51,8 +51,8 @@ public class ControllerProcessor implements ControllerListener {
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        inputFlags.setJump(false);
-        player.setJustJumped(false);
+        ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(false);
+        ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJustJumped(false);
         return false;
     }
 
@@ -60,48 +60,23 @@ public class ControllerProcessor implements ControllerListener {
     public boolean axisMoved(Controller controller, int axisCode, float value) {
         if (controller.getName().contains("Xbox")) {
             if (axisCode == ControllerMappings.AXIS_LEFT_X) {
-                if (value < -0.15f) {
-                    inputFlags.setLeft(true);
-                } else {
-                    inputFlags.setLeft(false);
-                }
-                if (value > 0.25f) {
-                    inputFlags.setRight(true);
-                } else {
-                    inputFlags.setRight(false);
-                }
+                left = value < -0.15f;
+                right = value > 0.25f;
             }
 
             if (axisCode == ControllerMappings.AXIS_LEFT_TRIGGER) {
-                if ((value >= 0.25f) || (value <= -0.25f)) {
-                    inputFlags.setRun(true);
-                } else {
-                    inputFlags.setRun(false);
-                }
+                run = (value >= 0.25f) || (value <= -0.25f);
             }
         } else {
             if (axisCode == ControllerMappings.PS4_AXIS_LEFT_X) {
-                if (value < -0.15f) {
-                    inputFlags.setLeft(true);
-                } else {
-                    inputFlags.setLeft(false);
-                }
-                if (value > 0.25f) {
-                    inputFlags.setRight(true);
-                } else {
-                    inputFlags.setRight(false);
-                }
+                left = value < -0.15f;
+                right = value > 0.25f;
             }
 
             if (axisCode == ControllerMappings.PS4_TRIGGER_L2) {
-                if ((value >= 0.25f) || (value <= -0.25f)) {
-                    inputFlags.setRun(true);
-                } else {
-                    inputFlags.setRun(false);
-                }
+                run = (value >= 0.25f) || (value <= -0.25f);
             }
         }
-
         return false;
     }
 

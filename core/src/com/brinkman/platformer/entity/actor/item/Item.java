@@ -1,15 +1,15 @@
 package com.brinkman.platformer.entity.actor.item;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Logger;
-import com.brinkman.platformer.component.PhysicsComponent;
-import com.brinkman.platformer.component.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
-import com.brinkman.platformer.component.SpriteRenderComponent;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.physics.StaticPhysicsComponent;
+import com.brinkman.platformer.component.render.RenderComponent;
+import com.brinkman.platformer.component.render.TextureRenderComponent;
 import com.brinkman.platformer.entity.actor.Actor;
+import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
@@ -36,31 +36,21 @@ public class Item extends Actor {
     public Item(String texturePath, ItemType itemType, float x, float y) {
         this.itemType = itemType;
 
-        PhysicsComponent body = new PhysicsComponent();
+        StaticPhysicsComponent body = new StaticPhysicsComponent();
         body.setRemovedOnCollision(true);
         body.setHeight(32 * TO_WORLD_UNITS);
         body.setWidth(32 * TO_WORLD_UNITS);
         body.getPosition().set(x, y);
+        body.setCollisionListener(Player.class, player -> body.setRemovedOnCollision(true));
 
         texture = (Texture) AssetUtil.getAsset(texturePath, Texture.class);
 
-        float width = body.getWidth();
-        float height = body.getHeight();
-        sprite = new Sprite(texture);
-        sprite.setSize(width, height);
-        Vector2 position = body.getPosition();
-        sprite.setPosition(position.x, position.y);
+        TextureRegion sprite = new TextureRegion(texture);
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(RenderComponent.class, new SpriteRenderComponent(sprite))
+                .put(RenderComponent.class, new TextureRenderComponent(sprite))
                 .put(PhysicsComponent.class, body)
                 .build();
-    }
-
-    private void render(float dt, Batch batch) {
-        batch.begin();
-        sprite.draw(batch);
-        batch.end();
     }
 
     @Override

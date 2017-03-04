@@ -12,18 +12,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.input.InputOperator;
 import com.brinkman.platformer.component.Operator;
-import com.brinkman.platformer.component.PhysicsComponent;
-import com.brinkman.platformer.component.PhysicsOperator;
-import com.brinkman.platformer.component.RenderOperator;
+import com.brinkman.platformer.component.render.RenderOperator;
+import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
+import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.physics.PhysicsOperator;
 import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.entity.StaticEntity;
-import com.brinkman.platformer.entity.actor.*;
+import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
-import com.brinkman.platformer.input.ControllerProcessor;
-import com.brinkman.platformer.input.InputFlags;
-import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TMXMap;
 import com.brinkman.platformer.physics.Body;
@@ -44,6 +42,7 @@ public class GameScreen implements Screen {
 
     private final Operator physicsSubsystem;
     private final Operator renderSubsystem;
+    private final Operator inputSubsystem;
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
     private final Player player;
@@ -56,22 +55,23 @@ public class GameScreen implements Screen {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
         gameWorld = new GameWorld(new Level(1));
-        InputFlags inputFlags = new InputFlags();
-        player = new Player(inputFlags);
+        player = new Player();
         hud = new HUD(gameWorld);
 
         gameWorld.addEntity(player);
         gameWorld.initializeMapObjects();
 
+        physicsSubsystem = new PhysicsOperator(player);
+        renderSubsystem = new RenderOperator(spriteBatch);
+        inputSubsystem = new InputOperator(player);
+
         if (CONTROLLER_PRESENT) {
-            Controllers.addListener(new ControllerProcessor(inputFlags, player));
+            Controllers.addListener(((InputOperator)inputSubsystem).getControllerProcessor());
         } else {
-            Gdx.input.setInputProcessor(new KeyboardProcessor(inputFlags, player));
+            Gdx.input.setInputProcessor(((InputOperator)inputSubsystem).getKeyboardProcessor());
         }
 
         LOGGER.info("Initialized");
-        physicsSubsystem = new PhysicsOperator();
-        renderSubsystem = new RenderOperator(spriteBatch);
     }
 
     private void placeholderKeyHandler() {
@@ -113,26 +113,15 @@ public class GameScreen implements Screen {
         float mapRight = TMXMap.mapWidth;
 
         for (Entity entity : gameWorld.getEntities()) {
-            if (!(entity instanceof StaticEntity) && !(entity instanceof Exit)) {
-                Actor actor = (Actor) entity;
+            Body body = entity.getComponents().getInstance(PhysicsComponent.class);
+            assert body != null;
 
-                Body body = actor.getComponents().getInstance(PhysicsComponent.class);
-                assert body != null;
-
-                Vector2 position = body.getPosition();
-                Vector2 velocity = body.getVelocity();
-                if (position.x <= mapLeft) {
-                    position.x = mapLeft;
-                    if (actor instanceof Enemy) {
-                        velocity.x = -velocity.x;
-                    }
-                }
-                if (position.x >= (mapRight - (body.getWidth() * TO_WORLD_UNITS))) {
-                    position.x = mapRight - (body.getWidth() * TO_WORLD_UNITS);
-                    if (actor instanceof Enemy) {
-                        velocity.x = -velocity.x;
-                    }
-                }
+            Vector2 position = body.getPosition();
+            if (position.x <= mapLeft) {
+                position.x = mapLeft;
+            }
+            if (position.x >= (mapRight - (body.getWidth() * TO_WORLD_UNITS))) {
+                position.x = mapRight - (body.getWidth() * TO_WORLD_UNITS);
             }
         }
     }
@@ -163,6 +152,11 @@ public class GameScreen implements Screen {
         entitiesCopy.stream()
                     .filter(it -> it.getComponents().keySet().containsAll(renderSubsystem.getRequiredComponents()))
                     .forEach(it -> renderSubsystem.operate(delta, it, gameWorld));
+        // Do input, dayglo
+        entitiesCopy.stream()
+                    .filter(it -> it.getComponents().keySet().containsAll(inputSubsystem.getRequiredComponents()) &&
+                          (it.getComponents().getInstance(PhysicsComponent.class) instanceof ControlledPhysicsComponent))
+                    .forEach(it -> inputSubsystem.operate(delta, it, gameWorld));
 
         // Render gameworld foreground
         gameWorld.renderForeground(camera, spriteBatch);
