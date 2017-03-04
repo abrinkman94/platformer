@@ -1,6 +1,7 @@
 package com.brinkman.platformer.component.render;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.MotileBody;
@@ -10,7 +11,8 @@ import com.brinkman.platformer.physics.MotileBody;
  *
  * @author Caleb Brinkman
  */
-@FunctionalInterface
 public interface RenderComponent extends RootComponent {
     void render(float dt, Batch batch, Body body);
+
+    TextureRegion getTextureRegion(float deltaT);
 }

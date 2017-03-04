@@ -25,4 +25,9 @@ public class TextureRenderComponent implements RenderComponent {
         batch.draw(textureRegion, position.x, position.y, width, height);
         batch.end();
     }
+
+    @Override
+    public TextureRegion getTextureRegion(float deltaT) {
+        return textureRegion;
+    }
 }

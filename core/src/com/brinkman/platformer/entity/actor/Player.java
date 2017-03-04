@@ -43,7 +43,7 @@ public class Player extends Actor {
     private TextureAtlas idleLeftAtlas;
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
-    private Animation animation;
+    private Animation<TextureRegion> animation;
     private final Array<Item> inventory;
 
     private static final float WALK_ANIMATION_TIME = 0.1f;
@@ -87,7 +87,18 @@ public class Player extends Actor {
 		initializeTextureAtlas();
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(RenderComponent.class, this::render)
+                .put(RenderComponent.class, new RenderComponent() {
+					@Override
+					public void render(float dt, Batch batch, Body body) {
+						Player.this.render(dt, batch, body);
+					}
+
+					@Override
+					public TextureRegion getTextureRegion(float deltaT) {
+						elapsedTime += deltaT;
+						return animation.getKeyFrame(elapsedTime);
+					}
+				})
                 .put(PhysicsComponent.class, body)
 			  	.put(InputComponent.class, this::setKeyFlags)
                 .build();
@@ -242,7 +253,7 @@ public class Player extends Actor {
 		elapsedTime += Gdx.graphics.getDeltaTime();
 
 		Vector2 position = body.getPosition();
-		TextureRegion frame = (TextureRegion) animation.getKeyFrame(elapsedTime, false);
+		TextureRegion frame = animation.getKeyFrame(elapsedTime, false);
 		float width = body.getWidth();
 		float height = body.getHeight();
 

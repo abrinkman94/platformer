@@ -30,9 +30,7 @@ public class AnimationRenderComponent implements RenderComponent
 
     @Override
     public void render(float dt, Batch batch, Body body) {
-        elapsedTime += dt;
-
-        TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
+        TextureRegion currentFrame = getTextureRegion(dt);
         Vector2 position = body.getPosition();
         float width = body.getWidth();
         float height = body.getHeight();
@@ -40,5 +38,12 @@ public class AnimationRenderComponent implements RenderComponent
         batch.begin();
         batch.draw(currentFrame, position.x, position.y, width, height);
         batch.end();
+    }
+
+    @Override
+    public TextureRegion getTextureRegion(float dt) {
+        elapsedTime += dt;
+
+        return animation.getKeyFrame(elapsedTime, true);
     }
 }
