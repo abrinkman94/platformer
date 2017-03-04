@@ -98,7 +98,7 @@ public class InputOperator implements Operator
 										  boolean left,
 										  boolean right,
 										  boolean run) {
-		AnimationType currentAnimation = IDLE_RIGHT;
+		AnimationType currentAnimation = null;
 
 		if (left) {
 			body.setFacingRight(false);
@@ -126,6 +126,8 @@ public class InputOperator implements Operator
 			}
 		}
 
-		renderComponent.setAnimationType(currentAnimation);
+		if(currentAnimation != null) {
+			renderComponent.setAnimationType(currentAnimation);
+		}
 	}
 }
