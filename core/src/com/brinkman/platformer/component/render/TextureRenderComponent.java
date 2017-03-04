@@ -17,10 +17,11 @@ public class TextureRenderComponent implements RenderComponent {
 
     @Override
     public void render(float dt, Batch batch, Body body) {
-        batch.begin();
         float height = body.getHeight();
         float width = body.getWidth();
         Vector2 position = body.getPosition();
+
+        batch.begin();
         batch.draw(textureRegion, position.x, position.y, width, height);
         batch.end();
     }
