@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.InputComponent;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.render.AnimationType;
 import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
 import com.brinkman.platformer.entity.StaticEntity;
@@ -23,6 +24,10 @@ import com.brinkman.platformer.physics.*;
 import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+import static com.brinkman.platformer.component.render.AnimationType.*;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 import static com.brinkman.platformer.util.TexturePaths.*;
 
@@ -41,21 +46,18 @@ public class Player extends Actor {
     private Animation animation;
     private final Array<Item> inventory;
 
+    private static final float WALK_ANIMATION_TIME = 0.1f;
+    private static final float RUN_ANIMATION_TIME = 0.05f;
+    private static final float JUMP_ANIMATION_TIME = 1.0f;
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
-    private static final int IDLE_RIGHT_FRAMES = 0;
-    private static final int IDLE_LEFT_FRAMES = 1;
-    private static final int WALK_RIGHT_FRAMES = 2;
-    private static final int WALK_LEFT_FRAMES = 3;
-    private static final int JUMP_RIGHT_FRAMES = 4;
-    private static final int JUMP_LEFT_FRAMES = 5;
     private static final int JUMP_VEL = 12;
-    private static final float ACCELERATION = 0.8f;
 
     private boolean left;
     private boolean right;
     private boolean run;
 
+    private final Map<AnimationType, Animation<TextureRegion>> animations = new EnumMap<>(AnimationType.class);
 	private final ImmutableClassToInstanceMap<RootComponent> components;
 
 	/**
@@ -143,6 +145,15 @@ public class Player extends Actor {
 			i++;
 			jumpLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
 		}
+
+		animations.put(IDLE_LEFT, new Animation<>(WALK_ANIMATION_TIME, idleLeftAtlas.getRegions(), PlayMode.LOOP));
+		animations.put(IDLE_RIGHT, new Animation<>(WALK_ANIMATION_TIME, idleRightAtlas.getRegions(), PlayMode.LOOP));
+		animations.put(WALK_LEFT, new Animation<>(WALK_ANIMATION_TIME, walkLeftAtlas.getRegions(), PlayMode.LOOP));
+		animations.put(WALK_RIGHT, new Animation<>(WALK_ANIMATION_TIME, walkRightAtlas.getRegions(), PlayMode.LOOP));
+		animations.put(RUN_LEFT, new Animation<>(RUN_ANIMATION_TIME, walkLeftAtlas.getRegions(), PlayMode.LOOP));
+		animations.put(RUN_RIGHT, new Animation<>(RUN_ANIMATION_TIME, walkRightAtlas.getRegions(), PlayMode.LOOP));
+		animations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlas.getRegions(), PlayMode.LOOP));
+		animations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlas.getRegions(), PlayMode.LOOP));
 	}
 
 	/**
@@ -156,53 +167,26 @@ public class Player extends Actor {
 	 * Handles the switching of animations.
 	 */
 	private void handleAnimationSwitching() {
-		float animationTime = run ? 0.05f : 0.1f;
 
-		switch(currentAnimation) {
-			case IDLE_RIGHT_FRAMES:
-				animation = new Animation<>(animationTime, idleRightAtlas.getRegions());
-				animation.setPlayMode(PlayMode.LOOP);
-				break;
-			case IDLE_LEFT_FRAMES:
-				animation = new Animation<>(animationTime, idleLeftAtlas.getRegions());
-				animation.setPlayMode(PlayMode.LOOP);
-				break;
-			case WALK_RIGHT_FRAMES:
-				animation = new Animation<>(animationTime, walkRightAtlas.getRegions());
-				animation.setPlayMode(PlayMode.LOOP);
-				break;
-			case WALK_LEFT_FRAMES:
-				animation = new Animation<>(animationTime, walkLeftAtlas.getRegions());
-				animation.setPlayMode(PlayMode.LOOP);
-				break;
-			case JUMP_RIGHT_FRAMES:
-				animation = new Animation<>(1, jumpRightAtlas.getRegions());
-				animation.setPlayMode(PlayMode.LOOP);
-				break;
-			case JUMP_LEFT_FRAMES:
-				animation = new Animation<>(1, jumpLeftAtlas.getRegions());
-				animation.setPlayMode(PlayMode.LOOP);
-				break;
-			default:
-		}
+		animation = animations.get(currentAnimation);
 
 		ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
 		assert body != null;
 
 		if (left) {
 			orientation = "left";
-			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
+			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : WALK_LEFT;
 		} else if (right) {
 			orientation = "right";
-			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
+			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : WALK_RIGHT;
 		} else {
 			float xSpeed = body.getVelocity().x;
 
 			if(xSpeed == 0.0f) {
 				if ("right".equalsIgnoreCase(orientation)) {
-					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : IDLE_RIGHT;
 				} else {
-					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
+					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : IDLE_LEFT;
 				}
 			}
 		}

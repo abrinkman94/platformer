@@ -2,6 +2,7 @@ package com.brinkman.platformer.entity.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.brinkman.platformer.component.render.AnimationType;
 import com.brinkman.platformer.entity.Entity;
 
 /**
@@ -23,7 +24,7 @@ public abstract class Actor implements Entity {
     /**
      * The Actor's int currentAnimation, used for animations.
      */
-    protected int currentAnimation;
+    protected AnimationType currentAnimation = AnimationType.IDLE_RIGHT;
     /**
      * The Actor's String orientation.
      */
