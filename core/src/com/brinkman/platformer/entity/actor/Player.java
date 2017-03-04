@@ -53,6 +53,7 @@ public class Player extends Actor {
     private static final int PLAYER_HEIGHT = 64;
     private static final int JUMP_VEL = 12;
 
+    private boolean facingRight;
     private boolean left;
     private boolean right;
     private boolean run;
@@ -61,7 +62,7 @@ public class Player extends Actor {
 	private final ImmutableClassToInstanceMap<RootComponent> components;
 
 	/**
-	 * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and orientation.
+	 * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and facingRight.
 	 */
 	public Player() {
 		inventory = new Array<>();
@@ -81,8 +82,6 @@ public class Player extends Actor {
         body.setCollisionListener(Item.class, this::handleItemCollision);
         body.setCollisionListener(Platform.class, platformListener);
         body.setCollisionListener(StaticEntity.class, staticListener);
-
-		orientation = "right";
 
 		initializeTextureAtlas();
 
@@ -187,16 +186,16 @@ public class Player extends Actor {
 		assert body != null;
 
 		if (left) {
-			orientation = "left";
+			facingRight = false;
 			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : WALK_LEFT;
 		} else if (right) {
-			orientation = "right";
+			facingRight = true;
 			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : WALK_RIGHT;
 		} else {
 			float xSpeed = body.getVelocity().x;
 
 			if(xSpeed == 0.0f) {
-				if ("right".equalsIgnoreCase(orientation)) {
+				if (facingRight) {
 					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : IDLE_RIGHT;
 				} else {
 					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : IDLE_LEFT;
@@ -216,7 +215,7 @@ public class Player extends Actor {
 
 
 	/**
-     * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
+     * Resets player's position, velocity, and facingRight to their original values. Used when starting a new level.
      */
     public void reset() {
         ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
@@ -225,7 +224,7 @@ public class Player extends Actor {
         Vector2 originPosition = body.getOriginPosition();
         body.getPosition().set(originPosition);
         body.getVelocity().set(0.0f, 0.0f);
-        orientation = "right";
+        facingRight = true;
         body.setGrounded(false);
         body.setTouchingLeftWall(false);
         body.setTouchingRightWall(false);
