@@ -217,26 +217,8 @@ public class Player extends Actor {
         this.run = run;
     }
 
-    //TODO Figure out a way to simplify.
-    /**
-     * Handles the player's movement logic.
-     */
-    private void handleMovement() {
-        ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
-        assert body != null;
 
-		//Run conditionals
-		float moveSpeed = run ? 10 : 5;
-		body.setMoveSpeed(moveSpeed);
-
-		if(left) {
-			body.getAcceleration().x = -ACCELERATION;
-		} else if (right) {
-			body.getAcceleration().x = ACCELERATION;
-		}
-    }
-
-    /**
+	/**
      * Resets player's position, velocity, and orientation to their original values. Used when starting a new level.
      */
     public void reset() {
@@ -272,8 +254,6 @@ public class Player extends Actor {
 	private void render(float dt, Batch batch, Body body) {
 		// TODO Move to render... somehow.  Maybe render needs a control component as well?
 		handleAnimationSwitching();
-		// TODO Move to... multiple places, probably
-		handleMovement();
 
 		elapsedTime += Gdx.graphics.getDeltaTime();
 

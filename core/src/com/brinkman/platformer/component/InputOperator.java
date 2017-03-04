@@ -6,6 +6,8 @@ import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.KeyboardProcessor;
+import com.brinkman.platformer.physics.ControlledBody;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -17,6 +19,7 @@ import static com.brinkman.platformer.util.Constants.CONTROLLER_PRESENT;
  */
 public class InputOperator implements Operator
 {
+	private static final float HORIZONTAL_ACCELERATION = 0.8f;
 	private final Collection<Class<? extends RootComponent>> requiredComponents;
 	private final KeyboardProcessor keyboardProcessor;
 	private ControllerProcessor controllerProcessor;
@@ -59,13 +62,28 @@ public class InputOperator implements Operator
 	@Override
 	public void operate(float deltaT, Entity entity, GameWorld world) {
 		InputComponent inputComponent = entity.getComponents().getInstance(InputComponent.class);
+		PhysicsComponent physicsComponent = entity.getComponents().getInstance(PhysicsComponent.class);
 
-		assert inputComponent != null;
+		if((inputComponent != null) && (physicsComponent instanceof ControlledBody)) {
+			boolean left = (controllerProcessor != null) ? controllerProcessor.left() : keyboardProcessor.left();
+			boolean right = (controllerProcessor != null) ? controllerProcessor.right() : keyboardProcessor.right();
+			boolean run = (controllerProcessor != null) ? controllerProcessor.run() : keyboardProcessor.run();
+			ControlledBody body = (ControlledBody) physicsComponent;
 
-		boolean left = (controllerProcessor != null) ? controllerProcessor.left() : keyboardProcessor.left();
-		boolean right = (controllerProcessor != null) ? controllerProcessor.right() : keyboardProcessor.right();
-		boolean run = (controllerProcessor != null) ? controllerProcessor.run() : keyboardProcessor.run();
+			inputComponent.setKeyFlags(left, right, run);
+			handleMovement(body, left, right, run);
+		}
+	}
 
-		inputComponent.setKeyFlags(left, right, run);
+	private static void handleMovement(ControlledBody body, boolean left, boolean right, boolean run) {
+		//Run conditionals
+		float moveSpeed = run ? 10 : 5;
+		body.setMoveSpeed(moveSpeed);
+
+		if(left) {
+			body.getAcceleration().x = -HORIZONTAL_ACCELERATION;
+		} else if (right) {
+			body.getAcceleration().x = HORIZONTAL_ACCELERATION;
+		}
 	}
 }
