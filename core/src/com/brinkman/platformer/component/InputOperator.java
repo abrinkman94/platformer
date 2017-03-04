@@ -73,42 +73,43 @@ public class InputOperator implements Operator
 			boolean left = (controllerProcessor != null) ? controllerProcessor.left() : keyboardProcessor.left();
 			boolean right = (controllerProcessor != null) ? controllerProcessor.right() : keyboardProcessor.right();
 			boolean run = (controllerProcessor != null) ? controllerProcessor.run() : keyboardProcessor.run();
+
+			inputComponent.setLeftActive(left);
+			inputComponent.setRightActive(right);
+			inputComponent.setRunActive(run);
+
 			ControlledBody body = (ControlledBody) physicsComponent;
 
-			handleMovement(body, left, right, run);
-			handleAnimationSwitching(renderComponent, body, left, right, run);
+			handleMovement(body, inputComponent);
+			handleAnimationSwitching(renderComponent, body, inputComponent);
 		}
 	}
 
-	private static void handleMovement(ControlledBody body, boolean left, boolean right, boolean run) {
+	private static void handleMovement(ControlledBody body, InputComponent input) {
 		//Run conditionals
-		float moveSpeed = run ? 10 : 5;
+		float moveSpeed = input.isRunActive() ? 10 : 5;
 		body.setMoveSpeed(moveSpeed);
 
-		if(left) {
+		if(input.isLeftActive()) {
 			body.getAcceleration().x = -HORIZONTAL_ACCELERATION;
-		} else if (right) {
+		} else if (input.isRightActive()) {
 			body.getAcceleration().x = HORIZONTAL_ACCELERATION;
 		}
 	}
 
-	private void handleAnimationSwitching(RenderComponent renderComponent,
-										  ControlledBody body,
-										  boolean left,
-										  boolean right,
-										  boolean run) {
+	private void handleAnimationSwitching(RenderComponent renderComponent, ControlledBody body, InputComponent input) {
 		AnimationType currentAnimation = null;
 
-		if (left) {
+		if (input.isLeftActive()) {
 			body.setFacingRight(false);
-			if (run) {
+			if (input.isRunActive()) {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : RUN_LEFT;
 			} else {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : WALK_LEFT;
 			}
-		} else if (right) {
+		} else if (input.isRightActive()) {
 			body.setFacingRight(true);
-			if (run) {
+			if (input.isRunActive()) {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : RUN_RIGHT;
 			} else {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : WALK_RIGHT;
