@@ -75,7 +75,6 @@ public class InputOperator implements Operator
 			boolean run = (controllerProcessor != null) ? controllerProcessor.run() : keyboardProcessor.run();
 			ControlledBody body = (ControlledBody) physicsComponent;
 
-			inputComponent.setKeyFlags(left, right, run);
 			handleMovement(body, left, right, run);
 			handleAnimationSwitching(renderComponent, body, left, right, run);
 		}

@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.InputComponent;
+import com.brinkman.platformer.component.PlayerInputComponent;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.render.AnimationRenderComponent;
@@ -82,7 +83,7 @@ public class Player extends Actor
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
               .put(RenderComponent.class, new AnimationRenderComponent(animations.get(IDLE_RIGHT), animations))
               .put(PhysicsComponent.class, body)
-              .put(InputComponent.class, this::setKeyFlags)
+              .put(InputComponent.class, new PlayerInputComponent())
               .build();
 
         LOGGER.info("Initialized");
@@ -157,14 +158,7 @@ public class Player extends Actor
      * @return HashMap Item, ItemType
      */
     public Array<Item> getInventory() { return inventory; }
-
-    /**
-     * Sets boolean values for input from InputFlags.
-     */
-    private void setKeyFlags(boolean left, boolean right, boolean run) {
-    }
-
-
+    
     /**
      * Resets player's position, velocity, and facingRight to their original values. Used when starting a new level.
      */
