@@ -1,5 +1,7 @@
-package com.brinkman.platformer.component;
+package com.brinkman.platformer.component.input;
 
+
+import com.brinkman.platformer.component.RootComponent;
 
 /**
  * @author Austin Brinkman.

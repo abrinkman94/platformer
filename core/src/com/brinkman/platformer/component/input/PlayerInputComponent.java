@@ -1,4 +1,4 @@
-package com.brinkman.platformer.component;
+package com.brinkman.platformer.component.input;
 
 /**
  * @author Austin Brinkman.

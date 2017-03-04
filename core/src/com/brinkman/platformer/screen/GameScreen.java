@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
-import com.brinkman.platformer.component.InputOperator;
+import com.brinkman.platformer.component.input.InputOperator;
 import com.brinkman.platformer.component.Operator;
 import com.brinkman.platformer.component.render.RenderOperator;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
