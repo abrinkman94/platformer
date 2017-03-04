@@ -25,4 +25,7 @@ public interface ControlledBody extends MotileBody {
 
     void setTouchingLeftWall(boolean touchingLeftWall);
 
+    boolean isFacingRight();
+
+    void setFacingRight(boolean facingRight);
 }

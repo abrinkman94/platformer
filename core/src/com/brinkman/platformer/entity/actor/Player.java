@@ -55,7 +55,7 @@ public class Player extends Actor
     private static final int PLAYER_HEIGHT = 64;
     private static final int JUMP_VEL = 12;
 
-    private boolean facingRight;
+    private boolean facingRight = true;
     private boolean left;
     private boolean right;
     private boolean run;

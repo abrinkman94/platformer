@@ -9,6 +9,7 @@ public class AbstractControlledBody extends AbstractMotileBody implements Contro
     private float jumpVelocity;
     private boolean touchingRightWall;
     private boolean touchingLeftWall;
+    private boolean facingRight = true;
 
     @Override
     public boolean isJumping() { return jumping; }
@@ -39,4 +40,14 @@ public class AbstractControlledBody extends AbstractMotileBody implements Contro
 
     @Override
     public void setTouchingLeftWall(boolean touchingLeftWall) { this.touchingLeftWall = touchingLeftWall; }
+
+    @Override
+    public boolean isFacingRight() {
+        return facingRight;
+    }
+
+    @Override
+    public void setFacingRight(boolean facingRight) {
+        this.facingRight = facingRight;
+    }
 }
