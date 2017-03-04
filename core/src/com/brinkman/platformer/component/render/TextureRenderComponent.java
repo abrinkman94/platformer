@@ -30,4 +30,9 @@ public class TextureRenderComponent implements RenderComponent {
     public TextureRegion getTextureRegion(float deltaT) {
         return textureRegion;
     }
+
+    @Override
+    public void setAnimationType(AnimationType animationType) {
+
+    }
 }

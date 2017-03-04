@@ -15,4 +15,6 @@ public interface RenderComponent extends RootComponent {
     void render(float dt, Batch batch, Body body);
 
     TextureRegion getTextureRegion(float deltaT);
+
+    void setAnimationType(AnimationType animationType);
 }

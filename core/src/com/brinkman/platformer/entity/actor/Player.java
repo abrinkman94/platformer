@@ -22,6 +22,7 @@ import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.physics.*;
 import com.brinkman.platformer.util.AssetUtil;
+import com.brinkman.platformer.util.TexturePaths;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import java.util.EnumMap;
@@ -34,7 +35,8 @@ import static com.brinkman.platformer.util.TexturePaths.*;
 /**
  * Created by Austin on 9/29/2016.
  */
-public class Player extends Actor {
+public class Player extends Actor
+{
     private static final Logger LOGGER = new Logger(Player.class.getName(), Logger.DEBUG);
 
     private TextureAtlas walkRightAtlas;
@@ -59,13 +61,13 @@ public class Player extends Actor {
     private boolean run;
 
     private final Map<AnimationType, Animation<TextureRegion>> animations = new EnumMap<>(AnimationType.class);
-	private final ImmutableClassToInstanceMap<RootComponent> components;
+    private final ImmutableClassToInstanceMap<RootComponent> components;
 
-	/**
-	 * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and facingRight.
-	 */
-	public Player() {
-		inventory = new Array<>();
+    /**
+     * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and facingRight.
+     */
+    public Player() {
+        inventory = new Array<>();
 
         ControlledPhysicsComponent body = new ControlledPhysicsComponent();
         body.setAffectedByGravity(true);
@@ -83,27 +85,34 @@ public class Player extends Actor {
         body.setCollisionListener(Platform.class, platformListener);
         body.setCollisionListener(StaticEntity.class, staticListener);
 
-		initializeTextureAtlas();
+        initializeTextureAtlas();
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
-                .put(RenderComponent.class, new RenderComponent() {
-					@Override
-					public void render(float dt, Batch batch, Body body) {
-						Player.this.render(dt, batch, body);
-					}
+              .put(RenderComponent.class, new RenderComponent()
+              {
+                  @Override
+                  public void render(float dt, Batch batch, Body body) {
+                      Player.this.render(dt, batch, body);
+                  }
 
-					@Override
-					public TextureRegion getTextureRegion(float deltaT) {
-						elapsedTime += deltaT;
-						return animation.getKeyFrame(elapsedTime);
-					}
-				})
-                .put(PhysicsComponent.class, body)
-			  	.put(InputComponent.class, this::setKeyFlags)
-                .build();
+                  @Override
+                  public TextureRegion getTextureRegion(float deltaT) {
+                      elapsedTime += deltaT;
+                      return animation.getKeyFrame(elapsedTime);
+                  }
 
-		LOGGER.info("Initialized");
-	}
+                  @Override
+                  public void setAnimationType(AnimationType animationType) {
+                      Animation<TextureRegion> tempAnimation = animations.get(animationType);
+                      animation = (tempAnimation != null) ? tempAnimation : animations.get(IDLE_RIGHT);
+                  }
+              })
+              .put(PhysicsComponent.class, body)
+              .put(InputComponent.class, this::setKeyFlags)
+              .build();
+
+        LOGGER.info("Initialized");
+    }
 
     private void handleItemCollision(Item item) { inventory.add(item); }
 
@@ -113,96 +122,100 @@ public class Player extends Actor {
     private void initializeTextureAtlas() {
         walkRightAtlas = new TextureAtlas();
         walkRightAtlas.addRegion("frame1",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_RIGHT, Texture.class)));
         walkRightAtlas.addRegion("frame2",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_RIGHT, Texture.class)));
         walkRightAtlas.addRegion("frame3",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_RIGHT, Texture.class)));
         walkRightAtlas.addRegion("frame4",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_RIGHT, Texture.class)));
         walkRightAtlas.addRegion("frame5",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_RIGHT, Texture.class)));
         walkRightAtlas.addRegion("frame6",
-                new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
 
-		walkLeftAtlas = new TextureAtlas();
-		for (AtlasRegion region : walkRightAtlas.getRegions()) {
-			int i = 0;
-			i++;
-			walkLeftAtlas.addRegion("frame " + i, new TextureRegion(region.getTexture())).flip(true, false);
-		}
+        walkLeftAtlas = new TextureAtlas();
+        for (AtlasRegion region : walkRightAtlas.getRegions()) {
+            int i = 0;
+            i++;
+            walkLeftAtlas.addRegion("frame " + i, new TextureRegion(region.getTexture())).flip(true, false);
+        }
 
-		idleRightAtlas = new TextureAtlas();
-		idleRightAtlas.addRegion("frame1",
-			  new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_RIGHT, Texture.class)));
-		idleRightAtlas.addRegion("frame2",
-			  new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_2_RIGHT, Texture.class)));
+        idleRightAtlas = new TextureAtlas();
+        idleRightAtlas.addRegion("frame1",
+              new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_RIGHT, Texture.class)));
+        idleRightAtlas.addRegion("frame2",
+              new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_2_RIGHT, Texture.class)));
 
-		idleLeftAtlas = new TextureAtlas();
-		for (AtlasRegion region : idleRightAtlas.getRegions()) {
-			int i = 0;
-			i++;
-			idleLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
-		}
+        idleLeftAtlas = new TextureAtlas();
+        for (AtlasRegion region : idleRightAtlas.getRegions()) {
+            int i = 0;
+            i++;
+            idleLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        }
 
-		jumpRightAtlas = new TextureAtlas();
-		jumpRightAtlas.addRegion("frame1",
-			  new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_RIGHT, Texture.class)));
+        jumpRightAtlas = new TextureAtlas();
+        jumpRightAtlas.addRegion("frame1",
+              new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_RIGHT, Texture.class)));
 
-		jumpLeftAtlas = new TextureAtlas();
-		for (AtlasRegion region : jumpRightAtlas.getRegions()) {
-			int i = 0;
-			i++;
-			jumpLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
-		}
+        jumpLeftAtlas = new TextureAtlas();
+        for (AtlasRegion region : jumpRightAtlas.getRegions()) {
+            int i = 0;
+            i++;
+            jumpLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        }
 
-		animations.put(IDLE_LEFT, new Animation<>(WALK_ANIMATION_TIME, idleLeftAtlas.getRegions(), PlayMode.LOOP));
-		animations.put(IDLE_RIGHT, new Animation<>(WALK_ANIMATION_TIME, idleRightAtlas.getRegions(), PlayMode.LOOP));
-		animations.put(WALK_LEFT, new Animation<>(WALK_ANIMATION_TIME, walkLeftAtlas.getRegions(), PlayMode.LOOP));
-		animations.put(WALK_RIGHT, new Animation<>(WALK_ANIMATION_TIME, walkRightAtlas.getRegions(), PlayMode.LOOP));
-		animations.put(RUN_LEFT, new Animation<>(RUN_ANIMATION_TIME, walkLeftAtlas.getRegions(), PlayMode.LOOP));
-		animations.put(RUN_RIGHT, new Animation<>(RUN_ANIMATION_TIME, walkRightAtlas.getRegions(), PlayMode.LOOP));
-		animations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlas.getRegions(), PlayMode.LOOP));
-		animations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(IDLE_LEFT, new Animation<>(WALK_ANIMATION_TIME, idleLeftAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(IDLE_RIGHT, new Animation<>(WALK_ANIMATION_TIME, idleRightAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(WALK_LEFT, new Animation<>(WALK_ANIMATION_TIME, walkLeftAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(WALK_RIGHT, new Animation<>(WALK_ANIMATION_TIME, walkRightAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(RUN_LEFT, new Animation<>(RUN_ANIMATION_TIME, walkLeftAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(RUN_RIGHT, new Animation<>(RUN_ANIMATION_TIME, walkRightAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlas.getRegions(), PlayMode.LOOP));
 
-		animation = animations.get(currentAnimation);
-	}
+        animation = animations.get(currentAnimation);
+    }
 
-	/**
-	 * Returns the HashMap containing inventory currently in the player's 'inventory'. This does not include power-ups or
-	 * life inventory.
-	 * @return HashMap Item, ItemType
-	 */
-	public Array<Item> getInventory() { return inventory; }
+    /**
+     * Returns the HashMap containing inventory currently in the player's 'inventory'. This does not include power-ups
+     * or life inventory.
+     *
+     * @return HashMap Item, ItemType
+     */
+    public Array<Item> getInventory() { return inventory; }
 
-	/**
-	 * Handles the switching of animations.
-	 */
-	private void handleAnimationSwitching() {
+    /**
+     * Handles the switching of animations.
+     */
+    private void handleAnimationSwitching() {
+        ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
+        RenderComponent renderComponent = components.getInstance(RenderComponent.class);
+        assert body != null;
+        assert renderComponent != null;
 
-		animation = animations.get(currentAnimation);
+        renderComponent.setAnimationType(currentAnimation);
 
-		ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
-		assert body != null;
+        if (left) {
+            facingRight = false;
+            currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : WALK_LEFT;
+        } else if (right) {
+            facingRight = true;
+            currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : WALK_RIGHT;
+        } else {
+            float xSpeed = body.getVelocity().x;
 
-		if (left) {
-			facingRight = false;
-			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : WALK_LEFT;
-		} else if (right) {
-			facingRight = true;
-			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : WALK_RIGHT;
-		} else {
-			float xSpeed = body.getVelocity().x;
+            if (xSpeed == 0.0f) {
+                if (facingRight) {
+                    currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : IDLE_RIGHT;
+                } else {
+                    currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : IDLE_LEFT;
+                }
+            }
+        }
 
-			if(xSpeed == 0.0f) {
-				if (facingRight) {
-					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : IDLE_RIGHT;
-				} else {
-					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : IDLE_LEFT;
-				}
-			}
-		}
-	}
+
+    }
 
     /**
      * Sets boolean values for input from InputFlags.
@@ -214,7 +227,7 @@ public class Player extends Actor {
     }
 
 
-	/**
+    /**
      * Resets player's position, velocity, and facingRight to their original values. Used when starting a new level.
      */
     public void reset() {
@@ -239,51 +252,51 @@ public class Player extends Actor {
             MotileBody body = (MotileBody) components.getInstance(PhysicsComponent.class);
             assert body != null;
 
-			Vector2 originPosition = body.getOriginPosition();
-			body.getPosition().set(originPosition);
-			body.getVelocity().y = 0;
-			// TODO Remove to make game over actually happen
-			//    lives--;
-		}
-	}
+            Vector2 originPosition = body.getOriginPosition();
+            body.getPosition().set(originPosition);
+            body.getVelocity().y = 0;
+            // TODO Remove to make game over actually happen
+            //    lives--;
+        }
+    }
 
-	private void render(float dt, Batch batch, Body body) {
-		// TODO Move to render... somehow.  Maybe render needs a control component as well?
-		handleAnimationSwitching();
+    private void render(float dt, Batch batch, Body body) {
+        // TODO Move to render... somehow.  Maybe render needs a control component as well?
+        handleAnimationSwitching();
 
-		elapsedTime += Gdx.graphics.getDeltaTime();
+        elapsedTime += Gdx.graphics.getDeltaTime();
 
-		Vector2 position = body.getPosition();
-		TextureRegion frame = animation.getKeyFrame(elapsedTime, false);
-		float width = body.getWidth();
-		float height = body.getHeight();
+        Vector2 position = body.getPosition();
+        TextureRegion frame = animation.getKeyFrame(elapsedTime, false);
+        float width = body.getWidth();
+        float height = body.getHeight();
 
-		batch.begin();
-		batch.draw(frame, position.x, position.y, width, height);
-		batch.end();
+        batch.begin();
+        batch.draw(frame, position.x, position.y, width, height);
+        batch.end();
 
-		//Handle player falling off map
-		// TODO Move to... maybe MechanicsComponent? Some sort of component to handle game rules, anyway...
-		if ((position.x < 0) || ((position.y + body.getHeight()) < 0)){
-			handleDeath();
-		}
+        //Handle player falling off map
+        // TODO Move to... maybe MechanicsComponent? Some sort of component to handle game rules, anyway...
+        if ((position.x < 0) || ((position.y + body.getHeight()) < 0)) {
+            handleDeath();
+        }
 
         // TODO Probably move to PhysicsComponent, but unsure; maybe need to check in ControlComponent or something.
     }
 
-	@Override
-	public void dispose() {
-		idleRightAtlas.dispose();
-		idleLeftAtlas.dispose();
-		walkRightAtlas.dispose();
-		walkLeftAtlas.dispose();
-		jumpRightAtlas.dispose();
-		jumpLeftAtlas.dispose();
+    @Override
+    public void dispose() {
+        idleRightAtlas.dispose();
+        idleLeftAtlas.dispose();
+        walkRightAtlas.dispose();
+        walkLeftAtlas.dispose();
+        jumpRightAtlas.dispose();
+        jumpLeftAtlas.dispose();
 
-		LOGGER.info("Disposed");
-	}
+        LOGGER.info("Disposed");
+    }
 
-	@Override
-	public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
+    @Override
+    public ImmutableClassToInstanceMap<RootComponent> getComponents() { return components; }
 }
 

@@ -14,18 +14,20 @@ import java.util.Map;
  */
 public class AnimationRenderComponent implements RenderComponent
 {
-    private final Animation<TextureRegion> animation;
+    private final Animation<TextureRegion> defaultAnimation;
     private final Map<AnimationType, Animation<TextureRegion>> animations;
+    private Animation<TextureRegion> currentAnimation;
     private float elapsedTime;
 
-    public AnimationRenderComponent(Animation<TextureRegion> animation,
+    public AnimationRenderComponent(Animation<TextureRegion> defaultAnimation,
                                     Map<AnimationType, Animation<TextureRegion>> animations) {
-        this.animation = animation;
+        this.defaultAnimation = defaultAnimation;
         this.animations = animations;
+        this.currentAnimation = defaultAnimation;
     }
 
-    public AnimationRenderComponent(Animation<TextureRegion> animation) {
-        this(animation, new EnumMap<>(AnimationType.class));
+    public AnimationRenderComponent(Animation<TextureRegion> defaultAnimation) {
+        this(defaultAnimation, new EnumMap<>(AnimationType.class));
     }
 
     @Override
@@ -44,6 +46,13 @@ public class AnimationRenderComponent implements RenderComponent
     public TextureRegion getTextureRegion(float dt) {
         elapsedTime += dt;
 
-        return animation.getKeyFrame(elapsedTime, true);
+        return currentAnimation.getKeyFrame(elapsedTime, true);
+    }
+
+    @Override
+    public void setAnimationType(AnimationType animationType) {
+        Animation<TextureRegion> animationTemp = animations.get(animationType);
+
+        currentAnimation = (animationTemp != null) ? animationTemp : defaultAnimation;
     }
 }
