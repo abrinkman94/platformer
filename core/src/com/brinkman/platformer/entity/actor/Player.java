@@ -1,10 +1,8 @@
 package com.brinkman.platformer.entity.actor;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,7 +21,6 @@ import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.physics.*;
 import com.brinkman.platformer.util.AssetUtil;
-import com.brinkman.platformer.util.TexturePaths;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import java.util.EnumMap;
@@ -46,7 +43,6 @@ public class Player extends Actor
     private TextureAtlas idleLeftAtlas;
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
-    private Animation<TextureRegion> animation;
     private final Array<Item> inventory;
 
     private static final float WALK_ANIMATION_TIME = 0.1f;
@@ -55,11 +51,6 @@ public class Player extends Actor
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
     private static final int JUMP_VEL = 12;
-
-    private boolean facingRight = true;
-    private boolean left;
-    private boolean right;
-    private boolean run;
 
     private final Map<AnimationType, Animation<TextureRegion>> animations = new EnumMap<>(AnimationType.class);
     private final ImmutableClassToInstanceMap<RootComponent> components;
@@ -157,7 +148,6 @@ public class Player extends Actor
         animations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlas.getRegions(), PlayMode.LOOP));
         animations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlas.getRegions(), PlayMode.LOOP));
 
-        animation = animations.get(currentAnimation);
     }
 
     /**
@@ -169,44 +159,9 @@ public class Player extends Actor
     public Array<Item> getInventory() { return inventory; }
 
     /**
-     * Handles the switching of animations.
-     */
-    private void handleAnimationSwitching() {
-        ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
-        RenderComponent renderComponent = components.getInstance(RenderComponent.class);
-        assert body != null;
-        assert renderComponent != null;
-
-        renderComponent.setAnimationType(currentAnimation);
-
-        if (left) {
-            facingRight = false;
-            currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : WALK_LEFT;
-        } else if (right) {
-            facingRight = true;
-            currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : WALK_RIGHT;
-        } else {
-            float xSpeed = body.getVelocity().x;
-
-            if (xSpeed == 0.0f) {
-                if (facingRight) {
-                    currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : IDLE_RIGHT;
-                } else {
-                    currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : IDLE_LEFT;
-                }
-            }
-        }
-
-
-    }
-
-    /**
      * Sets boolean values for input from InputFlags.
      */
     private void setKeyFlags(boolean left, boolean right, boolean run) {
-        this.left = left;
-        this.right = right;
-        this.run = run;
     }
 
 
@@ -220,7 +175,6 @@ public class Player extends Actor
         Vector2 originPosition = body.getOriginPosition();
         body.getPosition().set(originPosition);
         body.getVelocity().set(0.0f, 0.0f);
-        facingRight = true;
         body.setGrounded(false);
         body.setTouchingLeftWall(false);
         body.setTouchingRightWall(false);
@@ -241,30 +195,6 @@ public class Player extends Actor
             // TODO Remove to make game over actually happen
             //    lives--;
         }
-    }
-
-    private void render(float dt, Batch batch, Body body) {
-        // TODO Move to render... somehow.  Maybe render needs a control component as well?
-        handleAnimationSwitching();
-
-        elapsedTime += Gdx.graphics.getDeltaTime();
-
-        Vector2 position = body.getPosition();
-        TextureRegion frame = animation.getKeyFrame(elapsedTime, false);
-        float width = body.getWidth();
-        float height = body.getHeight();
-
-        batch.begin();
-        batch.draw(frame, position.x, position.y, width, height);
-        batch.end();
-
-        //Handle player falling off map
-        // TODO Move to... maybe MechanicsComponent? Some sort of component to handle game rules, anyway...
-        if ((position.x < 0) || ((position.y + body.getHeight()) < 0)) {
-            handleDeath();
-        }
-
-        // TODO Probably move to PhysicsComponent, but unsure; maybe need to check in ControlComponent or something.
     }
 
     @Override
