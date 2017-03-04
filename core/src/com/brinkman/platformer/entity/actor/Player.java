@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.component.InputComponent;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
+import com.brinkman.platformer.component.render.AnimationRenderComponent;
 import com.brinkman.platformer.component.render.AnimationType;
 import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
@@ -88,25 +89,7 @@ public class Player extends Actor
         initializeTextureAtlas();
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
-              .put(RenderComponent.class, new RenderComponent()
-              {
-                  @Override
-                  public void render(float dt, Batch batch, Body body) {
-                      Player.this.render(dt, batch, body);
-                  }
-
-                  @Override
-                  public TextureRegion getTextureRegion(float deltaT) {
-                      elapsedTime += deltaT;
-                      return animation.getKeyFrame(elapsedTime);
-                  }
-
-                  @Override
-                  public void setAnimationType(AnimationType animationType) {
-                      Animation<TextureRegion> tempAnimation = animations.get(animationType);
-                      animation = (tempAnimation != null) ? tempAnimation : animations.get(IDLE_RIGHT);
-                  }
-              })
+              .put(RenderComponent.class, new AnimationRenderComponent(animations.get(IDLE_RIGHT), animations))
               .put(PhysicsComponent.class, body)
               .put(InputComponent.class, this::setKeyFlags)
               .build();
