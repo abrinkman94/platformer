@@ -209,16 +209,13 @@ public class Player extends Actor {
 		body.setMoveSpeed(moveSpeed);
 
 		//X-axis movement
-		float maxSpeed = body.getMoveSpeed();
 		float xSpeed = body.getVelocity().x;
-		boolean movingLeft = xSpeed > -maxSpeed;
-		boolean movingRight = xSpeed < maxSpeed;
 
-        if (left && movingLeft) {
+		if (left) {
             body.getAcceleration().x = -ACCELERATION;
             orientation = "left";
             currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
-        } else if (right && movingRight) {
+        } else if (right) {
             body.getAcceleration().x = ACCELERATION;
             orientation = "right";
             currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
