@@ -185,6 +185,27 @@ public class Player extends Actor {
 				break;
 			default:
 		}
+
+		ControlledBody body = (ControlledBody) components.getInstance(PhysicsComponent.class);
+		assert body != null;
+
+		if (left) {
+			orientation = "left";
+			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
+		} else if (right) {
+			orientation = "right";
+			currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
+		} else {
+			float xSpeed = body.getVelocity().x;
+
+			if(xSpeed == 0.0f) {
+				if ("right".equalsIgnoreCase(orientation)) {
+					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
+				} else {
+					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
+				}
+			}
+		}
 	}
 
     /**
@@ -208,26 +229,11 @@ public class Player extends Actor {
 		float moveSpeed = run ? 10 : 5;
 		body.setMoveSpeed(moveSpeed);
 
-		//X-axis movement
-		float xSpeed = body.getVelocity().x;
-
-		if (left) {
-            body.getAcceleration().x = -ACCELERATION;
-            orientation = "left";
-            currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : WALK_LEFT_FRAMES;
-        } else if (right) {
-            body.getAcceleration().x = ACCELERATION;
-            orientation = "right";
-            currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : WALK_RIGHT_FRAMES;
-        } else {
-            if(xSpeed == 0.0f) {
-                if ("right".equalsIgnoreCase(orientation)) {
-                    currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT_FRAMES : IDLE_RIGHT_FRAMES;
-                } else {
-                    currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT_FRAMES : IDLE_LEFT_FRAMES;
-                }
-            }
-        }
+		if(left) {
+			body.getAcceleration().x = -ACCELERATION;
+		} else if (right) {
+			body.getAcceleration().x = ACCELERATION;
+		}
     }
 
     /**
