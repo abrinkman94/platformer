@@ -208,7 +208,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        System.out.println(shader.getLog());
         shader.begin();
         shader.setUniformf(RESOLUTION_UNIFORM, width, height);
         shader.end();
@@ -228,7 +227,9 @@ public class GameScreen implements Screen {
         if(colorBuffer != null) {
             colorBuffer.dispose();
         }
-        colorBuffer = new FrameBuffer(Format.RGBA8888, (int) camera.viewportWidth, (int) camera.viewportHeight, false);
+        int textureWidth = (int) (camera.viewportWidth / TO_WORLD_UNITS);
+        int textureHeight = (int) (camera.viewportHeight / TO_WORLD_UNITS);
+        colorBuffer = new FrameBuffer(Format.RGBA8888, textureWidth, textureHeight, false);
     }
 
     @Override
