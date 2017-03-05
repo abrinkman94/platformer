@@ -3,10 +3,7 @@ package com.brinkman.platformer.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -53,7 +50,7 @@ public class GameScreen implements Screen {
     private static final String POINT_FALLOFF_UNIFORM = "pointLightFalloff";
     private static final Vector3 AMBIENT_COLOR = new Vector3(0.0f, 0.0f, 0.0f);
     private static final Vector3 POINT_COLOR = new Vector3(1.0f, 1.0f,1.0f);
-    private static final Vector3 POINT_FALLOFF = new Vector3(1.0f, 1.0f, 1.0f);
+    private static final Vector3 POINT_FALLOFF = new Vector3(1.0f, 1.0f, 0.0f);
     private static final float AMBIENT_INTENSITY = 1.0f;
     private static final float POINT_INTENSITY = 1.0f;
 
@@ -79,7 +76,7 @@ public class GameScreen implements Screen {
         gameWorld = new GameWorld(new Level("map/lighting-demo/cave.tmx"));
         float viewportWidth = APP_WIDTH * TO_WORLD_UNITS;
         float viewportHeight = APP_HEIGHT * TO_WORLD_UNITS;
-        camera = new OrthographicCamera(viewportWidth, viewportHeight);
+        camera = new OrthographicCamera(APP_WIDTH, APP_HEIGHT);
         bufferCamera = new OrthographicCamera(viewportWidth, viewportHeight);
         player = new Player();
         hud = new HUD(gameWorld);
@@ -136,8 +133,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         drawColorBuffer(delta);
+        Texture colorTexture = colorBuffer.getColorBufferTexture();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -150,20 +147,19 @@ public class GameScreen implements Screen {
         // Update the SpriteBatch projection matrix
         spriteBatch.setProjectionMatrix(camera.combined);
 
+        spriteBatch.begin();
+        colorTexture.bind(0);
+        spriteBatch.draw(colorTexture, 0, 0);
+        spriteBatch.end();
+
         // TODO Prooooobably should do this more efficiently
         Collection<Entity> entitiesCopy = new ArrayList<>(gameWorld.getEntities());
 
-        //Renders GameWorld background
-        gameWorld.render(camera, delta, spriteBatch);
 
         // Do physics, yo.
         entitiesCopy.stream()
                     .filter(it -> it.getComponents().keySet().containsAll(physicsSubsystem.getRequiredComponents()))
                     .forEach(it -> physicsSubsystem.operate(delta, it, gameWorld));
-        // Render Entities
-        entitiesCopy.stream()
-                    .filter(it -> it.getComponents().keySet().containsAll(renderSubsystem.getRequiredComponents()))
-                    .forEach(it -> renderSubsystem.operate(delta, it, gameWorld));
         // Do input, dayglo
         entitiesCopy.stream()
                     .filter(it -> it.getComponents().keySet().containsAll(inputSubsystem.getRequiredComponents()) &&
@@ -171,9 +167,9 @@ public class GameScreen implements Screen {
                     .forEach(it -> inputSubsystem.operate(delta, it, gameWorld));
 
         //Camera utility methods
-        CameraUtil.lerpCameraToActor(player, camera);
-        CameraUtil.handleZoom(gameWorld, camera);
-//        CameraUtil.keepCameraInMap(camera);
+        CameraUtil.lerpCameraToActor(player, bufferCamera);
+        CameraUtil.handleZoom(gameWorld, bufferCamera);
+        CameraUtil.keepCameraInMap(bufferCamera);
 
         //Collision checks
         keepEntitiesInMap();
@@ -183,16 +179,17 @@ public class GameScreen implements Screen {
 
         //Updates camera
         camera.update();
+        bufferCamera.update();
     }
 
     private void setShaderUniforms() {
         Body body = player.getComponents().getInstance(PhysicsComponent.class);
         Vector2 playerPosition = body.getPosition();
-        int xDistFromCamera = (int) ((playerPosition.x - camera.position.x) / TO_WORLD_UNITS);
+        int xDistFromCamera = (int) ((playerPosition.x - bufferCamera.position.x) / TO_WORLD_UNITS);
         int xOffset = (int) (body.getWidth() / TO_WORLD_UNITS);
         int playerPixelX = (Gdx.graphics.getWidth() / 2) + xDistFromCamera + xOffset;
         float playerLightX = (float)playerPixelX / Gdx.graphics.getWidth();
-        int yDistFromCamera = (int) ((playerPosition.y - camera.position.y) / TO_WORLD_UNITS);
+        int yDistFromCamera = (int) ((playerPosition.y - bufferCamera.position.y) / TO_WORLD_UNITS);
         int yOffset = (int) ((body.getHeight() * 2) / TO_WORLD_UNITS);
         int playerPixelY = (Gdx.graphics.getHeight() / 2) + yDistFromCamera + yOffset;
         float playerLightY = (float) playerPixelY / Gdx.graphics.getWidth();
@@ -205,8 +202,25 @@ public class GameScreen implements Screen {
         shader.end();
     }
 
-    private void drawColorBuffer(float deltaT) {
+    private void drawColorBuffer(float delta) {
         colorBuffer.begin();
+
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        spriteBatch.setProjectionMatrix(bufferCamera.combined);
+        spriteBatch.setShader(defaultShader);
+
+        // TODO Prooooobably should do this more efficiently
+        Collection<Entity> entitiesCopy = new ArrayList<>(gameWorld.getEntities());
+
+        //Renders GameWorld background
+        gameWorld.render(camera, delta, spriteBatch);
+
+        // Render Entities
+        entitiesCopy.stream()
+                    .filter(it -> it.getComponents().keySet().containsAll(renderSubsystem.getRequiredComponents()))
+                    .forEach(it -> renderSubsystem.operate(delta, it, gameWorld));
 
         colorBuffer.end();
     }
@@ -217,14 +231,14 @@ public class GameScreen implements Screen {
         shader.setUniformf(RESOLUTION_UNIFORM, width, height);
         shader.end();
 
-        float viewportWidth = width * TO_WORLD_UNITS;
-        float viewportHeight = height * TO_WORLD_UNITS;
 
-        camera.setToOrtho(false, viewportWidth, viewportHeight);
+        camera.setToOrtho(false, width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0.0f);
         camera.update();
 
-        bufferCamera.setToOrtho(true, viewportWidth, viewportHeight); // Invert buffer camera because textures are y-up
+        float bufferWidth = width * TO_WORLD_UNITS;
+        float bufferHeight = height * TO_WORLD_UNITS;
+        bufferCamera.setToOrtho(true, bufferWidth, bufferHeight); // Invert buffer camera because textures are y-up
         bufferCamera.position.set(bufferCamera.viewportWidth / 2, bufferCamera.viewportHeight / 2, 0.0f);
         bufferCamera.update();
 
@@ -232,9 +246,7 @@ public class GameScreen implements Screen {
         if(colorBuffer != null) {
             colorBuffer.dispose();
         }
-        int textureWidth = (int) (camera.viewportWidth / TO_WORLD_UNITS);
-        int textureHeight = (int) (camera.viewportHeight / TO_WORLD_UNITS);
-        colorBuffer = new FrameBuffer(Format.RGBA8888, textureWidth, textureHeight, false);
+        colorBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
     }
 
     @Override
