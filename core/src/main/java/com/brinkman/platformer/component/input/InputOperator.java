@@ -74,10 +74,12 @@ public class InputOperator implements Operator
 			boolean left = (controllerProcessor != null) ? controllerProcessor.left() : keyboardProcessor.left();
 			boolean right = (controllerProcessor != null) ? controllerProcessor.right() : keyboardProcessor.right();
 			boolean run = (controllerProcessor != null) ? controllerProcessor.run() : keyboardProcessor.run();
+			boolean melee = (controllerProcessor != null) ? controllerProcessor.melee() : keyboardProcessor.melee();
 
 			inputComponent.setLeftActive(left);
 			inputComponent.setRightActive(right);
 			inputComponent.setRunActive(run);
+			inputComponent.setMeleeActive(melee);
 
 			ControlledBody body = (ControlledBody) physicsComponent;
 

@@ -8,6 +8,7 @@ public class PlayerInputComponent implements InputComponent
     boolean runActive;
     boolean leftActive;
     boolean rightActive;
+    boolean meleeActive;
 
     @Override
     public boolean isRunActive() {
@@ -37,5 +38,15 @@ public class PlayerInputComponent implements InputComponent
     @Override
     public void setRightActive(boolean rightActive) {
         this.rightActive = rightActive;
+    }
+
+    @Override
+    public boolean isMeleeActive() {
+        return meleeActive;
+    }
+
+    @Override
+    public void setMeleeActive(boolean meleeActive) {
+        this.meleeActive = meleeActive;
     }
 }
