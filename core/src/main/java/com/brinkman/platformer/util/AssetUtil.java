@@ -21,16 +21,19 @@ public final class AssetUtil
 		//Idle frames
 		for (int i = 1; i <= 2; i++) {
 			loadAsset("sprites/Idle/frame-" + i + "-right.png", Texture.class);
+			loadAsset("sprites/Idle/normal/frame-" + i + "-right.png", Texture.class);
 		}
 
 		//Jump frames
 		for (int i = 1; i <= 2; i++) {
 			loadAsset("sprites/Jump/frame-" + i + "-right.png", Texture.class);
+			loadAsset("sprites/Jump/normal/frame-" + i + "-right.png", Texture.class);
 		}
 
 		//Running frames
 		for (int i = 1; i <= 6; i++) {
 			loadAsset("sprites/running/frame-" + i + "-right.png", Texture.class);
+			loadAsset("sprites/running/normal/frame-" + i + "-right.png", Texture.class);
 		}
 
 		loadAsset("sprites/coinsheet.png", Texture.class);
