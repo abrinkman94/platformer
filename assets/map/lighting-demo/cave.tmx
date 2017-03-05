@@ -3,6 +3,9 @@
  <imagelayer name="Background">
   <image source="TempBackground.png" width="1024" height="1024"/>
  </imagelayer>
+ <imagelayer name="Normal" visible="0">
+  <image source="Normal.png" width="1024" height="1024"/>
+ </imagelayer>
  <objectgroup name="Static Collision">
   <object id="4" x="0" y="0" width="1024" height="64"/>
   <object id="5" x="992" y="0" width="32" height="1024"/>
