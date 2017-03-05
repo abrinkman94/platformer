@@ -202,6 +202,13 @@ public class GameWorld {
         }
     }
 
+    public void renderNormal(OrthographicCamera camera, float delta, Batch batch) {
+        level.renderNormal(camera, batch);
+        if (textureMapObjectRenderer == null) {
+            textureMapObjectRenderer = new TextureMapObjectRenderer(level.getTmxMap(), batch);
+        }
+    }
+
     /**
      * Disposes of disposable data in GameWorld.
      */

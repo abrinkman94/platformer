@@ -241,9 +241,8 @@ public class GameScreen implements Screen {
 
         spriteBatch.setProjectionMatrix(bufferCamera.combined);
         spriteBatch.setShader(defaultShader);
-        spriteBatch.begin();
 
-        spriteBatch.end();
+        gameWorld.renderNormal(bufferCamera, delta, spriteBatch);
 
         normalBuffer.end();
     }

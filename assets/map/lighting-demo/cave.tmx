@@ -3,7 +3,7 @@
  <imagelayer name="Background">
   <image source="TempBackground.png" width="1024" height="1024"/>
  </imagelayer>
- <imagelayer name="Normal" visible="0">
+ <imagelayer name="Normal">
   <image source="Normal.png" width="1024" height="1024"/>
  </imagelayer>
  <objectgroup name="Static Collision">

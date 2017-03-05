@@ -57,7 +57,15 @@ public class TMXMap extends TiledMap {
             renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
         }
         renderer.setView(cam);
-        renderer.render();
+        renderer.render(new int[] {0});
+    }
+
+    public void renderNormal(OrthographicCamera cam, Batch batch) {
+        if(renderer == null) {
+            renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
+        }
+        renderer.setView(cam);
+        renderer.render(new int[] {1});
     }
 
     /**

@@ -57,6 +57,10 @@ public class Level {
         map.render(camera, batch);
     }
 
+    public void renderNormal(OrthographicCamera camera, Batch batch) {
+        map.renderNormal(camera, batch);
+    }
+
     /**
      * Disposes of the TMXMap.
      */
