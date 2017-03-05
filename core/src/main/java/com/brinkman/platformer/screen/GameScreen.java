@@ -6,7 +6,10 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -59,20 +62,25 @@ public class GameScreen implements Screen {
     private final Operator inputSubsystem;
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
+    private final OrthographicCamera bufferCamera;
     private final Player player;
     private final HUD hud;
     private final GameWorld gameWorld;
     private final ShaderProgram shader;
     private final ShaderProgram defaultShader;
 
+    private FrameBuffer colorBuffer;
+
     /**
      * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
      */
     public GameScreen() {
         spriteBatch = new SpriteBatch();
-        camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
-    //    gameWorld = new GameWorld(new Level(1));
         gameWorld = new GameWorld(new Level("map/lighting-demo/cave.tmx"));
+        float viewportWidth = APP_WIDTH * TO_WORLD_UNITS;
+        float viewportHeight = APP_HEIGHT * TO_WORLD_UNITS;
+        camera = new OrthographicCamera(viewportWidth, viewportHeight);
+        bufferCamera = new OrthographicCamera(viewportWidth, viewportHeight);
         player = new Player();
         hud = new HUD(gameWorld);
 
@@ -173,6 +181,8 @@ public class GameScreen implements Screen {
         int playerPixelY = (Gdx.graphics.getHeight() / 2) + yDistFromCamera + yOffset;
         float playerLightY = (float) playerPixelY / Gdx.graphics.getWidth();
 
+        drawColorBuffer(delta);
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -227,12 +237,35 @@ public class GameScreen implements Screen {
         camera.update();
     }
 
+    private void drawColorBuffer(float deltaT) {
+        colorBuffer.begin();
+
+        colorBuffer.end();
+    }
+
     @Override
     public void resize(int width, int height) {
         System.out.println(shader.getLog());
         shader.begin();
         shader.setUniformf(RESOLUTION_UNIFORM, width, height);
         shader.end();
+
+        float viewportWidth = width * TO_WORLD_UNITS;
+        float viewportHeight = height * TO_WORLD_UNITS;
+
+        camera.setToOrtho(false, viewportWidth, viewportHeight);
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0.0f);
+        camera.update();
+
+        bufferCamera.setToOrtho(true, viewportWidth, viewportHeight); // Invert buffer camera because textures are y-up
+        bufferCamera.position.set(bufferCamera.viewportWidth / 2, bufferCamera.viewportHeight / 2, 0.0f);
+        bufferCamera.update();
+
+        // Resize color buffer
+        if(colorBuffer != null) {
+            colorBuffer.dispose();
+        }
+        colorBuffer = new FrameBuffer(Format.RGBA8888, (int) camera.viewportWidth, (int) camera.viewportHeight, false);
     }
 
     @Override
@@ -253,6 +286,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         AssetUtil.dispose();
+        colorBuffer.dispose();
         spriteBatch.dispose();
         hud.dispose();
         gameWorld.dispose();
