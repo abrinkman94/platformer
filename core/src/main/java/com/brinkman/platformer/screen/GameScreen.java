@@ -192,15 +192,11 @@ public class GameScreen implements Screen {
 
     private void setShaderUniforms() {
         Body body = player.getComponents().getInstance(PhysicsComponent.class);
-        Vector2 playerPosition = body.getPosition();
-        int xDistFromCamera = (int) ((playerPosition.x - bufferCamera.position.x) / TO_WORLD_UNITS);
-        int xOffset = (int) (body.getWidth() / TO_WORLD_UNITS) / 2;
-        int playerPixelX = (Gdx.graphics.getWidth() / 2) + xDistFromCamera - xOffset;
-        float playerLightX = (float)playerPixelX / Gdx.graphics.getWidth();
-        int yDistFromCamera = (int) ((playerPosition.y - bufferCamera.position.y) / TO_WORLD_UNITS);
-        int yOffset = (int) ((body.getHeight()) / TO_WORLD_UNITS);
-        int playerPixelY = (Gdx.graphics.getHeight() / 2) + yDistFromCamera + yOffset;
-        float playerLightY = (float) playerPixelY / Gdx.graphics.getWidth();
+        Vector2 position = body.getPosition();
+        Vector3 projection = bufferCamera.project(new Vector3(position.x, position.y, 0.0f));
+
+        float playerLightX = projection.x / Gdx.graphics.getWidth();
+        float playerLightY = 1 - (projection.y / Gdx.graphics.getHeight());
 
         shader.begin();
         shader.setUniformf(AMBIENT_UNIFORM, AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
