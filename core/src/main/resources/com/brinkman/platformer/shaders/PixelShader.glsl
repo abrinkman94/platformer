@@ -1,40 +1,53 @@
 varying vec4 vColor;
 varying vec2 vTexCoord;
 
-//texture samplers
-uniform sampler2D u_texture; //diffuse map
+// Texture sampler(s)
+uniform sampler2D u_texture; // Diffuse map (basically samples the untouched "regular" texture)
+uniform sampler2D u_normals; // Normal map
 
-//additional parameters for the shader
-uniform vec4 ambientColor;
-uniform vec2 pointerPosition; // The mouse position
-uniform vec2 screenResolution; // The screen resolution
-uniform vec4 pointColor; // The color and intensity of the point light
+uniform vec2 screenResolution; // The resolution of the display port
+uniform vec4 ambientColor; // Color and intensity of ambient light
+uniform vec3 pointLightPosition; // Position of the light
+uniform vec4 pointLightColor; // Color and intensity of the point light
+uniform vec3 pointLightFalloff; // Attenuation coefficients
 
-// The radius of the point light; 0.5 is a circle fitting the edges of the screen.
-const float RADIUS = 0.1;
-// The "fade-out" of the point light, between 0.0 and 1.0
-const float SOFTNESS = 0.5;
-
+// The main shader routine
 void main() {
     // RGBA of untouched texture
     vec4 diffuseColor = texture2D(u_texture, vTexCoord);
 
-    // Position of the light
-    vec3 lightDir = vec3(pointerPosition.xy - (gl_FragCoord.xy / screenResolution.xy), 0.075);
+    // RGBA of normal map
+    vec4 normalMap = texture2D(u_normals, vTexCoord);
+
+    // Delta position of the light // TODO Can gl_FragCoord be optimized away?  Could be expensive.
+    vec3 lightDirection = vec3(pointLightPosition.xy - (gl_FragCoord.xy / screenResolution.xy), pointLightPosition.z);
 
     // Correct light position for aspect ratio
-    lightDir.x *= screenResolution.x / screenResolution.y;
+    lightDirection.x *= screenResolution.x / screenResolution.y;
 
-    // Determine attenuation of light at this pixel
-    float lightDist = length(lightDir);
+    // Determine distance from light (used for attenuation).  Must be done before normalizing the light direction.
+    float lightDistance = length(lightDirection);
 
-    // Calculate ambient intensity
-    vec3 ambientLight = ambientColor.rgb * ambientColor.a;
+    // Normalize the light vector
+    vec3 l = normalize(lightDirection);
+    // Normalize the normal map
+    vec3 n = normalize(normalMap.rgb * 2.0 - 1.0);
 
-    float attenuation = 1.0 / (3.0 * lightDist);
+    // Pre-multiply light color w/ intensity
+    vec3 light = pointLightColor.rgb * pointLightColor.a;
+    vec3 ambient = ambientColor.rgb * ambientColor.a;
 
-    vec3 intensity = ambientLight + diffuseColor.rgb * attenuation;
+    // Perform "N dot L" to determine diffuse color
+    // TODO Fix when normals are working correctly.
+    vec3 diffuse = light;// * max(dot(n, l), 0.0);
+
+    // Calculate attenuation
+    float attenuation = 1.0 / (pointLightFalloff.x + (pointLightFalloff.y * lightDistance) + (pointLightFalloff.z * lightDistance * lightDistance));
+
+    // Get total intensity
+    vec3 intensity = ambient + diffuse * attenuation;
     vec3 finalColor = diffuseColor.rgb * intensity;
-    gl_FragColor = vColor * vec4(finalColor, diffuseColor.a);
+
+    gl_FragColor = vColor * vec4(finalColor.rgb, diffuseColor.a);
 }
 

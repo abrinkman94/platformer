@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.component.input.InputOperator;
@@ -27,7 +29,9 @@ import com.brinkman.platformer.map.TMXMap;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.CameraUtil;
+import com.brinkman.platformer.util.Shaders;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -39,6 +43,16 @@ import static com.brinkman.platformer.util.Constants.*;
  */
 public class GameScreen implements Screen {
     private static final Logger LOGGER = new Logger(GameScreen.class.getName(), Logger.DEBUG);
+    private static final String RESOLUTION_UNIFORM = "screenResolution";
+    private static final String AMBIENT_UNIFORM = "ambientColor";
+    private static final String POINT_COLOR_UNIFORM = "pointLightColor";
+    private static final String POINT_POSITION_UNIFORM = "pointLightPosition";
+    private static final String POINT_FALLOFF_UNIFORM = "pointLightFalloff";
+    private static final Vector3 AMBIENT_COLOR = new Vector3(0.0f, 0.0f, 0.0f);
+    private static final Vector3 POINT_COLOR = new Vector3(1.0f, 1.0f,1.0f);
+    private static final Vector3 POINT_FALLOFF = new Vector3(1.0f, 1.0f, 1.0f);
+    private static final float AMBIENT_INTENSITY = 1.0f;
+    private static final float POINT_INTENSITY = 1.0f;
 
     private final Operator physicsSubsystem;
     private final Operator renderSubsystem;
@@ -48,6 +62,9 @@ public class GameScreen implements Screen {
     private final Player player;
     private final HUD hud;
     private final GameWorld gameWorld;
+    private final ShaderProgram shader;
+    private final ShaderProgram defaultShader;
+
     /**
      * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
      */
@@ -71,6 +88,18 @@ public class GameScreen implements Screen {
         } else {
             Gdx.input.setInputProcessor(((InputOperator)inputSubsystem).getKeyboardProcessor());
         }
+
+        defaultShader = SpriteBatch.createDefaultShader();
+
+        ShaderProgram lightingShaderTemp;
+        try {
+            lightingShaderTemp = Shaders.load();
+        } catch (IOException e) {
+            LOGGER.info("Unable to load lighting shader", e);
+            lightingShaderTemp = defaultShader;
+        }
+
+        shader = lightingShaderTemp;
 
         LOGGER.info("Initialized");
     }
@@ -133,8 +162,29 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        Body body = player.getComponents().getInstance(PhysicsComponent.class);
+        Vector2 playerPosition = body.getPosition();
+        int xDistFromCamera = (int) ((playerPosition.x - camera.position.x) / TO_WORLD_UNITS);
+        int xOffset = (int) (body.getWidth() / TO_WORLD_UNITS);
+        int playerPixelX = (Gdx.graphics.getWidth() / 2) + xDistFromCamera + xOffset;
+        float playerLightX = (float)playerPixelX / Gdx.graphics.getWidth();
+        int yDistFromCamera = (int) ((playerPosition.y - camera.position.y) / TO_WORLD_UNITS);
+        int yOffset = (int) ((body.getHeight() * 2) / TO_WORLD_UNITS);
+        int playerPixelY = (Gdx.graphics.getHeight() / 2) + yDistFromCamera + yOffset;
+        float playerLightY = (float) playerPixelY / Gdx.graphics.getWidth();
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Set shader uniforms
+        shader.begin();
+        shader.setUniformf(AMBIENT_UNIFORM, AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
+        shader.setUniformf(POINT_POSITION_UNIFORM, playerLightX, playerLightY, 0.12f);
+        shader.setUniformf(POINT_FALLOFF_UNIFORM, POINT_FALLOFF);
+        shader.setUniformf(POINT_COLOR_UNIFORM, POINT_COLOR.x, POINT_COLOR.y, POINT_COLOR.z, POINT_INTENSITY);
+        shader.end();
+
+        spriteBatch.setShader(shader);
 
         // Update the SpriteBatch projection matrix
         spriteBatch.setProjectionMatrix(camera.combined);
@@ -162,7 +212,7 @@ public class GameScreen implements Screen {
         //Camera utility methods
         CameraUtil.lerpCameraToActor(player, camera);
         CameraUtil.handleZoom(gameWorld, camera);
-        CameraUtil.keepCameraInMap(camera);
+//        CameraUtil.keepCameraInMap(camera);
 
         //Collision checks
         keepEntitiesInMap();
@@ -179,7 +229,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        System.out.println(shader.getLog());
+        shader.begin();
+        shader.setUniformf(RESOLUTION_UNIFORM, width, height);
+        shader.end();
     }
 
     @Override
