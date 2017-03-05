@@ -99,22 +99,38 @@ public class GameWorld {
      * Initializes all dynamic objects in Level.
      */
     public void initializeMapObjects() {
-        for (MapObject object : level.getTmxMap().getMapObjects("collision")) {
-            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-            float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-            float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
+        if (level.getTmxMap().getMapObjects("Static Collision") != null) {
+            for (MapObject object : level.getTmxMap().getMapObjects("Static Collision")) {
+                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+                float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+                float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-            Entity staticEntity = new StaticEntity(x, y, width, height);
-            addEntity(staticEntity);
+                Entity staticEntity = new StaticEntity(x, y, width, height);
+                addEntity(staticEntity);
+            }
         }
 
-        for (MapObject object : level.getTmxMap().getMapObjects("coins")) {
-            float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-            float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+        if (level.getTmxMap().getMapObjects("collision") != null) {
+            for (MapObject object : level.getTmxMap().getMapObjects("collision")) {
+                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+                float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
+                float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-            Entity coin = new Coin(x, y);
-            addEntity(coin);
+                Entity staticEntity = new StaticEntity(x, y, width, height);
+                addEntity(staticEntity);
+            }
+        }
+
+        if (level.getTmxMap().getMapObjects("coins") != null) {
+            for (MapObject object : level.getTmxMap().getMapObjects("coins")) {
+                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
+                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
+
+                Entity coin = new Coin(x, y);
+                addEntity(coin);
+            }
         }
 
         if (level.getTmxMap().getMapObjects("saw") != null) {

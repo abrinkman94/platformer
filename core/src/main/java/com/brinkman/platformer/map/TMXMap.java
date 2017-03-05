@@ -43,7 +43,9 @@ public class TMXMap extends TiledMap {
      *
      * @return MapObjects
      */
-    public MapObjects getMapObjects(String layerName) { return map.getLayers().get(layerName).getObjects(); }
+    public MapObjects getMapObjects(String layerName) {
+        return (map.getLayers().get(layerName) != null) ? map.getLayers().get(layerName).getObjects() : null;
+    }
 
     /**
      * Renders all layers of map.

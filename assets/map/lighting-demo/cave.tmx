@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="23">
+ <imagelayer name="Background">
+  <image source="TempBackground.png" width="1024" height="1024"/>
+ </imagelayer>
+ <objectgroup name="Static Collision">
+  <object id="4" x="0" y="0" width="1024" height="64"/>
+  <object id="5" x="992" y="0" width="32" height="1024"/>
+  <object id="6" x="352" y="768" width="672" height="32"/>
+  <object id="7" x="576" y="800" width="448" height="32"/>
+  <object id="8" x="768" y="832" width="256" height="32"/>
+  <object id="9" x="864" y="864" width="160" height="32"/>
+  <object id="10" x="896" y="896" width="128" height="64"/>
+  <object id="11" x="0" y="960" width="992" height="64"/>
+  <object id="12" x="0" y="0" width="32" height="1024"/>
+  <object id="13" x="0" y="544" width="672" height="32"/>
+  <object id="14" x="0" y="576" width="192" height="32"/>
+  <object id="15" x="0" y="608" width="128" height="32"/>
+  <object id="16" x="0" y="640" width="96" height="32"/>
+  <object id="17" x="0" y="672" width="64" height="64"/>
+  <object id="18" x="0" y="320" width="64" height="160"/>
+  <object id="19" x="0" y="320" width="320" height="32"/>
+  <object id="20" x="0" y="352" width="160" height="32"/>
+  <object id="21" x="0" y="384" width="128" height="32"/>
+  <object id="22" x="0" y="416" width="96" height="32"/>
+ </objectgroup>
+</map>
