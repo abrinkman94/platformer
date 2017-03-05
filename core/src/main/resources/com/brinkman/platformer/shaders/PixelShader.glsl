@@ -38,8 +38,7 @@ void main() {
     vec3 ambient = ambientColor.rgb * ambientColor.a;
 
     // Perform "N dot L" to determine diffuse color
-    // TODO Fix when normals are working correctly.
-    vec3 diffuse = light;// * max(dot(n, l), 0.0);
+    vec3 diffuse = light * max(dot(n, l), 0.0);
 
     // Calculate attenuation
     float attenuation = 1.0 / (pointLightFalloff.x + (pointLightFalloff.y * lightDistance) + (pointLightFalloff.z * lightDistance * lightDistance));

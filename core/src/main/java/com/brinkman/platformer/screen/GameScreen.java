@@ -67,6 +67,7 @@ public class GameScreen implements Screen {
     private final ShaderProgram defaultShader;
 
     private FrameBuffer colorBuffer;
+    private FrameBuffer normalBuffer;
 
     /**
      * Constructs the GameScreen.  GameScreen includes all of the render logic, basically the game loop.
@@ -105,6 +106,9 @@ public class GameScreen implements Screen {
         }
 
         shader = lightingShaderTemp;
+        shader.begin();
+        shader.setUniformi("u_normals", 1);
+        shader.end();
 
         LOGGER.info("Initialized");
     }
@@ -136,6 +140,9 @@ public class GameScreen implements Screen {
         drawColorBuffer(delta);
         Texture colorTexture = colorBuffer.getColorBufferTexture();
 
+        drawNormalBuffer(delta);
+        Texture normalTexture = normalBuffer.getColorBufferTexture();
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -148,6 +155,7 @@ public class GameScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
 
         spriteBatch.begin();
+        normalTexture.bind(1);
         colorTexture.bind(0);
         spriteBatch.draw(colorTexture, 0, 0);
         spriteBatch.end();
@@ -186,11 +194,11 @@ public class GameScreen implements Screen {
         Body body = player.getComponents().getInstance(PhysicsComponent.class);
         Vector2 playerPosition = body.getPosition();
         int xDistFromCamera = (int) ((playerPosition.x - bufferCamera.position.x) / TO_WORLD_UNITS);
-        int xOffset = (int) (body.getWidth() / TO_WORLD_UNITS);
-        int playerPixelX = (Gdx.graphics.getWidth() / 2) + xDistFromCamera + xOffset;
+        int xOffset = (int) (body.getWidth() / TO_WORLD_UNITS) / 2;
+        int playerPixelX = (Gdx.graphics.getWidth() / 2) + xDistFromCamera - xOffset;
         float playerLightX = (float)playerPixelX / Gdx.graphics.getWidth();
         int yDistFromCamera = (int) ((playerPosition.y - bufferCamera.position.y) / TO_WORLD_UNITS);
-        int yOffset = (int) ((body.getHeight() * 2) / TO_WORLD_UNITS);
+        int yOffset = (int) ((body.getHeight()) / TO_WORLD_UNITS);
         int playerPixelY = (Gdx.graphics.getHeight() / 2) + yDistFromCamera + yOffset;
         float playerLightY = (float) playerPixelY / Gdx.graphics.getWidth();
 
@@ -225,6 +233,21 @@ public class GameScreen implements Screen {
         colorBuffer.end();
     }
 
+    private void drawNormalBuffer(float delta) {
+        normalBuffer.begin();
+
+        Gdx.gl.glClearColor(0.5f, 0.5f, 1.0f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        spriteBatch.setProjectionMatrix(bufferCamera.combined);
+        spriteBatch.setShader(defaultShader);
+        spriteBatch.begin();
+
+        spriteBatch.end();
+
+        normalBuffer.end();
+    }
+
     @Override
     public void resize(int width, int height) {
         shader.begin();
@@ -247,6 +270,11 @@ public class GameScreen implements Screen {
             colorBuffer.dispose();
         }
         colorBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
+
+        if(normalBuffer != null) {
+            normalBuffer.dispose();
+        }
+        normalBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
     }
 
     @Override
@@ -268,6 +296,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         AssetUtil.dispose();
         colorBuffer.dispose();
+        normalBuffer.dispose();
         spriteBatch.dispose();
         hud.dispose();
         gameWorld.dispose();
