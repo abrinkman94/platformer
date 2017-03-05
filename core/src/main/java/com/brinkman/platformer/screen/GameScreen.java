@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
     private static final String POINT_FALLOFF_UNIFORM = "pointLightFalloff";
     private static final Vector3 AMBIENT_COLOR = new Vector3(0.0f, 0.0f, 0.0f);
     private static final Vector3 POINT_COLOR = new Vector3(1.0f, 1.0f,1.0f);
-    private static final Vector3 POINT_FALLOFF = new Vector3(1.0f, 1.0f, 0.0f);
+    private static final Vector3 POINT_FALLOFF = new Vector3(1.0f, 0.0f, 0.0f);
     private static final float AMBIENT_INTENSITY = 1.0f;
     private static final float POINT_INTENSITY = 1.0f;
 
@@ -223,7 +223,7 @@ public class GameScreen implements Screen {
         Collection<Entity> entitiesCopy = new ArrayList<>(gameWorld.getEntities());
 
         //Renders GameWorld background
-        gameWorld.render(camera, delta, spriteBatch);
+        gameWorld.render(bufferCamera, delta, spriteBatch);
 
         // Render Entities
         entitiesCopy.stream()
