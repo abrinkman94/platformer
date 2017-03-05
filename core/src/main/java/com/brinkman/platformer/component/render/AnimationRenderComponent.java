@@ -1,10 +1,7 @@
 package com.brinkman.platformer.component.render;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.brinkman.platformer.physics.Body;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -28,18 +25,6 @@ public class AnimationRenderComponent implements RenderComponent
 
     public AnimationRenderComponent(Animation<TextureRegion> defaultAnimation) {
         this(defaultAnimation, new EnumMap<>(AnimationType.class));
-    }
-
-    @Override
-    public void render(float dt, Batch batch, Body body) {
-        TextureRegion currentFrame = getTextureRegion(dt);
-        Vector2 position = body.getPosition();
-        float width = body.getWidth();
-        float height = body.getHeight();
-
-        batch.begin();
-        batch.draw(currentFrame, position.x, position.y, width, height);
-        batch.end();
     }
 
     @Override
