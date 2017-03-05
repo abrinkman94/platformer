@@ -112,40 +112,6 @@ public class GameScreen implements Screen {
         LOGGER.info("Initialized");
     }
 
-    private void placeholderKeyHandler() {
-        if (gameWorld.getLevel().hasKey()) {
-            float x = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("x", float.class) * TO_WORLD_UNITS;
-            float y = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("y", float.class) * TO_WORLD_UNITS;
-            float width = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("width", float.class) * TO_WORLD_UNITS;
-            float height = gameWorld.getLevel().getTmxMap().getMapObjects("exit").get(0).getProperties().get("height", float.class) * TO_WORLD_UNITS;
-
-            boolean render = false;
-            for (Item item : player.getInventory()) {
-                render = !(item.getItemType() == ItemType.KEY);
-            }
-
-            if (render) {
-                ShapeRenderer renderer = new ShapeRenderer();
-                renderer.setProjectionMatrix(camera.combined);
-                renderer.begin(ShapeType.Filled);
-                renderer.setColor(Color.GRAY);
-                renderer.rect(x, y, width, height);
-                renderer.end();
-            }
-        }
-    }
-
-    private void clearWorld() {
-        Collection<Entity> entitiesToRemove = gameWorld.getEntities()
-              .stream()
-              .filter(it -> !(it instanceof Player))
-              .collect(Collectors.toList());
-        entitiesToRemove.stream()
-              .filter(Entity.class::isInstance)
-              .map(Entity.class::cast)
-              .forEach(gameWorld::removeEntity);
-    }
-
     private void keepEntitiesInMap() {
         float mapLeft = 0;
         float mapRight = TMXMap.mapWidth;
@@ -226,9 +192,6 @@ public class GameScreen implements Screen {
 
         //Collision checks
         keepEntitiesInMap();
-
-        //Placeholder for locked door
-        placeholderKeyHandler();
 
         //Renders HUD
         hud.render(delta);
