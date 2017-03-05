@@ -136,16 +136,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Body body = player.getComponents().getInstance(PhysicsComponent.class);
-        Vector2 playerPosition = body.getPosition();
-        int xDistFromCamera = (int) ((playerPosition.x - camera.position.x) / TO_WORLD_UNITS);
-        int xOffset = (int) (body.getWidth() / TO_WORLD_UNITS);
-        int playerPixelX = (Gdx.graphics.getWidth() / 2) + xDistFromCamera + xOffset;
-        float playerLightX = (float)playerPixelX / Gdx.graphics.getWidth();
-        int yDistFromCamera = (int) ((playerPosition.y - camera.position.y) / TO_WORLD_UNITS);
-        int yOffset = (int) ((body.getHeight() * 2) / TO_WORLD_UNITS);
-        int playerPixelY = (Gdx.graphics.getHeight() / 2) + yDistFromCamera + yOffset;
-        float playerLightY = (float) playerPixelY / Gdx.graphics.getWidth();
 
         drawColorBuffer(delta);
 
@@ -153,12 +143,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Set shader uniforms
-        shader.begin();
-        shader.setUniformf(AMBIENT_UNIFORM, AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
-        shader.setUniformf(POINT_POSITION_UNIFORM, playerLightX, playerLightY, 0.12f);
-        shader.setUniformf(POINT_FALLOFF_UNIFORM, POINT_FALLOFF);
-        shader.setUniformf(POINT_COLOR_UNIFORM, POINT_COLOR.x, POINT_COLOR.y, POINT_COLOR.z, POINT_INTENSITY);
-        shader.end();
+        setShaderUniforms();
 
         spriteBatch.setShader(shader);
 
@@ -198,6 +183,26 @@ public class GameScreen implements Screen {
 
         //Updates camera
         camera.update();
+    }
+
+    private void setShaderUniforms() {
+        Body body = player.getComponents().getInstance(PhysicsComponent.class);
+        Vector2 playerPosition = body.getPosition();
+        int xDistFromCamera = (int) ((playerPosition.x - camera.position.x) / TO_WORLD_UNITS);
+        int xOffset = (int) (body.getWidth() / TO_WORLD_UNITS);
+        int playerPixelX = (Gdx.graphics.getWidth() / 2) + xDistFromCamera + xOffset;
+        float playerLightX = (float)playerPixelX / Gdx.graphics.getWidth();
+        int yDistFromCamera = (int) ((playerPosition.y - camera.position.y) / TO_WORLD_UNITS);
+        int yOffset = (int) ((body.getHeight() * 2) / TO_WORLD_UNITS);
+        int playerPixelY = (Gdx.graphics.getHeight() / 2) + yDistFromCamera + yOffset;
+        float playerLightY = (float) playerPixelY / Gdx.graphics.getWidth();
+
+        shader.begin();
+        shader.setUniformf(AMBIENT_UNIFORM, AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
+        shader.setUniformf(POINT_POSITION_UNIFORM, playerLightX, playerLightY, 0.12f);
+        shader.setUniformf(POINT_FALLOFF_UNIFORM, POINT_FALLOFF);
+        shader.setUniformf(POINT_COLOR_UNIFORM, POINT_COLOR.x, POINT_COLOR.y, POINT_COLOR.z, POINT_INTENSITY);
+        shader.end();
     }
 
     private void drawColorBuffer(float deltaT) {
