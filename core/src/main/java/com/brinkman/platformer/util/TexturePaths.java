@@ -8,28 +8,30 @@ public class TexturePaths {
     private TexturePaths() {}
 
     //Sprite Animations
-    public static final String IDLE_FRAME_1_LEFT = "sprites/Idle/frame-1-left.png";
     public static final String IDLE_FRAME_1_RIGHT = "sprites/Idle/frame-1-right.png";
-    public static final String IDLE_FRAME_2_LEFT = "sprites/Idle/frame-2-left.png";
     public static final String IDLE_FRAME_2_RIGHT = "sprites/Idle/frame-2-right.png";
 
-    public static final String JUMP_FRAME_1_LEFT = "sprites/Jump/frame-1-left.png";
     public static final String JUMP_FRAME_1_RIGHT = "sprites/Jump/frame-1-right.png";
-    public static final String JUMP_FRAME_2_LEFT = "sprites/Jump/frame-2-left.png";
-    public static final String JUMP_FRAME_2_RIGHT = "sprites/Jump/frame-2-right.png";
 
-    public static final String RUN_FRAME_1_LEFT = "sprites/running/frame-1-left.png";
     public static final String RUN_FRAME_1_RIGHT = "sprites/running/frame-1-right.png";
-    public static final String RUN_FRAME_2_LEFT = "sprites/running/frame-2-left.png";
     public static final String RUN_FRAME_2_RIGHT = "sprites/running/frame-2-right.png";
-    public static final String RUN_FRAME_3_LEFT = "sprites/running/frame-3-left.png";
     public static final String RUN_FRAME_3_RIGHT = "sprites/running/frame-3-right.png";
-    public static final String RUN_FRAME_4_LEFT = "sprites/running/frame-4-left.png";
     public static final String RUN_FRAME_4_RIGHT = "sprites/running/frame-4-right.png";
-    public static final String RUN_FRAME_5_LEFT = "sprites/running/frame-5-left.png";
     public static final String RUN_FRAME_5_RIGHT = "sprites/running/frame-5-right.png";
-    public static final String RUN_FRAME_6_LEFT = "sprites/running/frame-6-left.png";
     public static final String RUN_FRAME_6_RIGHT = "sprites/running/frame-6-right.png";
+
+    //Sprite Animations
+    public static final String N_IDLE_FRAME_1_RIGHT = "sprites/Idle/normal/frame-1-right.png";
+    public static final String N_IDLE_FRAME_2_RIGHT = "sprites/Idle/normal/frame-2-right.png";
+
+    public static final String N_JUMP_FRAME_1_RIGHT = "sprites/Jump/normal/frame-1-right.png";
+
+    public static final String N_RUN_FRAME_1_RIGHT = "sprites/running/normal/frame-1-right.png";
+    public static final String N_RUN_FRAME_2_RIGHT = "sprites/running/normal/frame-2-right.png";
+    public static final String N_RUN_FRAME_3_RIGHT = "sprites/running/normal/frame-3-right.png";
+    public static final String N_RUN_FRAME_4_RIGHT = "sprites/running/normal/frame-4-right.png";
+    public static final String N_RUN_FRAME_5_RIGHT = "sprites/running/normal/frame-5-right.png";
+    public static final String N_RUN_FRAME_6_RIGHT = "sprites/running/normal/frame-6-right.png";
 
     //Coin Spritesheet
     public static final String COIN_SPRITESHEET = "sprites/coinsheet.png";

@@ -10,8 +10,9 @@ import com.brinkman.platformer.component.RootComponent;
  */
 public interface RenderComponent extends RootComponent
 {
-
     TextureRegion getTextureRegion(float deltaT);
+
+    default TextureRegion getNormalTextureRegion(float deltaT) { return null; }
 
     void setAnimationType(AnimationType animationType);
 }

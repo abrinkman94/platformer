@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.component.input.InputOperator;
 import com.brinkman.platformer.component.Operator;
+import com.brinkman.platformer.component.render.NormalRenderOperator;
 import com.brinkman.platformer.component.render.RenderOperator;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
@@ -50,12 +51,13 @@ public class GameScreen implements Screen {
     private static final String POINT_FALLOFF_UNIFORM = "pointLightFalloff";
     private static final Vector3 AMBIENT_COLOR = new Vector3(0.0f, 0.0f, 0.0f);
     private static final Vector3 POINT_COLOR = new Vector3(1.0f, 1.0f,1.0f);
-    private static final Vector3 POINT_FALLOFF = new Vector3(1.0f, 0.0f, 0.0f);
+    private static final Vector3 POINT_FALLOFF = new Vector3(0.0f, 5.0f, 200f);
     private static final float AMBIENT_INTENSITY = 1.0f;
-    private static final float POINT_INTENSITY = 1.0f;
+    private static final float POINT_INTENSITY = 7.0f;
 
     private final Operator physicsSubsystem;
     private final Operator renderSubsystem;
+    private final Operator normalRenderSubsystem;
     private final Operator inputSubsystem;
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
@@ -87,6 +89,7 @@ public class GameScreen implements Screen {
 
         physicsSubsystem = new PhysicsOperator(player);
         renderSubsystem = new RenderOperator(spriteBatch);
+        normalRenderSubsystem = new NormalRenderOperator(spriteBatch);
         inputSubsystem = new InputOperator(player);
 
         if (CONTROLLER_PRESENT) {
@@ -193,14 +196,14 @@ public class GameScreen implements Screen {
     private void setShaderUniforms() {
         Body body = player.getComponents().getInstance(PhysicsComponent.class);
         Vector2 position = body.getPosition();
-        Vector3 projection = bufferCamera.project(new Vector3(position.x, position.y, 0.0f));
+        Vector3 projection = bufferCamera.project(new Vector3(position.x + (body.getWidth() / 2), position.y + (body.getHeight() / 2), 0.0f));
 
         float playerLightX = projection.x / Gdx.graphics.getWidth();
         float playerLightY = 1 - (projection.y / Gdx.graphics.getHeight());
 
         shader.begin();
         shader.setUniformf(AMBIENT_UNIFORM, AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
-        shader.setUniformf(POINT_POSITION_UNIFORM, playerLightX, playerLightY, 0.12f);
+        shader.setUniformf(POINT_POSITION_UNIFORM, playerLightX, playerLightY, 0.09f);
         shader.setUniformf(POINT_FALLOFF_UNIFORM, POINT_FALLOFF);
         shader.setUniformf(POINT_COLOR_UNIFORM, POINT_COLOR.x, POINT_COLOR.y, POINT_COLOR.z, POINT_INTENSITY);
         shader.end();
@@ -238,7 +241,15 @@ public class GameScreen implements Screen {
         spriteBatch.setProjectionMatrix(bufferCamera.combined);
         spriteBatch.setShader(defaultShader);
 
+        // TODO Prooooobably should do this more efficiently
+        Collection<Entity> entitiesCopy = new ArrayList<>(gameWorld.getEntities());
+
         gameWorld.renderNormal(bufferCamera, delta, spriteBatch);
+
+        // Render Entities
+        entitiesCopy.stream()
+              .filter(it -> it.getComponents().keySet().containsAll(normalRenderSubsystem.getRequiredComponents()))
+              .forEach(it -> normalRenderSubsystem.operate(delta, it, gameWorld));
 
         normalBuffer.end();
     }
