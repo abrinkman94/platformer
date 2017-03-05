@@ -41,7 +41,7 @@ public class ControllerProcessor extends AbstractInputMappings implements Contro
             if (buttonCode == ControllerMappings.BUTTON_A) {
                 ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
             }
-            if (buttonCode == ControllerMappings.BUTTON_B) {
+            if (buttonCode == ControllerMappings.BUTTON_X) {
                 melee = true;
             }
         } else {
