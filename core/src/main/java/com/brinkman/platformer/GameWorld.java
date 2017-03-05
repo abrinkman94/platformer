@@ -195,15 +195,11 @@ public class GameWorld {
      * @param delta float
      * @param batch SpriteBatch
      */
-    public void renderBackground(OrthographicCamera camera, float delta, Batch batch) {
-        level.getTmxMap().render(camera, backgroundLayers, batch);
+    public void render(OrthographicCamera camera, float delta, Batch batch) {
+        level.render(camera, batch);
         if (textureMapObjectRenderer == null) {
             textureMapObjectRenderer = new TextureMapObjectRenderer(level.getTmxMap(), batch);
         }
-    }
-
-    public void renderForeground(OrthographicCamera camera, Batch batch) {
-        level.getTmxMap().render(camera, foregroundLayers, batch);
     }
 
     /**

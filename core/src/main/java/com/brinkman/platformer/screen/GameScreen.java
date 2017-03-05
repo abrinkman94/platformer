@@ -54,7 +54,8 @@ public class GameScreen implements Screen {
     public GameScreen() {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(APP_WIDTH * TO_WORLD_UNITS, APP_HEIGHT * TO_WORLD_UNITS);
-        gameWorld = new GameWorld(new Level(1));
+    //    gameWorld = new GameWorld(new Level(1));
+        gameWorld = new GameWorld(new Level("map/lighting-demo/cave.tmx"));
         player = new Player();
         hud = new HUD(gameWorld);
 
@@ -142,7 +143,7 @@ public class GameScreen implements Screen {
         Collection<Entity> entitiesCopy = new ArrayList<>(gameWorld.getEntities());
 
         //Renders GameWorld background
-        gameWorld.renderBackground(camera, delta, spriteBatch);
+        gameWorld.render(camera, delta, spriteBatch);
 
         // Do physics, yo.
         entitiesCopy.stream()
@@ -157,9 +158,6 @@ public class GameScreen implements Screen {
                     .filter(it -> it.getComponents().keySet().containsAll(inputSubsystem.getRequiredComponents()) &&
                           (it.getComponents().getInstance(PhysicsComponent.class) instanceof ControlledPhysicsComponent))
                     .forEach(it -> inputSubsystem.operate(delta, it, gameWorld));
-
-        // Render gameworld foreground
-        gameWorld.renderForeground(camera, spriteBatch);
 
         //Camera utility methods
         CameraUtil.lerpCameraToActor(player, camera);

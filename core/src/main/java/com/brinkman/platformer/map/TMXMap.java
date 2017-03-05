@@ -48,25 +48,16 @@ public class TMXMap extends TiledMap {
     }
 
     /**
-     * Renders all layers of map.
+     * Renders map.
      * @param cam OrthographicCamera
+     * @param batch Batch
      */
-    public void render(OrthographicCamera cam) {
-        renderer.setView(cam);
-        renderer.render();
-    }
-
-    /**
-     * Renders selected layers, in selected order, of map.
-     * @param cam OrthographicCamera
-     * @param layers int[]
-     */
-    public void render(OrthographicCamera cam, int[] layers, Batch batch) {
+    public void render(OrthographicCamera cam, Batch batch) {
         if(renderer == null) {
             renderer = new OrthogonalTiledMapRenderer(map, TO_WORLD_UNITS, batch);
         }
         renderer.setView(cam);
-        renderer.render(layers);
+        renderer.render();
     }
 
     /**

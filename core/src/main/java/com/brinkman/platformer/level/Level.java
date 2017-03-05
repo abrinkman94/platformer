@@ -1,6 +1,7 @@
 package com.brinkman.platformer.level;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.brinkman.platformer.map.TMXMap;
 
@@ -52,8 +53,8 @@ public class Level {
      * Handles the renderering of the TMXMap.
      * @param camera OrthographicCamera
      */
-    public void render(OrthographicCamera camera) {
-        map.render(camera);
+    public void render(OrthographicCamera camera, Batch batch) {
+        map.render(camera, batch);
     }
 
     /**

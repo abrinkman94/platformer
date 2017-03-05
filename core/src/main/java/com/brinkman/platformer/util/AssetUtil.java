@@ -46,6 +46,8 @@ public final class AssetUtil
 			loadAsset("map/World 1/level" + i + ".tmx", TiledMap.class);
 		}
 
+		loadAsset("map/lighting-demo/cave.tmx", TiledMap.class);
+
 		finishLoading();
 	}
 
