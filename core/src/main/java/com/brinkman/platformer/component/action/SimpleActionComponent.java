@@ -49,9 +49,7 @@ public class SimpleActionComponent implements ActionComponent {
 
 	@Override
 	public void resetCooldowns(ActionType actionType) {
-		for (Entry entry : cooldowns.entrySet()) {
-			entry.setValue(initialCooldowns.get(actionType));
-		}
+	    cooldowns.put(actionType, initialCooldowns.get(actionType));
 	}
 
 
