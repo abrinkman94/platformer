@@ -1,6 +1,8 @@
 package com.brinkman.platformer.component.status;
 
-public interface StatusComponent {
+import com.brinkman.platformer.component.RootComponent;
+
+public interface StatusComponent extends RootComponent {
     int getMaxHealth();
 
     void setMaxHealth(int maxHealth);
