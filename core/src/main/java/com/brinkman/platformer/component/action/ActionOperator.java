@@ -32,7 +32,7 @@ public class ActionOperator implements Operator
 
 	@Override
 	public void operate(float deltaT, Entity entity, GameWorld world) {
-		SimpleActionComponent actionComponent = entity.getComponents().getInstance(SimpleActionComponent.class);
+		ActionComponent actionComponent = entity.getComponents().getInstance(SimpleActionComponent.class);
 		InputComponent inputComponent = entity.getComponents().getInstance(InputComponent.class);
 		StatusComponent statusComponent = entity.getComponents().getInstance(StatusComponent.class);
 		PhysicsComponent physicsComponent = entity.getComponents().getInstance(PhysicsComponent.class);
