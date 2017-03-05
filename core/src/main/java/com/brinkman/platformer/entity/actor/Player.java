@@ -9,6 +9,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.action.MeleeAttackAction;
+import com.brinkman.platformer.component.action.ActionComponent;
+import com.brinkman.platformer.component.action.ActionType;
+import com.brinkman.platformer.component.action.SimpleActionComponent;
 import com.brinkman.platformer.component.input.InputComponent;
 import com.brinkman.platformer.component.input.PlayerInputComponent;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
@@ -17,6 +22,9 @@ import com.brinkman.platformer.component.render.AnimationRenderComponent;
 import com.brinkman.platformer.component.render.AnimationType;
 import com.brinkman.platformer.component.render.RenderComponent;
 import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.component.status.SimpleStatusComponent;
+import com.brinkman.platformer.component.status.StatusComponent;
+import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.platform.Platform;
@@ -26,6 +34,7 @@ import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import static com.brinkman.platformer.component.render.AnimationType.*;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
@@ -88,10 +97,15 @@ public class Player extends Actor
         initializeTextureAtlas();
         initializeNormalTextureAtlas();
 
+        Map<ActionType, BiConsumer<Entity, GameWorld>> actions = new EnumMap<>(ActionType.class);
+        actions.put(ActionType.MELEE_ATTACK, new MeleeAttackAction());
+
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
               .put(RenderComponent.class, new AnimationRenderComponent(animations.get(IDLE_RIGHT), animations, normalAnimations))
               .put(PhysicsComponent.class, body)
               .put(InputComponent.class, new PlayerInputComponent())
+              .put(ActionComponent.class, new SimpleActionComponent(actions))
+              .put(StatusComponent.class, new SimpleStatusComponent())
               .build();
 
         LOGGER.info("Initialized");

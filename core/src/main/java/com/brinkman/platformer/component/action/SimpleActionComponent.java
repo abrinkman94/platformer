@@ -19,13 +19,13 @@ public class SimpleActionComponent implements ActionComponent {
 	public SimpleActionComponent(Map<ActionType, BiConsumer<Entity, GameWorld>> actions) {
 		this.actions = new EnumMap<>(actions);
 
-		initialCooldowns.put(ActionType.MELEE_ATTACK, 2.0f);
-		cooldowns.put(ActionType.MELEE_ATTACK, 2.0f);
+		initialCooldowns.put(ActionType.MELEE_ATTACK, 0.7f);
+		cooldowns.put(ActionType.MELEE_ATTACK, 0.7f);
 	}
 
 	@Override
 	public float getRemainingCooldown(ActionType actionType) {
-		return cooldowns.get(actionType);
+		return cooldowns.getOrDefault(actionType, 0.0f);
 	}
 
 	@Override

@@ -10,6 +10,8 @@ import com.brinkman.platformer.entity.Entity;
 
 import java.util.*;
 
+import static com.brinkman.platformer.component.action.ActionType.*;
+
 /**
  * @author Austin Brinkman.
  */
@@ -19,6 +21,7 @@ public class ActionOperator implements Operator
 
 	public ActionOperator() {
 		requiredComponents = new LinkedList<>();
+		requiredComponents.add(ActionComponent.class);
 		requiredComponents.add(InputComponent.class);
 		requiredComponents.add(StatusComponent.class);
 		requiredComponents.add(PhysicsComponent.class);
@@ -32,21 +35,21 @@ public class ActionOperator implements Operator
 
 	@Override
 	public void operate(float deltaT, Entity entity, GameWorld world) {
-		ActionComponent actionComponent = entity.getComponents().getInstance(SimpleActionComponent.class);
+		ActionComponent actionComponent = entity.getComponents().getInstance(ActionComponent.class);
 		InputComponent inputComponent = entity.getComponents().getInstance(InputComponent.class);
 		StatusComponent statusComponent = entity.getComponents().getInstance(StatusComponent.class);
 		PhysicsComponent physicsComponent = entity.getComponents().getInstance(PhysicsComponent.class);
 
-		assert actionComponent != null;
+		assert (actionComponent != null) && (inputComponent != null);
 
-		for (ActionType action : ActionType.values()) {
+		for (ActionType action : values()) {
 
 			if (actionComponent.getRemainingCooldown(action) >= 0) {
 				actionComponent.decrementCooldown(action, deltaT);
 			}
 
-			if (actionComponent.getRemainingCooldown(action) <= 0) {
-				actionComponent.doAction(action, entity, world);
+			if(inputComponent.isMeleeActive() && (actionComponent.getRemainingCooldown(MELEE_ATTACK) <= 0)) {
+			    actionComponent.doAction(MELEE_ATTACK, entity, world);
 			}
 		}
 	}
