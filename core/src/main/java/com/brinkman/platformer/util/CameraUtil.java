@@ -52,11 +52,9 @@ public final class CameraUtil
 
         if(mapHeight < camera.viewportHeight) {
             camera.position.y = mapTop / 2;
-        }
-        if(cameraBottom <= mapBottom) {
+        } else if(cameraBottom <= mapBottom) {
             camera.position.y = mapBottom + cameraHalfHeight;
-        }
-        if(cameraTop >= mapTop) {
+        } else if(cameraTop >= mapTop) {
             camera.position.y = mapTop - cameraHalfHeight;
         }
     }
