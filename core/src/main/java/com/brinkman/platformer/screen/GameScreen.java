@@ -24,6 +24,7 @@ import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsOperator;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.entity.actor.SimpleEnemy;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.level.Level;
@@ -65,6 +66,7 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final OrthographicCamera bufferCamera;
     private final Player player;
+    private final SimpleEnemy simpleEnemy;
     private final HUD hud;
     private final GameWorld gameWorld;
     private final ShaderProgram shader;
@@ -84,9 +86,11 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(APP_WIDTH, APP_HEIGHT);
         bufferCamera = new OrthographicCamera(viewportWidth, viewportHeight);
         player = new Player();
+        simpleEnemy = new SimpleEnemy();
         hud = new HUD(gameWorld);
 
         gameWorld.addEntity(player);
+        gameWorld.addEntity(simpleEnemy);
         gameWorld.initializeMapObjects();
 
         physicsSubsystem = new PhysicsOperator(player);
