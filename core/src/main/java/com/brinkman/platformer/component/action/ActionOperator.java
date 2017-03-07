@@ -44,7 +44,7 @@ public class ActionOperator implements Operator
 
 		for (ActionType action : values()) {
 
-			if (actionComponent.getRemainingCooldown(action) >= 0) {
+			if (actionComponent.getRemainingCooldown(action) > 0) {
 				actionComponent.decrementCooldown(action, deltaT);
 			}
 

@@ -68,7 +68,7 @@ public class Player extends Actor
     private static final float WALK_ANIMATION_TIME = 0.1f;
     private static final float RUN_ANIMATION_TIME = 0.05f;
     private static final float JUMP_ANIMATION_TIME = 1.0f;
-    private static final float MELEE_ANIMATION_TIME = 1.0f;
+    private static final float MELEE_ANIMATION_TIME = 0.1f;
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
     private static final int JUMP_VEL = 12;
@@ -254,10 +254,10 @@ public class Player extends Actor
               new TextureRegion((Texture) AssetUtil.getAsset(N_MELEE_RIGHT_3, Texture.class)));
 
         normalMeleeLeftAtlas = new TextureAtlas();
-        for (AtlasRegion region : meleeRightAtlas.getRegions()) {
+        for (AtlasRegion region : normalMeleeRightAtlas.getRegions()) {
             int i = 0;
             i++;
-            meleeLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+            normalMeleeLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
         }
 
         normalAnimations.put(IDLE_LEFT, new Animation<>(WALK_ANIMATION_TIME, idleLeftAtlasNormal.getRegions(), PlayMode.LOOP));

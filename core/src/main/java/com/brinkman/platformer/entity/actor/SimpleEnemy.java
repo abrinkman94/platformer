@@ -34,8 +34,8 @@ public class SimpleEnemy extends Actor
     private final TextureRegion normalTextureRegion;
 
     public SimpleEnemy() {
-        textureRegion = new TextureRegion((Texture) AssetUtil.getAsset(TexturePaths.IDLE_FRAME_1_RIGHT, Texture.class));
-        normalTextureRegion = new TextureRegion((Texture) AssetUtil.getAsset(TexturePaths.N_IDLE_FRAME_1_RIGHT, Texture.class));
+        textureRegion = new TextureRegion((Texture) AssetUtil.getAsset(TexturePaths.MELEE_RIGHT_2, Texture.class));
+        normalTextureRegion = new TextureRegion((Texture) AssetUtil.getAsset(TexturePaths.N_MELEE_RIGHT_2, Texture.class));
 
         ControlledPhysicsComponent body = new ControlledPhysicsComponent();
         body.setAffectedByGravity(true);

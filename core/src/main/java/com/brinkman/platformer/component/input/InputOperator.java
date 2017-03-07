@@ -3,6 +3,8 @@ package com.brinkman.platformer.component.input;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.component.Operator;
 import com.brinkman.platformer.component.RootComponent;
+import com.brinkman.platformer.component.action.ActionComponent;
+import com.brinkman.platformer.component.action.ActionType;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.render.AnimationType;
 import com.brinkman.platformer.component.render.RenderComponent;
@@ -11,6 +13,7 @@ import com.brinkman.platformer.input.ControllerProcessor;
 import com.brinkman.platformer.input.KeyboardProcessor;
 import com.brinkman.platformer.physics.ControlledBody;
 
+import javax.swing.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,6 +21,7 @@ import java.util.LinkedList;
 import static com.brinkman.platformer.component.render.AnimationType.*;
 import static com.brinkman.platformer.component.render.AnimationType.IDLE_LEFT;
 import static com.brinkman.platformer.util.Constants.CONTROLLER_PRESENT;
+import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
 /**.
  * @author Austin Brinkman.
@@ -69,6 +73,7 @@ public class InputOperator implements Operator
 		InputComponent inputComponent = entity.getComponents().getInstance(InputComponent.class);
 		PhysicsComponent physicsComponent = entity.getComponents().getInstance(PhysicsComponent.class);
 		RenderComponent renderComponent = entity.getComponents().getInstance(RenderComponent.class);
+		ActionComponent actionComponent = entity.getComponents().getInstance(ActionComponent.class);
 
 		if((inputComponent != null) && (physicsComponent instanceof ControlledBody) && (renderComponent != null)) {
 			boolean left = (controllerProcessor != null) ? controllerProcessor.left() : keyboardProcessor.left();
@@ -84,7 +89,7 @@ public class InputOperator implements Operator
 			ControlledBody body = (ControlledBody) physicsComponent;
 
 			handleMovement(body, inputComponent);
-			handleAnimationSwitching(renderComponent, body, inputComponent);
+			handleAnimationSwitching(renderComponent, body, inputComponent, actionComponent);
 		}
 	}
 
@@ -100,7 +105,10 @@ public class InputOperator implements Operator
 		}
 	}
 
-	private void handleAnimationSwitching(RenderComponent renderComponent, ControlledBody body, InputComponent input) {
+	private void handleAnimationSwitching(RenderComponent renderComponent,
+										  ControlledBody body,
+										  InputComponent input,
+										  ActionComponent actionComponent) {
 		AnimationType currentAnimation = null;
 
 		if (input.isLeftActive()) {
@@ -110,20 +118,12 @@ public class InputOperator implements Operator
 			} else {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : WALK_LEFT;
 			}
-
-			if (input.isMeleeActive()) {
-				currentAnimation = MELEE_LEFT;
-			}
 		} else if (input.isRightActive()) {
 			body.setFacingRight(true);
 			if (input.isRunActive()) {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : RUN_RIGHT;
 			} else {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : WALK_RIGHT;
-			}
-
-			if (input.isMeleeActive()) {
-				currentAnimation = MELEE_RIGHT;
 			}
 		} else {
 			float xSpeed = body.getVelocity().x;
@@ -135,6 +135,10 @@ public class InputOperator implements Operator
 					currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : IDLE_LEFT;
 				}
 			}
+		}
+
+		if (input.isMeleeActive()) {
+			currentAnimation = body.isFacingRight() ? MELEE_RIGHT : MELEE_LEFT;
 		}
 
 		if(currentAnimation != null) {
