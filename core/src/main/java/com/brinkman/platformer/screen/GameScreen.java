@@ -22,6 +22,8 @@ import com.brinkman.platformer.component.render.RenderOperator;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsOperator;
+import com.brinkman.platformer.component.status.SimpleStatusComponent;
+import com.brinkman.platformer.component.status.StatusComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.entity.actor.SimpleEnemy;

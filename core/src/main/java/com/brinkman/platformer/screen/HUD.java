@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.status.SimpleStatusComponent;
+import com.brinkman.platformer.component.status.StatusComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Player;
 import com.brinkman.platformer.entity.actor.item.Item;
@@ -22,10 +24,7 @@ import com.brinkman.platformer.util.TexturePaths;
  */
 public class HUD {
     private final Stage stage;
-    private final Label coinLabel;
-    private final Label livesLabel;
-    private final Label levelLabel;
-    private final Image keyImage;
+    private final Label healthLabel;
     private final GameWorld world;
 
     private static final Logger LOGGER = new Logger(HUD.class.getName(), Logger.DEBUG);
@@ -37,21 +36,14 @@ public class HUD {
     public HUD(GameWorld world) {
         stage = new Stage();
         this.world = world;
-        keyImage = new Image((Texture) AssetUtil.getAsset(TexturePaths.HUD_KEY_TEXTURE, Texture.class));
-        keyImage.setVisible(false);
 
         LabelStyle labelStyle = new LabelStyle(FontUtil.getBitmapFont("fonts/SF Atarian System Bold.ttf", Color
               .WHITE, 36), Color.WHITE);
-        coinLabel = new Label("", labelStyle);
-        livesLabel = new Label("", labelStyle);
-        levelLabel = new Label("", labelStyle);
+        healthLabel = new Label("", labelStyle);
 
         Table table = new Table();
         table.setFillParent(true);
-        table.add(levelLabel).width(levelLabel.getWidth()).padRight(125);
-        table.top().left().add(livesLabel).width(livesLabel.getWidth()).padRight(125);
-        table.add(coinLabel).width(coinLabel.getWidth()).padRight(750);
-        table.add(keyImage);
+        table.top().left().add(healthLabel).width(healthLabel.getWidth()).padRight(125);
 
         stage.addActor(table);
 
@@ -63,13 +55,6 @@ public class HUD {
      * @param delta float
      */
     public void render(float delta) {
-        //Update coin label
-        if (world.getNumberOfCoins() > 0) {
-            coinLabel.setText("Coins Left: " + world.getNumberOfCoins());
-        } else {
-            coinLabel.setText("Turn In!");
-        }
-
         Player player = null;
         for (Entity entity : world.getEntities()) {
             if (entity instanceof Player) {
@@ -78,19 +63,7 @@ public class HUD {
         }
 
         //Update lives and level labels
-        livesLabel.setText("Lives: " + player.getLives());
-        levelLabel.setText("Level: " + world.getLevel().getLevelNumber());
-
-        //Update key image
-        if (world.getLevel().hasKey()) {
-            for (Item item : player.getInventory()) {
-                if (item.getItemType() == ItemType.KEY && !keyImage.isVisible()) {
-                    keyImage.setVisible(true);
-                }
-            }
-        } else {
-            keyImage.setVisible(false);
-        }
+        healthLabel.setText("Health: " + ((SimpleStatusComponent)player.getComponents().get(StatusComponent.class)).getCurrentHealth());
 
         stage.act(delta);
         stage.draw();

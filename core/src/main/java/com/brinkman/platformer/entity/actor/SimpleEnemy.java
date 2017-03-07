@@ -44,6 +44,10 @@ public class SimpleEnemy extends Actor
         Vector2 originPosition = body.getOriginPosition();
         body.getPosition().set(originPosition.x + 2, originPosition.y);
 
+        SimpleStatusComponent statusComponent = new SimpleStatusComponent();
+        statusComponent.setMaxHealth(100);
+        statusComponent.setCurrentHealth(100);
+
         CollisionListener<Platform> platformListener = new StaticCollisionListener<>(body);
         CollisionListener<StaticEntity> staticListener = new StaticCollisionListener<>(body);
         body.setCollisionListener(Platform.class, platformListener);
@@ -52,7 +56,7 @@ public class SimpleEnemy extends Actor
         components = ImmutableClassToInstanceMap.<RootComponent> builder()
               .put(RenderComponent.class, new TextureRenderComponent(textureRegion, normalTextureRegion))
               .put(PhysicsComponent.class, body)
-              .put(StatusComponent.class, new SimpleStatusComponent())
+              .put(StatusComponent.class, statusComponent)
               .build();
     }
 

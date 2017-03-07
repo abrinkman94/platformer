@@ -86,6 +86,10 @@ public class Player extends Actor
         Vector2 originPosition = body.getOriginPosition();
         body.getPosition().set(originPosition);
 
+        SimpleStatusComponent statusComponent = new SimpleStatusComponent();
+        statusComponent.setMaxHealth(100);
+        statusComponent.setCurrentHealth(100);
+
         CollisionListener<Platform> platformListener = new StaticCollisionListener<>(body);
         CollisionListener<StaticEntity> staticListener = new StaticCollisionListener<>(body);
         // TODO Need to move this out of constructor if possible; leaking potentially uninitialized references
@@ -105,7 +109,7 @@ public class Player extends Actor
               .put(PhysicsComponent.class, body)
               .put(InputComponent.class, new PlayerInputComponent())
               .put(ActionComponent.class, new SimpleActionComponent(actions))
-              .put(StatusComponent.class, new SimpleStatusComponent())
+              .put(StatusComponent.class, statusComponent)
               .build();
 
         LOGGER.info("Initialized");
