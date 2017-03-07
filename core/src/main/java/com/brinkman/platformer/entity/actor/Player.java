@@ -53,6 +53,10 @@ public class Player extends Actor
     private TextureAtlas idleLeftAtlas;
     private TextureAtlas jumpRightAtlas;
     private TextureAtlas jumpLeftAtlas;
+    private TextureAtlas meleeRightAtlas;
+    private TextureAtlas meleeLeftAtlas;
+    private TextureAtlas normalMeleeRightAtlas;
+    private TextureAtlas normalMeleeLeftAtlas;
     private TextureAtlas walkRightAtlasNormal;
     private TextureAtlas walkLeftAtlasNormal;
     private TextureAtlas idleRightAtlasNormal;
@@ -64,6 +68,7 @@ public class Player extends Actor
     private static final float WALK_ANIMATION_TIME = 0.1f;
     private static final float RUN_ANIMATION_TIME = 0.05f;
     private static final float JUMP_ANIMATION_TIME = 1.0f;
+    private static final float MELEE_ANIMATION_TIME = 1.0f;
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
     private static final int JUMP_VEL = 12;
@@ -166,6 +171,21 @@ public class Player extends Actor
             jumpLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
         }
 
+        meleeRightAtlas = new TextureAtlas();
+        meleeRightAtlas.addRegion("frame1",
+              new TextureRegion((Texture) AssetUtil.getAsset(MELEE_RIGHT_1, Texture.class)));
+        meleeRightAtlas.addRegion("frame2",
+              new TextureRegion((Texture) AssetUtil.getAsset(MELEE_RIGHT_2, Texture.class)));
+        meleeRightAtlas.addRegion("frame3",
+              new TextureRegion((Texture) AssetUtil.getAsset(MELEE_RIGHT_3, Texture.class)));
+
+        meleeLeftAtlas = new TextureAtlas();
+        for (AtlasRegion region : meleeRightAtlas.getRegions()) {
+            int i = 0;
+            i++;
+            meleeLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        }
+
         animations.put(IDLE_LEFT, new Animation<>(WALK_ANIMATION_TIME, idleLeftAtlas.getRegions(), PlayMode.LOOP));
         animations.put(IDLE_RIGHT, new Animation<>(WALK_ANIMATION_TIME, idleRightAtlas.getRegions(), PlayMode.LOOP));
         animations.put(WALK_LEFT, new Animation<>(WALK_ANIMATION_TIME, walkLeftAtlas.getRegions(), PlayMode.LOOP));
@@ -174,6 +194,8 @@ public class Player extends Actor
         animations.put(RUN_RIGHT, new Animation<>(RUN_ANIMATION_TIME, walkRightAtlas.getRegions(), PlayMode.LOOP));
         animations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlas.getRegions(), PlayMode.LOOP));
         animations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(MELEE_LEFT, new Animation<>(MELEE_ANIMATION_TIME, meleeLeftAtlas.getRegions(), PlayMode.LOOP));
+        animations.put(MELEE_RIGHT, new Animation<>(MELEE_ANIMATION_TIME, meleeRightAtlas.getRegions(), PlayMode.LOOP));
 
     }
 
@@ -223,6 +245,21 @@ public class Player extends Actor
             jumpLeftAtlasNormal.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
         }
 
+        normalMeleeRightAtlas = new TextureAtlas();
+        normalMeleeRightAtlas.addRegion("frame1",
+              new TextureRegion((Texture) AssetUtil.getAsset(N_MELEE_RIGHT_1, Texture.class)));
+        normalMeleeRightAtlas.addRegion("frame2",
+              new TextureRegion((Texture) AssetUtil.getAsset(N_MELEE_RIGHT_2, Texture.class)));
+        normalMeleeRightAtlas.addRegion("frame3",
+              new TextureRegion((Texture) AssetUtil.getAsset(N_MELEE_RIGHT_3, Texture.class)));
+
+        normalMeleeLeftAtlas = new TextureAtlas();
+        for (AtlasRegion region : meleeRightAtlas.getRegions()) {
+            int i = 0;
+            i++;
+            meleeLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        }
+
         normalAnimations.put(IDLE_LEFT, new Animation<>(WALK_ANIMATION_TIME, idleLeftAtlasNormal.getRegions(), PlayMode.LOOP));
         normalAnimations.put(IDLE_RIGHT, new Animation<>(WALK_ANIMATION_TIME, idleRightAtlasNormal.getRegions(), PlayMode.LOOP));
         normalAnimations.put(WALK_LEFT, new Animation<>(WALK_ANIMATION_TIME, walkLeftAtlasNormal.getRegions(), PlayMode.LOOP));
@@ -231,6 +268,8 @@ public class Player extends Actor
         normalAnimations.put(RUN_RIGHT, new Animation<>(RUN_ANIMATION_TIME, walkRightAtlasNormal.getRegions(), PlayMode.LOOP));
         normalAnimations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlasNormal.getRegions(), PlayMode.LOOP));
         normalAnimations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlasNormal.getRegions(), PlayMode.LOOP));
+        normalAnimations.put(MELEE_RIGHT, new Animation<>(MELEE_ANIMATION_TIME, normalMeleeRightAtlas.getRegions(), PlayMode.NORMAL));
+        normalAnimations.put(MELEE_LEFT, new Animation<>(MELEE_ANIMATION_TIME, normalMeleeLeftAtlas.getRegions(), PlayMode.NORMAL));
     }
 
     /**

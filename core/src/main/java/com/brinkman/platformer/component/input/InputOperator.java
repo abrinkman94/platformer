@@ -110,12 +110,20 @@ public class InputOperator implements Operator
 			} else {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_LEFT : WALK_LEFT;
 			}
+
+			if (input.isMeleeActive()) {
+				currentAnimation = MELEE_LEFT;
+			}
 		} else if (input.isRightActive()) {
 			body.setFacingRight(true);
 			if (input.isRunActive()) {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : RUN_RIGHT;
 			} else {
 				currentAnimation = (body.isJumping() && !body.isGrounded()) ? JUMP_RIGHT : WALK_RIGHT;
+			}
+
+			if (input.isMeleeActive()) {
+				currentAnimation = MELEE_RIGHT;
 			}
 		} else {
 			float xSpeed = body.getVelocity().x;

@@ -36,6 +36,11 @@ public final class AssetUtil
 			loadAsset("sprites/running/normal/frame-" + i + "-right.png", Texture.class);
 		}
 
+		for (int i = 1; i <= 3; i++) {
+			loadAsset("sprites/melee/frame-" + i + ".png", Texture.class);
+			loadAsset("sprites/melee/normal/frame-" + i + ".png", Texture.class);
+		}
+
 		loadAsset("sprites/coinsheet.png", Texture.class);
 		loadAsset("map/Object/saw.png", Texture.class);
 		loadAsset("map/Object/life.png", Texture.class);
