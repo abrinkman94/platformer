@@ -176,17 +176,17 @@ public class Player extends Actor
     private void initializeNormalTextureAtlas() {
         walkRightAtlasNormal = new TextureAtlas();
         walkRightAtlasNormal.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_1_RIGHT, Texture.class)));
         walkRightAtlasNormal.addRegion("frame2",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_2_RIGHT, Texture.class)));
         walkRightAtlasNormal.addRegion("frame3",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_3_RIGHT, Texture.class)));
         walkRightAtlasNormal.addRegion("frame4",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_4_RIGHT, Texture.class)));
         walkRightAtlasNormal.addRegion("frame5",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_5_RIGHT, Texture.class)));
         walkRightAtlasNormal.addRegion("frame6",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_6_RIGHT, Texture.class)));
 
         walkLeftAtlasNormal = new TextureAtlas();
         for (AtlasRegion region : walkRightAtlasNormal.getRegions()) {
@@ -197,12 +197,12 @@ public class Player extends Actor
 
         idleRightAtlasNormal = new TextureAtlas();
         idleRightAtlasNormal.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_IDLE_FRAME_1_RIGHT, Texture.class)));
         idleRightAtlasNormal.addRegion("frame2",
-              new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_2_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_IDLE_FRAME_2_RIGHT, Texture.class)));
 
         idleLeftAtlasNormal = new TextureAtlas();
-        for (AtlasRegion region : idleRightAtlas.getRegions()) {
+        for (AtlasRegion region : idleRightAtlasNormal.getRegions()) {
             int i = 0;
             i++;
             idleLeftAtlasNormal.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
@@ -210,7 +210,7 @@ public class Player extends Actor
 
         jumpRightAtlasNormal = new TextureAtlas();
         jumpRightAtlasNormal.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_RIGHT, Texture.class)));
+              new TextureRegion((Texture) AssetUtil.getAsset(N_JUMP_FRAME_1_RIGHT, Texture.class)));
 
         jumpLeftAtlasNormal = new TextureAtlas();
         for (AtlasRegion region : jumpRightAtlasNormal.getRegions()) {

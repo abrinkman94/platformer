@@ -43,9 +43,10 @@ public class AnimationRenderComponent implements RenderComponent
     @Override
     public void setAnimationType(AnimationType animationType) {
         Animation<TextureRegion> animationTemp = animations.get(animationType);
+        Animation<TextureRegion> normalAnimationTemp = normalAnimations.get(animationType);
 
         currentAnimation = (animationTemp != null) ? animationTemp : defaultAnimation;
-        currentNormalAnimation = (animationTemp != null) ? animationTemp : defaultAnimation;
+        currentNormalAnimation = (normalAnimationTemp != null) ? normalAnimationTemp : defaultAnimation;
     }
 
     @Override
