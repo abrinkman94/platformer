@@ -1,6 +1,5 @@
 package com.brinkman.platformer.entity.actor;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -29,7 +28,6 @@ import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.physics.*;
-import com.brinkman.platformer.util.AssetUtil;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
 import java.util.EnumMap;
@@ -38,7 +36,6 @@ import java.util.function.BiConsumer;
 
 import static com.brinkman.platformer.component.render.AnimationType.*;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
-import static com.brinkman.platformer.util.TexturePaths.*;
 
 /**
  * Created by Austin on 9/29/2016.
@@ -55,8 +52,8 @@ public class Player extends Actor
     private TextureAtlas jumpLeftAtlas;
     private TextureAtlas meleeRightAtlas;
     private TextureAtlas meleeLeftAtlas;
-    private TextureAtlas normalMeleeRightAtlas;
-    private TextureAtlas normalMeleeLeftAtlas;
+    private TextureAtlas meleeRightAtlasNormal;
+    private TextureAtlas meleeLeftAtlasNormal;
     private TextureAtlas walkRightAtlasNormal;
     private TextureAtlas walkLeftAtlasNormal;
     private TextureAtlas idleRightAtlasNormal;
@@ -128,27 +125,23 @@ public class Player extends Actor
     private void initializeTextureAtlas() {
         walkRightAtlas = new TextureAtlas("sprites/running/running.pack");
         walkLeftAtlas = new TextureAtlas("sprites/running/running.pack");
-
         for (AtlasRegion region : walkLeftAtlas.getRegions()) {
             region.flip(true, false);
         }
 
         idleRightAtlas = new TextureAtlas("sprites/Idle/idle.pack");
-
         idleLeftAtlas = new TextureAtlas("sprites/Idle/idle.pack");
         for (AtlasRegion region : idleLeftAtlas.getRegions()) {
             region.flip(true, false);
         }
 
         jumpRightAtlas = new TextureAtlas("sprites/Jump/jump.pack");
-
         jumpLeftAtlas = new TextureAtlas("sprites/Jump/jump.pack");
         for (AtlasRegion region : jumpLeftAtlas.getRegions()) {
             region.flip(true, false);
         }
 
         meleeRightAtlas = new TextureAtlas("sprites/melee/melee.pack");
-
         meleeLeftAtlas = new TextureAtlas("sprites/melee/melee.pack");
         for (AtlasRegion region : meleeLeftAtlas.getRegions()) {
             region.flip(true, false);
@@ -169,30 +162,26 @@ public class Player extends Actor
 
     private void initializeNormalTextureAtlas() {
         walkRightAtlasNormal = new TextureAtlas("sprites/running/normal/running_normal.pack");
-
         walkLeftAtlasNormal = new TextureAtlas("sprites/running/normal/running_normal.pack");
         for (AtlasRegion region : walkLeftAtlasNormal.getRegions()) {
             region.flip(true, false);
         }
 
         idleRightAtlasNormal = new TextureAtlas("sprites/Idle/normal/idle_normal.pack");
-
         idleLeftAtlasNormal = new TextureAtlas("sprites/Idle/normal/idle_normal.pack");
         for (AtlasRegion region : idleLeftAtlasNormal.getRegions()) {
             region.flip(true, false);
         }
 
         jumpRightAtlasNormal = new TextureAtlas("sprites/Jump/normal/jump_normal.pack");
-
         jumpLeftAtlasNormal = new TextureAtlas("sprites/Jump/normal/jump_normal.pack");
         for (AtlasRegion region : jumpLeftAtlasNormal.getRegions()) {
             region.flip(true, false);
         }
 
-        normalMeleeRightAtlas = new TextureAtlas("sprites/melee/normal/melee_normal.pack");
-
-        normalMeleeLeftAtlas = new TextureAtlas("sprites/melee/normal/melee_normal.pack");
-        for (AtlasRegion region : normalMeleeLeftAtlas.getRegions()) {
+        meleeRightAtlasNormal = new TextureAtlas("sprites/melee/normal/melee_normal.pack");
+        meleeLeftAtlasNormal = new TextureAtlas("sprites/melee/normal/melee_normal.pack");
+        for (AtlasRegion region : meleeLeftAtlasNormal.getRegions()) {
             region.flip(true, false);
         }
 
@@ -204,8 +193,8 @@ public class Player extends Actor
         normalAnimations.put(RUN_RIGHT, new Animation<>(RUN_ANIMATION_TIME, walkRightAtlasNormal.getRegions(), PlayMode.LOOP));
         normalAnimations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlasNormal.getRegions(), PlayMode.NORMAL));
         normalAnimations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlasNormal.getRegions(), PlayMode.NORMAL));
-        normalAnimations.put(MELEE_RIGHT, new Animation<>(MELEE_ANIMATION_TIME, normalMeleeRightAtlas.getRegions(), PlayMode.NORMAL));
-        normalAnimations.put(MELEE_LEFT, new Animation<>(MELEE_ANIMATION_TIME, normalMeleeLeftAtlas.getRegions(), PlayMode.NORMAL));
+        normalAnimations.put(MELEE_RIGHT, new Animation<>(MELEE_ANIMATION_TIME, meleeRightAtlasNormal.getRegions(), PlayMode.NORMAL));
+        normalAnimations.put(MELEE_LEFT, new Animation<>(MELEE_ANIMATION_TIME, meleeLeftAtlasNormal.getRegions(), PlayMode.NORMAL));
     }
 
     /**
