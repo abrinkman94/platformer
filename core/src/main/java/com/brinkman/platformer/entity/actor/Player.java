@@ -67,7 +67,7 @@ public class Player extends Actor
 
     private static final float WALK_ANIMATION_TIME = 0.1f;
     private static final float RUN_ANIMATION_TIME = 0.05f;
-    private static final float JUMP_ANIMATION_TIME = 1.0f;
+    private static final float JUMP_ANIMATION_TIME = 0.5f;
     private static final float MELEE_ANIMATION_TIME = 0.1f;
     private static final int PLAYER_WIDTH = 32;
     private static final int PLAYER_HEIGHT = 64;
@@ -126,64 +126,32 @@ public class Player extends Actor
      * Initializes TextureAtlas's using Textures from the AssetUtil.ASSET_MANAGER
      */
     private void initializeTextureAtlas() {
-        walkRightAtlas = new TextureAtlas();
-        walkRightAtlas.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_1_RIGHT, Texture.class)));
-        walkRightAtlas.addRegion("frame2",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_2_RIGHT, Texture.class)));
-        walkRightAtlas.addRegion("frame3",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_3_RIGHT, Texture.class)));
-        walkRightAtlas.addRegion("frame4",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_4_RIGHT, Texture.class)));
-        walkRightAtlas.addRegion("frame5",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_5_RIGHT, Texture.class)));
-        walkRightAtlas.addRegion("frame6",
-              new TextureRegion((Texture) AssetUtil.getAsset(RUN_FRAME_6_RIGHT, Texture.class)));
+        walkRightAtlas = new TextureAtlas("sprites/running/running.pack");
+        walkLeftAtlas = new TextureAtlas("sprites/running/running.pack");
 
-        walkLeftAtlas = new TextureAtlas();
-        for (AtlasRegion region : walkRightAtlas.getRegions()) {
-            int i = 0;
-            i++;
-            walkLeftAtlas.addRegion("frame " + i, new TextureRegion(region.getTexture())).flip(true, false);
+        for (AtlasRegion region : walkLeftAtlas.getRegions()) {
+            region.flip(true, false);
         }
 
-        idleRightAtlas = new TextureAtlas();
-        idleRightAtlas.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_1_RIGHT, Texture.class)));
-        idleRightAtlas.addRegion("frame2",
-              new TextureRegion((Texture) AssetUtil.getAsset(IDLE_FRAME_2_RIGHT, Texture.class)));
+        idleRightAtlas = new TextureAtlas("sprites/Idle/idle.pack");
 
-        idleLeftAtlas = new TextureAtlas();
-        for (AtlasRegion region : idleRightAtlas.getRegions()) {
-            int i = 0;
-            i++;
-            idleLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        idleLeftAtlas = new TextureAtlas("sprites/Idle/idle.pack");
+        for (AtlasRegion region : idleLeftAtlas.getRegions()) {
+            region.flip(true, false);
         }
 
-        jumpRightAtlas = new TextureAtlas();
-        jumpRightAtlas.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(JUMP_FRAME_1_RIGHT, Texture.class)));
+        jumpRightAtlas = new TextureAtlas("sprites/Jump/jump.pack");
 
-        jumpLeftAtlas = new TextureAtlas();
-        for (AtlasRegion region : jumpRightAtlas.getRegions()) {
-            int i = 0;
-            i++;
-            jumpLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        jumpLeftAtlas = new TextureAtlas("sprites/Jump/jump.pack");
+        for (AtlasRegion region : jumpLeftAtlas.getRegions()) {
+            region.flip(true, false);
         }
 
-        meleeRightAtlas = new TextureAtlas();
-        meleeRightAtlas.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(MELEE_RIGHT_1, Texture.class)));
-        meleeRightAtlas.addRegion("frame2",
-              new TextureRegion((Texture) AssetUtil.getAsset(MELEE_RIGHT_2, Texture.class)));
-        meleeRightAtlas.addRegion("frame3",
-              new TextureRegion((Texture) AssetUtil.getAsset(MELEE_RIGHT_3, Texture.class)));
+        meleeRightAtlas = new TextureAtlas("sprites/melee/melee.pack");
 
-        meleeLeftAtlas = new TextureAtlas();
-        for (AtlasRegion region : meleeRightAtlas.getRegions()) {
-            int i = 0;
-            i++;
-            meleeLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        meleeLeftAtlas = new TextureAtlas("sprites/melee/melee.pack");
+        for (AtlasRegion region : meleeLeftAtlas.getRegions()) {
+            region.flip(true, false);
         }
 
         animations.put(IDLE_LEFT, new Animation<>(WALK_ANIMATION_TIME, idleLeftAtlas.getRegions(), PlayMode.LOOP));
@@ -200,64 +168,32 @@ public class Player extends Actor
     }
 
     private void initializeNormalTextureAtlas() {
-        walkRightAtlasNormal = new TextureAtlas();
-        walkRightAtlasNormal.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_1_RIGHT, Texture.class)));
-        walkRightAtlasNormal.addRegion("frame2",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_2_RIGHT, Texture.class)));
-        walkRightAtlasNormal.addRegion("frame3",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_3_RIGHT, Texture.class)));
-        walkRightAtlasNormal.addRegion("frame4",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_4_RIGHT, Texture.class)));
-        walkRightAtlasNormal.addRegion("frame5",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_5_RIGHT, Texture.class)));
-        walkRightAtlasNormal.addRegion("frame6",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_RUN_FRAME_6_RIGHT, Texture.class)));
+        walkRightAtlasNormal = new TextureAtlas("sprites/running/normal/running_normal.pack");
 
-        walkLeftAtlasNormal = new TextureAtlas();
-        for (AtlasRegion region : walkRightAtlasNormal.getRegions()) {
-            int i = 0;
-            i++;
-            walkLeftAtlasNormal.addRegion("frame " + i, new TextureRegion(region.getTexture())).flip(true, false);
+        walkLeftAtlasNormal = new TextureAtlas("sprites/running/normal/running_normal.pack");
+        for (AtlasRegion region : walkLeftAtlasNormal.getRegions()) {
+            region.flip(true, false);
         }
 
-        idleRightAtlasNormal = new TextureAtlas();
-        idleRightAtlasNormal.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_IDLE_FRAME_1_RIGHT, Texture.class)));
-        idleRightAtlasNormal.addRegion("frame2",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_IDLE_FRAME_2_RIGHT, Texture.class)));
+        idleRightAtlasNormal = new TextureAtlas("sprites/Idle/normal/idle_normal.pack");
 
-        idleLeftAtlasNormal = new TextureAtlas();
-        for (AtlasRegion region : idleRightAtlasNormal.getRegions()) {
-            int i = 0;
-            i++;
-            idleLeftAtlasNormal.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        idleLeftAtlasNormal = new TextureAtlas("sprites/Idle/normal/idle_normal.pack");
+        for (AtlasRegion region : idleLeftAtlasNormal.getRegions()) {
+            region.flip(true, false);
         }
 
-        jumpRightAtlasNormal = new TextureAtlas();
-        jumpRightAtlasNormal.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_JUMP_FRAME_1_RIGHT, Texture.class)));
+        jumpRightAtlasNormal = new TextureAtlas("sprites/Jump/normal/jump_normal.pack");
 
-        jumpLeftAtlasNormal = new TextureAtlas();
-        for (AtlasRegion region : jumpRightAtlasNormal.getRegions()) {
-            int i = 0;
-            i++;
-            jumpLeftAtlasNormal.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        jumpLeftAtlasNormal = new TextureAtlas("sprites/Jump/normal/jump_normal.pack");
+        for (AtlasRegion region : jumpLeftAtlasNormal.getRegions()) {
+            region.flip(true, false);
         }
 
-        normalMeleeRightAtlas = new TextureAtlas();
-        normalMeleeRightAtlas.addRegion("frame1",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_MELEE_RIGHT_1, Texture.class)));
-        normalMeleeRightAtlas.addRegion("frame2",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_MELEE_RIGHT_2, Texture.class)));
-        normalMeleeRightAtlas.addRegion("frame3",
-              new TextureRegion((Texture) AssetUtil.getAsset(N_MELEE_RIGHT_3, Texture.class)));
+        normalMeleeRightAtlas = new TextureAtlas("sprites/melee/normal/melee_normal.pack");
 
-        normalMeleeLeftAtlas = new TextureAtlas();
-        for (AtlasRegion region : normalMeleeRightAtlas.getRegions()) {
-            int i = 0;
-            i++;
-            normalMeleeLeftAtlas.addRegion("frame" + i, new TextureRegion(region.getTexture())).flip(true, false);
+        normalMeleeLeftAtlas = new TextureAtlas("sprites/melee/normal/melee_normal.pack");
+        for (AtlasRegion region : normalMeleeLeftAtlas.getRegions()) {
+            region.flip(true, false);
         }
 
         normalAnimations.put(IDLE_LEFT, new Animation<>(WALK_ANIMATION_TIME, idleLeftAtlasNormal.getRegions(), PlayMode.LOOP));
@@ -266,8 +202,8 @@ public class Player extends Actor
         normalAnimations.put(WALK_RIGHT, new Animation<>(WALK_ANIMATION_TIME, walkRightAtlasNormal.getRegions(), PlayMode.LOOP));
         normalAnimations.put(RUN_LEFT, new Animation<>(RUN_ANIMATION_TIME, walkLeftAtlasNormal.getRegions(), PlayMode.LOOP));
         normalAnimations.put(RUN_RIGHT, new Animation<>(RUN_ANIMATION_TIME, walkRightAtlasNormal.getRegions(), PlayMode.LOOP));
-        normalAnimations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlasNormal.getRegions(), PlayMode.LOOP));
-        normalAnimations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlasNormal.getRegions(), PlayMode.LOOP));
+        normalAnimations.put(JUMP_LEFT, new Animation<>(JUMP_ANIMATION_TIME, jumpLeftAtlasNormal.getRegions(), PlayMode.NORMAL));
+        normalAnimations.put(JUMP_RIGHT, new Animation<>(JUMP_ANIMATION_TIME, jumpRightAtlasNormal.getRegions(), PlayMode.NORMAL));
         normalAnimations.put(MELEE_RIGHT, new Animation<>(MELEE_ANIMATION_TIME, normalMeleeRightAtlas.getRegions(), PlayMode.NORMAL));
         normalAnimations.put(MELEE_LEFT, new Animation<>(MELEE_ANIMATION_TIME, normalMeleeLeftAtlas.getRegions(), PlayMode.NORMAL));
     }
