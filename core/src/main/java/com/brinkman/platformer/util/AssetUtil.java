@@ -41,18 +41,8 @@ public final class AssetUtil
 			loadAsset("sprites/melee/normal/frame-" + i + ".png", Texture.class);
 		}
 
-		loadAsset("sprites/coinsheet.png", Texture.class);
-		loadAsset("map/Object/saw.png", Texture.class);
-		loadAsset("map/Object/life.png", Texture.class);
-		loadAsset("map/Object/key.png", Texture.class);
-		loadAsset("map/Object/HUD key.png", Texture.class);
-
 		ASSET_MANAGER.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
-
-		for (int i = 1; i <= Constants.NUM_OF_LEVELS; i++) {
-			loadAsset("map/World 1/level" + i + ".tmx", TiledMap.class);
-		}
 
 		loadAsset("map/lighting-demo/cave.tmx", TiledMap.class);
 

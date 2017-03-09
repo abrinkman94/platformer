@@ -1,0 +1,61 @@
+
+jump.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+png_ _jump
+  rotate: false
+  xy: 1, 144
+  size: 128, 70
+  orig: 128, 113
+  offset: 0, 0
+  index: 3
+png_ _jump
+  rotate: false
+  xy: 1, 72
+  size: 128, 70
+  orig: 128, 111
+  offset: 0, 0
+  index: 4
+png_ _jump
+  rotate: false
+  xy: 131, 145
+  size: 128, 69
+  orig: 128, 113
+  offset: 0, 0
+  index: 0
+png_ _jump
+  rotate: false
+  xy: 1, 1
+  size: 128, 69
+  orig: 128, 111
+  offset: 0, 0
+  index: 6
+png_ _jump
+  rotate: false
+  xy: 131, 74
+  size: 128, 69
+  orig: 128, 112
+  offset: 0, 0
+  index: 7
+png_ _jump
+  rotate: false
+  xy: 261, 145
+  size: 127, 69
+  orig: 127, 114
+  offset: 0, 0
+  index: 1
+png_ _jump
+  rotate: false
+  xy: 131, 4
+  size: 128, 68
+  orig: 128, 114
+  offset: 0, 0
+  index: 2
+png_ _jump
+  rotate: false
+  xy: 261, 75
+  size: 128, 68
+  orig: 128, 110
+  offset: 0, 0
+  index: 5
