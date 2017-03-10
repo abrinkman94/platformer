@@ -1,19 +1,15 @@
 package com.brinkman.platformer.entity.actor;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.brinkman.platformer.component.RootComponent;
-import com.brinkman.platformer.component.input.InputComponent;
-import com.brinkman.platformer.component.input.PlayerInputComponent;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.render.AnimationRenderComponent;
 import com.brinkman.platformer.component.render.AnimationType;
 import com.brinkman.platformer.component.render.RenderComponent;
-import com.brinkman.platformer.component.render.TextureRenderComponent;
 import com.brinkman.platformer.component.status.SimpleStatusComponent;
 import com.brinkman.platformer.component.status.StatusComponent;
 import com.brinkman.platformer.entity.StaticEntity;
@@ -26,7 +22,6 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import static com.brinkman.platformer.component.render.AnimationType.IDLE_LEFT;
-import static com.brinkman.platformer.component.render.AnimationType.IDLE_RIGHT;
 import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
 
 /**
@@ -64,7 +59,7 @@ public class SimpleEnemy extends Actor
         body.setCollisionListener(StaticEntity.class, staticListener);
 
         components = ImmutableClassToInstanceMap.<RootComponent> builder()
-              .put(RenderComponent.class, new AnimationRenderComponent(animations.get(IDLE_LEFT), animations, normalAnimations))
+              .put(RenderComponent.class, new AnimationRenderComponent(animations.get(IDLE_LEFT), normalAnimations.get(IDLE_LEFT), animations, normalAnimations))
               .put(PhysicsComponent.class, body)
               .put(StatusComponent.class, statusComponent)
               .build();

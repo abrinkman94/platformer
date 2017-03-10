@@ -111,7 +111,7 @@ public class Player extends Actor
         actions.put(ActionType.MELEE_ATTACK, new MeleeAttackAction());
 
         components = ImmutableClassToInstanceMap.<RootComponent>builder()
-              .put(RenderComponent.class, new AnimationRenderComponent(animations.get(IDLE_RIGHT), animations, normalAnimations))
+              .put(RenderComponent.class, new AnimationRenderComponent(animations.get(IDLE_RIGHT), normalAnimations.get(IDLE_LEFT), animations, normalAnimations))
               .put(PhysicsComponent.class, body)
               .put(InputComponent.class, new PlayerInputComponent())
               .put(ActionComponent.class, new SimpleActionComponent(actions))

@@ -50,16 +50,18 @@ public class NormalRenderOperator implements Operator
         float scaleY = 1.0f;
         float rotation = 0.0f;
         TextureRegion textureRegion = renderComponent.getNormalTextureRegion(deltaT);
-        tempVector.set(body.getPosition());
-        float width = textureRegion.getRegionWidth() * TO_WORLD_UNITS;
-        float height = textureRegion.getRegionHeight() * TO_WORLD_UNITS;
-        float x = tempVector.x - ((width - body.getWidth()) / 2);
-        float y = tempVector.y - ((height - body.getHeight()) / 2);
+        if(textureRegion != null) {
+            tempVector.set(body.getPosition());
+            float width = textureRegion.getRegionWidth() * TO_WORLD_UNITS;
+            float height = textureRegion.getRegionHeight() * TO_WORLD_UNITS;
+            float x = tempVector.x - ((width - body.getWidth()) / 2);
+            float y = tempVector.y - ((height - body.getHeight()) / 2);
 
-        if (textureRegion != null) {
-            batch.begin();
-            batch.draw(textureRegion, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
-            batch.end();
+            if (textureRegion != null) {
+                batch.begin();
+                batch.draw(textureRegion, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+                batch.end();
+            }
         }
     }
 }
