@@ -1,0 +1,61 @@
+
+attack.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+png_ _attack weapon
+  rotate: false
+  xy: 1, 143
+  size: 128, 69
+  orig: 128, 113
+  offset: 0, 0
+  index: 0
+png_ _attack weapon
+  rotate: false
+  xy: 1, 72
+  size: 128, 69
+  orig: 128, 114
+  offset: 0, 0
+  index: 1
+png_ _attack weapon
+  rotate: false
+  xy: 131, 143
+  size: 128, 69
+  orig: 128, 116
+  offset: 0, 0
+  index: 4
+png_ _attack weapon
+  rotate: false
+  xy: 1, 1
+  size: 128, 69
+  orig: 128, 113
+  offset: 0, 0
+  index: 7
+png_ _attack weapon
+  rotate: false
+  xy: 131, 73
+  size: 128, 68
+  orig: 128, 114
+  offset: 0, 0
+  index: 2
+png_ _attack weapon
+  rotate: false
+  xy: 261, 143
+  size: 127, 69
+  orig: 127, 115
+  offset: 0, 0
+  index: 5
+png_ _attack weapon
+  rotate: false
+  xy: 131, 3
+  size: 128, 68
+  orig: 128, 113
+  offset: 0, 0
+  index: 6
+png_ _attack weapon
+  rotate: false
+  xy: 261, 75
+  size: 128, 66
+  orig: 128, 113
+  offset: 0, 0
+  index: 3

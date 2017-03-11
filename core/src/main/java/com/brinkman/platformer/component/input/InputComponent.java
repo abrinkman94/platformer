@@ -19,4 +19,8 @@ public interface InputComponent extends RootComponent
 	boolean isRightActive();
 
 	void setRightActive(boolean rightActive);
+
+	boolean isMeleeActive();
+
+	void setMeleeActive(boolean meleeActive);
 }

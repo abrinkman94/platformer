@@ -41,9 +41,15 @@ public class ControllerProcessor extends AbstractInputMappings implements Contro
             if (buttonCode == ControllerMappings.BUTTON_A) {
                 ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
             }
+            if (buttonCode == ControllerMappings.BUTTON_X) {
+                melee = true;
+            }
         } else {
             if (buttonCode == ControllerMappings.PS4_BUTTON_X) {
                 ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
+            }
+            if (buttonCode == ControllerMappings.PS4_BUTTON_SQUARE) {
+                melee = true;
             }
         }
         return false;
@@ -51,8 +57,13 @@ public class ControllerProcessor extends AbstractInputMappings implements Contro
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(false);
-        ((ControlledBody)entity.getComponents().getInstance(PhysicsComponent.class)).setJustJumped(false);
+        if ((buttonCode == ControllerMappings.BUTTON_A) || (buttonCode == ControllerMappings.PS4_BUTTON_X)) {
+            ((ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(false);
+            ((ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class)).setJustJumped(false);
+        }
+        if ((buttonCode == ControllerMappings.BUTTON_X) || (buttonCode == ControllerMappings.PS4_BUTTON_SQUARE)) {
+            melee = false;
+        }
         return false;
     }
 

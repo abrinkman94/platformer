@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
+import com.brinkman.platformer.component.action.ActionOperator;
 import com.brinkman.platformer.component.input.InputOperator;
 import com.brinkman.platformer.component.Operator;
 import com.brinkman.platformer.component.render.NormalRenderOperator;
@@ -21,8 +22,11 @@ import com.brinkman.platformer.component.render.RenderOperator;
 import com.brinkman.platformer.component.physics.ControlledPhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsComponent;
 import com.brinkman.platformer.component.physics.PhysicsOperator;
+import com.brinkman.platformer.component.status.SimpleStatusComponent;
+import com.brinkman.platformer.component.status.StatusComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Player;
+import com.brinkman.platformer.entity.actor.SimpleEnemy;
 import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.level.Level;
@@ -51,7 +55,7 @@ public class GameScreen implements Screen {
     private static final String POINT_FALLOFF_UNIFORM = "pointLightFalloff";
     private static final Vector3 AMBIENT_COLOR = new Vector3(1.0f, 1.0f, 1.0f);
     private static final Vector3 POINT_COLOR = new Vector3(1.0f, 0.8f,0.8f);
-    private static final Vector3 POINT_FALLOFF = new Vector3(0.0f, 5.0f, 200f);
+    private static final Vector3 POINT_FALLOFF = new Vector3(0.0f, 0.0f, 200f);
     private static final float AMBIENT_INTENSITY = 0.05f;
     private static final float POINT_INTENSITY = 7.0f;
 
@@ -59,10 +63,12 @@ public class GameScreen implements Screen {
     private final Operator renderSubsystem;
     private final Operator normalRenderSubsystem;
     private final Operator inputSubsystem;
+    private final Operator actionSubsystem;
     private final SpriteBatch spriteBatch;
     private final OrthographicCamera camera;
     private final OrthographicCamera bufferCamera;
     private final Player player;
+    private final SimpleEnemy simpleEnemy;
     private final HUD hud;
     private final GameWorld gameWorld;
     private final ShaderProgram shader;
@@ -82,15 +88,18 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(APP_WIDTH, APP_HEIGHT);
         bufferCamera = new OrthographicCamera(viewportWidth, viewportHeight);
         player = new Player();
+        simpleEnemy = new SimpleEnemy();
         hud = new HUD(gameWorld);
 
         gameWorld.addEntity(player);
+        gameWorld.addEntity(simpleEnemy);
         gameWorld.initializeMapObjects();
 
         physicsSubsystem = new PhysicsOperator(player);
         renderSubsystem = new RenderOperator(spriteBatch);
         normalRenderSubsystem = new NormalRenderOperator(spriteBatch);
         inputSubsystem = new InputOperator(player);
+        actionSubsystem = new ActionOperator();
 
         if (CONTROLLER_PRESENT) {
             Controllers.addListener(((InputOperator)inputSubsystem).getControllerProcessor());
@@ -176,6 +185,11 @@ public class GameScreen implements Screen {
                     .filter(it -> it.getComponents().keySet().containsAll(inputSubsystem.getRequiredComponents()) &&
                           (it.getComponents().getInstance(PhysicsComponent.class) instanceof ControlledPhysicsComponent))
                     .forEach(it -> inputSubsystem.operate(delta, it, gameWorld));
+        // Do actions
+        entitiesCopy.stream()
+                    .filter(it -> it.getComponents().keySet().containsAll(actionSubsystem.getRequiredComponents()) &&
+                            (it.getComponents().getInstance(PhysicsComponent.class) instanceof ControlledPhysicsComponent))
+                    .forEach(it -> actionSubsystem.operate(delta, it, gameWorld));
 
         //Camera utility methods
         CameraUtil.lerpCameraToActor(player, bufferCamera);

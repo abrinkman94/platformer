@@ -20,6 +20,10 @@ public class TexturePaths {
     public static final String RUN_FRAME_5_RIGHT = "sprites/running/frame-5-right.png";
     public static final String RUN_FRAME_6_RIGHT = "sprites/running/frame-6-right.png";
 
+    public static final String MELEE_RIGHT_1 = "sprites/melee/frame-1.png";
+    public static final String MELEE_RIGHT_2 = "sprites/melee/frame-2.png";
+    public static final String MELEE_RIGHT_3 = "sprites/melee/frame-3.png";
+
     //Sprite Animations
     public static final String N_IDLE_FRAME_1_RIGHT = "sprites/Idle/normal/frame-1-right.png";
     public static final String N_IDLE_FRAME_2_RIGHT = "sprites/Idle/normal/frame-2-right.png";
@@ -32,6 +36,10 @@ public class TexturePaths {
     public static final String N_RUN_FRAME_4_RIGHT = "sprites/running/normal/frame-4-right.png";
     public static final String N_RUN_FRAME_5_RIGHT = "sprites/running/normal/frame-5-right.png";
     public static final String N_RUN_FRAME_6_RIGHT = "sprites/running/normal/frame-6-right.png";
+
+    public static final String N_MELEE_RIGHT_1 = "sprites/melee/normal/frame-1.png";
+    public static final String N_MELEE_RIGHT_2 = "sprites/melee/normal/frame-2.png";
+    public static final String N_MELEE_RIGHT_3 = "sprites/melee/normal/frame-3.png";
 
     //Coin Spritesheet
     public static final String COIN_SPRITESHEET = "sprites/coinsheet.png";

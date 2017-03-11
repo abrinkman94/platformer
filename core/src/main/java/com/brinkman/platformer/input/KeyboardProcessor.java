@@ -18,9 +18,9 @@ public class KeyboardProcessor extends AbstractInputMappings implements InputPro
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Keys.LEFT) {
+        if ((keycode == Keys.LEFT) || (keycode == Keys.A)) {
             left = true;
-        } else if (keycode == Keys.RIGHT) {
+        } else if ((keycode == Keys.RIGHT) || (keycode == Keys.D)) {
             right = true;
         }
 
@@ -31,15 +31,19 @@ public class KeyboardProcessor extends AbstractInputMappings implements InputPro
         if (keycode == Keys.SPACE) {
             ((ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(true);
         }
+
+        if (keycode == Keys.Q) {
+            melee = true;
+        }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == Keys.LEFT) {
+        if ((keycode == Keys.LEFT) || (keycode == Keys.A)) {
             left = false;
         }
-        if (keycode == Keys.RIGHT) {
+        if ((keycode == Keys.RIGHT) || (keycode == Keys.D)) {
             right = false;
         }
         if (keycode == Keys.SHIFT_LEFT) {
@@ -48,6 +52,9 @@ public class KeyboardProcessor extends AbstractInputMappings implements InputPro
         if (keycode == Keys.SPACE) {
             ((ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class)).setJumping(false);
             ((ControlledBody) entity.getComponents().getInstance(PhysicsComponent.class)).setJustJumped(false);
+        }
+        if (keycode == Keys.Q) {
+            melee = false;
         }
         return false;
     }

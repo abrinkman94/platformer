@@ -9,4 +9,6 @@ public enum AnimationType {
     RUN_RIGHT,
     JUMP_LEFT,
     JUMP_RIGHT,
+    MELEE_LEFT,
+    MELEE_RIGHT
 }

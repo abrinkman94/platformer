@@ -14,11 +14,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import static com.brinkman.platformer.util.Constants.TO_WORLD_UNITS;
+
 /**
  * @author Austin Brinkman.
  */
 public class NormalRenderOperator implements Operator
 {
+    private final Vector2 tempVector = new Vector2();
     private final Collection<Class<? extends RootComponent>> requiredComponents;
     private final Batch batch;
 
@@ -41,20 +44,24 @@ public class NormalRenderOperator implements Operator
 
         assert (body != null) && (renderComponent != null);
 
-        float height = body.getHeight();
-        float width = body.getWidth();
         float originX = 0.0f;
         float originY = 0.0f;
         float scaleX = 1.0f;
         float scaleY = 1.0f;
         float rotation = 0.0f;
-        Vector2 position = body.getPosition();
         TextureRegion textureRegion = renderComponent.getNormalTextureRegion(deltaT);
+        if(textureRegion != null) {
+            tempVector.set(body.getPosition());
+            float width = textureRegion.getRegionWidth() * TO_WORLD_UNITS;
+            float height = textureRegion.getRegionHeight() * TO_WORLD_UNITS;
+            float x = tempVector.x - ((width - body.getWidth()) / 2);
+            float y = tempVector.y - ((height - body.getHeight()) / 2);
 
-        if (textureRegion != null) {
-            batch.begin();
-            batch.draw(textureRegion, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation);
-            batch.end();
+            if (textureRegion != null) {
+                batch.begin();
+                batch.draw(textureRegion, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+                batch.end();
+            }
         }
     }
 }
