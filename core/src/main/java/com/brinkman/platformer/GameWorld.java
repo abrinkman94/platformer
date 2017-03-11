@@ -83,18 +83,6 @@ public class GameWorld {
         entities.remove(entity);
     }
 
-    public int getNumberOfCoins() {
-        int numberOfCoins = 0;
-
-        for (Entity entity : entities) {
-            if (entity instanceof Coin) {
-                numberOfCoins++;
-            }
-        }
-
-        return numberOfCoins;
-    }
-
     /**
      * Initializes all dynamic objects in Level.
      */
@@ -120,16 +108,6 @@ public class GameWorld {
 
                 Entity staticEntity = new StaticEntity(x, y, width, height);
                 addEntity(staticEntity);
-            }
-        }
-
-        if (level.getTmxMap().getMapObjects("coins") != null) {
-            for (MapObject object : level.getTmxMap().getMapObjects("coins")) {
-                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                Entity coin = new Coin(x, y);
-                addEntity(coin);
             }
         }
 
@@ -170,7 +148,7 @@ public class GameWorld {
                 float width = exitObject.getProperties().get("width", float.class) * TO_WORLD_UNITS;
                 float height = exitObject.getProperties().get("height", float.class) * TO_WORLD_UNITS;
 
-                Entity exit = new Exit(this, x, y, width, height);
+                Entity exit = new Exit(x, y, width, height);
                 addEntity(exit);
             }
         }
