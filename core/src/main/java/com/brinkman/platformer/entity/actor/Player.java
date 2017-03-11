@@ -94,8 +94,7 @@ public class Player extends Actor
 
         CollisionListener<Platform> platformListener = new StaticCollisionListener<>(body);
         CollisionListener<StaticEntity> staticListener = new StaticCollisionListener<>(body);
-        // TODO Need to move this out of constructor if possible; leaking potentially uninitialized references
-        body.setCollisionListener(Saw.class, new SawCollisionListener(this));
+        body.setCollisionListener(Saw.class, new SawCollisionListener());
         body.setCollisionListener(Platform.class, platformListener);
         body.setCollisionListener(StaticEntity.class, staticListener);
 
