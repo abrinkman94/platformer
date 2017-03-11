@@ -82,7 +82,7 @@ public class GameScreen implements Screen {
      */
     public GameScreen() {
         spriteBatch = new SpriteBatch();
-        gameWorld = new GameWorld(new Level("map/lighting-demo/cave.tmx"));
+        gameWorld = new GameWorld(new Level("map/lighting-demo/TestLevel.tmx"));
         float viewportWidth = APP_WIDTH * TO_WORLD_UNITS;
         float viewportHeight = APP_HEIGHT * TO_WORLD_UNITS;
         camera = new OrthographicCamera(APP_WIDTH, APP_HEIGHT);

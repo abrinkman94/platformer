@@ -44,7 +44,7 @@ public final class AssetUtil
 		ASSET_MANAGER.setLoader(TiledMap.class, new TmxMapLoader(
 				new InternalFileHandleResolver()));
 
-		loadAsset("map/lighting-demo/cave.tmx", TiledMap.class);
+		loadAsset("map/lighting-demo/TestLevel.tmx", TiledMap.class);
 
 		finishLoading();
 	}
