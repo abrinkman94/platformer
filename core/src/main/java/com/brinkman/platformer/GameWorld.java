@@ -29,9 +29,6 @@ public class GameWorld {
     private final List<Entity> unmodifiableEntities;
     private TextureMapObjectRenderer textureMapObjectRenderer;
 
-    private final int[] backgroundLayers = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    private final int[] foregroundLayers = {9};
-
     private static final Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
 
     /**
@@ -45,18 +42,6 @@ public class GameWorld {
 
         LOGGER.info("Initialized");
     }
-
-    /**
-     * Returns current Level of GameWorld.
-     * @return Level
-     */
-    public Level getLevel() { return level; }
-
-    /**
-     * Sets Level of GameWorld.
-     * @param level Level
-     */
-    public void setLevel(Level level) { this.level = level; }
 
     /**
      * Returns Map(Entity, String) of entities.
@@ -84,18 +69,6 @@ public class GameWorld {
      * Initializes all dynamic objects in Level.
      */
     public void initializeMapObjects() {
-        if (level.getTmxMap().getMapObjects("Static Collision") != null) {
-            for (MapObject object : level.getTmxMap().getMapObjects("Static Collision")) {
-                float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = object.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-                float width = object.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-                float height = object.getProperties().get("height", float.class) * TO_WORLD_UNITS;
-
-                Entity staticEntity = new StaticEntity(x, y, width, height);
-                addEntity(staticEntity);
-            }
-        }
-
         if (level.getTmxMap().getMapObjects("collision") != null) {
             for (MapObject object : level.getTmxMap().getMapObjects("collision")) {
                 float x = object.getProperties().get("x", float.class) * TO_WORLD_UNITS;
