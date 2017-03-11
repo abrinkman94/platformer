@@ -237,23 +237,6 @@ public class Player extends Actor
         body.setTouchingRightWall(false);
     }
 
-    /**
-     * Handles the decrementing, and logic, of player's lives.
-     */
-    @Override
-    public void handleDeath() {
-        if (lives > 0) {
-            MotileBody body = (MotileBody) components.getInstance(PhysicsComponent.class);
-            assert body != null;
-
-            Vector2 originPosition = body.getOriginPosition();
-            body.getPosition().set(originPosition);
-            body.getVelocity().y = 0;
-            // TODO Remove to make game over actually happen
-            //    lives--;
-        }
-    }
-
     @Override
     public void dispose() {
         idleRightAtlas.dispose();

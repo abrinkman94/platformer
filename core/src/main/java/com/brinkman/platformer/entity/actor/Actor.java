@@ -16,15 +16,6 @@ public abstract class Actor implements Entity {
      * The Actor's float elapsedTime, used for animations.
      */
     protected float elapsedTime;
-    /**
-     * The Actor's int lives.
-     */
-    protected int lives = 3;
-
-    /**
-     * Optional method to handle death of Actor.
-     */
-    public void handleDeath() {};
 
 
 }

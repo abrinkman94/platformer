@@ -66,9 +66,6 @@ public class SimpleEnemy extends Actor
     }
 
     @Override
-    public void handleDeath() {}
-
-    @Override
     public void dispose() {
 
     }

@@ -62,7 +62,6 @@ public class HUD {
             }
         }
 
-        //Update lives and level labels
         healthLabel.setText("Health: " + ((SimpleStatusComponent)player.getComponents().get(StatusComponent.class)).getCurrentHealth());
 
         stage.act(delta);

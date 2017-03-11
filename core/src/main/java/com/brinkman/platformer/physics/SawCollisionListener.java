@@ -13,7 +13,5 @@ public class SawCollisionListener implements CollisionListener<Saw> {
     public SawCollisionListener(Actor actor) { this.actor = actor; }
 
     @Override
-    public void onCollision(Saw other) {
-        actor.handleDeath();
-    }
+    public void onCollision(Saw other) { }
 }
