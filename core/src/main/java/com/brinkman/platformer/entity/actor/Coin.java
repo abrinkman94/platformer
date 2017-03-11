@@ -35,8 +35,6 @@ public class Coin extends Actor {
      * @param y float y position
      */
     public Coin(float x, float y) {
-        elapsedTime = 0;
-
         StaticPhysicsComponent body = new StaticPhysicsComponent();
         body.getPosition().set(x, y);
         body.setWidth(COIN_SIZE * TO_WORLD_UNITS);

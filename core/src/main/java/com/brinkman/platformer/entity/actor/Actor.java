@@ -12,10 +12,6 @@ public abstract class Actor implements Entity {
      * The Actor's Texture.
      */
     protected Texture texture;
-    /**
-     * The Actor's float elapsedTime, used for animations.
-     */
-    protected float elapsedTime;
 
 
 }
