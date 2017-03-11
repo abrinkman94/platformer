@@ -9,13 +9,10 @@ import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
 import com.brinkman.platformer.entity.actor.*;
-import com.brinkman.platformer.entity.actor.item.Item;
-import com.brinkman.platformer.entity.actor.item.ItemType;
 import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.entity.actor.platform.PlatformType;
 import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.map.TextureMapObjectRenderer;
-import com.brinkman.platformer.util.TexturePaths;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -118,26 +115,6 @@ public class GameWorld {
 
                 Entity saw = new Saw(x, y);
                 addEntity(saw);
-            }
-        }
-
-        if (level.getTmxMap().getMapObjects("life item") != null) {
-            for (MapObject itemObject : level.getTmxMap().getMapObjects("life item")) {
-                float x = itemObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = itemObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                Entity item = new Item(TexturePaths.LIFE_ITEM_TEXTURE, ItemType.LIFE, x, y);
-                addEntity(item);
-            }
-        }
-
-        if (level.getTmxMap().getMapObjects("key") != null) {
-            for (MapObject keyObject : level.getTmxMap().getMapObjects("key")) {
-                float x = keyObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = keyObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-
-                Entity key = new Item(TexturePaths.KEY_TEXTURE, ItemType.KEY, x, y);
-                addEntity(key);
             }
         }
 

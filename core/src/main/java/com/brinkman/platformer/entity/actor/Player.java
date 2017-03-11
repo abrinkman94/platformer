@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.action.MeleeAttackAction;
@@ -25,7 +24,6 @@ import com.brinkman.platformer.component.status.SimpleStatusComponent;
 import com.brinkman.platformer.component.status.StatusComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.StaticEntity;
-import com.brinkman.platformer.entity.actor.item.Item;
 import com.brinkman.platformer.entity.actor.platform.Platform;
 import com.brinkman.platformer.physics.*;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -64,7 +62,6 @@ public class Player extends Actor
     private TextureAtlas idleLeftAtlasNormal;
     private TextureAtlas jumpRightAtlasNormal;
     private TextureAtlas jumpLeftAtlasNormal;
-    private final Array<Item> inventory;
 
     private static final float WALK_ANIMATION_TIME = 0.1f;
     private static final float RUN_ANIMATION_TIME = 0.1f;
@@ -82,7 +79,6 @@ public class Player extends Actor
      * The Player constructor initializes TextureAtlas, Vector2 position, Vector2 velocity, and facingRight.
      */
     public Player() {
-        inventory = new Array<>();
 
         ControlledPhysicsComponent body = new ControlledPhysicsComponent();
         body.setAffectedByGravity(true);
@@ -100,7 +96,6 @@ public class Player extends Actor
         CollisionListener<StaticEntity> staticListener = new StaticCollisionListener<>(body);
         // TODO Need to move this out of constructor if possible; leaking potentially uninitialized references
         body.setCollisionListener(Saw.class, new SawCollisionListener(this));
-        body.setCollisionListener(Item.class, this::handleItemCollision);
         body.setCollisionListener(Platform.class, platformListener);
         body.setCollisionListener(StaticEntity.class, staticListener);
 
@@ -120,8 +115,6 @@ public class Player extends Actor
 
         LOGGER.info("Initialized");
     }
-
-    private void handleItemCollision(Item item) { inventory.add(item); }
 
     /**
      * Initializes TextureAtlas's using Textures from the AssetUtil.ASSET_MANAGER
@@ -214,14 +207,6 @@ public class Player extends Actor
         normalAnimations.put(MELEE_LEFT, new Animation<>(MELEE_ANIMATION_TIME, meleeLeftAtlasNormal.getRegions(), PlayMode.NORMAL));
     }
 
-    /**
-     * Returns the HashMap containing inventory currently in the player's 'inventory'. This does not include power-ups
-     * or life inventory.
-     *
-     * @return HashMap Item, ItemType
-     */
-    public Array<Item> getInventory() { return inventory; }
-    
     /**
      * Resets player's position, velocity, and facingRight to their original values. Used when starting a new level.
      */

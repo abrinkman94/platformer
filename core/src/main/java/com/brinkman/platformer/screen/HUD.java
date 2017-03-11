@@ -1,9 +1,7 @@
 package com.brinkman.platformer.screen;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -13,11 +11,7 @@ import com.brinkman.platformer.component.status.SimpleStatusComponent;
 import com.brinkman.platformer.component.status.StatusComponent;
 import com.brinkman.platformer.entity.Entity;
 import com.brinkman.platformer.entity.actor.Player;
-import com.brinkman.platformer.entity.actor.item.Item;
-import com.brinkman.platformer.entity.actor.item.ItemType;
-import com.brinkman.platformer.util.AssetUtil;
 import com.brinkman.platformer.util.FontUtil;
-import com.brinkman.platformer.util.TexturePaths;
 
 /**
  * Created by Austin on 10/8/2016.
