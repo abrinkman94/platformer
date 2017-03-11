@@ -141,18 +141,6 @@ public class GameWorld {
             }
         }
 
-        if (level.getTmxMap().getMapObjects("exit") != null) {
-            for (MapObject exitObject : level.getTmxMap().getMapObjects("exit")) {
-                float x = exitObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;
-                float y = exitObject.getProperties().get("y", float.class) * TO_WORLD_UNITS;
-                float width = exitObject.getProperties().get("width", float.class) * TO_WORLD_UNITS;
-                float height = exitObject.getProperties().get("height", float.class) * TO_WORLD_UNITS;
-
-                Entity exit = new Exit(x, y, width, height);
-                addEntity(exit);
-            }
-        }
-
         if (level.getTmxMap().getMapObjects("falling platform") != null) {
             for (MapObject fallingPlatformObject : level.getTmxMap().getMapObjects("falling platform")) {
                 float x = fallingPlatformObject.getProperties().get("x", float.class) * TO_WORLD_UNITS;

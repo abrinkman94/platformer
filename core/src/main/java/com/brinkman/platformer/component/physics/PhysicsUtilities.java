@@ -1,20 +1,14 @@
 package com.brinkman.platformer.component.physics;
 
-import com.badlogic.gdx.Gdx;
 import com.brinkman.platformer.GameWorld;
 import com.brinkman.platformer.entity.Entity;
-import com.brinkman.platformer.entity.actor.Exit;
 import com.brinkman.platformer.entity.actor.Player;
-import com.brinkman.platformer.level.Level;
 import com.brinkman.platformer.physics.Body;
 import com.brinkman.platformer.physics.MotileBody;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static com.brinkman.platformer.util.Constants.NUM_OF_LEVELS;
 
 enum PhysicsUtilities {
     ;
@@ -40,34 +34,7 @@ enum PhysicsUtilities {
         world.removeEntity(entity);
         if (entity instanceof Player) {
             // TODO Handle Game Over
-        } else if (entity instanceof Exit) {
-            int levelNumber = world.getLevel().getLevelNumber();
-
-            if (world.getLevel().getLevelNumber() < NUM_OF_LEVELS) {
-                levelNumber++;
-                world.setLevel(new Level(levelNumber));
-
-                player.reset();
-                clearWorld(world);
-
-                world.initializeMapObjects();
-            } else {
-                Gdx.app.exit();
-            }
         }
-    }
-
-    private static void clearWorld(GameWorld world) {
-        Collection<Entity> entitiesToRemove
-                = world.getEntities()
-                       .stream()
-                       .filter(it -> !(it instanceof Player))
-                       .collect(Collectors.toList());
-
-        entitiesToRemove.stream()
-                        .filter(Entity.class::isInstance)
-                        .map(Entity.class::cast)
-                        .forEach(world::removeEntity);
     }
 
     static Collection<Entity> findCollidingEntities(Entity entity, GameWorld world) {
