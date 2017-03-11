@@ -20,27 +20,11 @@ public abstract class Actor implements Entity {
      * The Actor's int lives.
      */
     protected int lives = 3;
-    /**
-     * The Actor's int currentAnimation, used for animations.
-     */
-    protected AnimationType currentAnimation = AnimationType.IDLE_RIGHT;
 
     /**
      * Optional method to handle death of Actor.
      */
     public void handleDeath() {};
-
-    /**
-     * Returns the int lives.
-     * @return int
-     */
-    public int getLives() { return lives; }
-
-    /**
-     * Sets the value of int lives.
-     * @param lives int
-     */
-    public void setLives(int lives) { this.lives = lives; }
 
 
 }
